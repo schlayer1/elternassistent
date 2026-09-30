@@ -1,0 +1,16 @@
+{
+  "name": "Heimbürgeschule Kahla • Elternassistent",
+  "short_name": "HBS Assistent",
+  "description": "Digitaler Assistent der Staatlichen Regelschule Heimbürgeschule Kahla für Eltern, Schüler und Interessierte.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFBF5",
+  "theme_color": "#0B7BA7",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
