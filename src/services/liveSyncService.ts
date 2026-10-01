@@ -15,12 +15,23 @@ export interface LiveDocData {
 }
 
 export const liveSyncService = {
-  // Gespeicherte Google Doc URL/ID abrufen
+  // Gespeicherte Google Doc URL/ID abrufen:
+  // 1. Manuell über Einstellungen eingegebener Link im localStorage (hat Priorität für Tests)
+  // 2. Zentral bei Vercel hinterlegte Umgebungsvariable VITE_GOOGLE_DOC_URL
+  // 3. Fallback leer
   getDocUrl: (): string => {
-    return localStorage.getItem(GOOGLE_DOC_STORAGE_KEY) || '';
+    const local = localStorage.getItem(GOOGLE_DOC_STORAGE_KEY);
+    if (local && local.trim().length > 0) {
+      return local.trim();
+    }
+    const envUrl = (import.meta as any).env?.VITE_GOOGLE_DOC_URL;
+    if (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 0) {
+      return envUrl.trim();
+    }
+    return '';
   },
 
-  // Neue Google Doc URL/ID speichern
+  // Neue Google Doc URL/ID lokal speichern
   setDocUrl: (url: string): void => {
     localStorage.setItem(GOOGLE_DOC_STORAGE_KEY, url.trim());
     localStorage.removeItem(LIVE_DATA_CACHE_TIMESTAMP); // Cache invalidieren
