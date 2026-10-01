@@ -100,5 +100,68 @@ export const SCHOOL_KNOWLEDGE_BASE = `
   - Ab dem 3. Fehltag ist eine schriftliche Entschuldigung der Sorgeberechtigten oder ein ärztliches Attest vorzulegen.
 - Beurlaubungen: Für planbare Freistellungen (z. B. Arzttermine, familiäre Anlässe) muss rechtzeitig vorher ein schriftlicher Antrag bei der Klassenleitung bzw. ab 3 Tagen bei der Schulleitung eingereicht werden.
 - Handy- und Smartwatch-Regel: Zum Schutz der Privatsphäre und für ungestörtes Lernen bleiben private Smartphones und Smartwatches während des gesamten Schultags und in den Pausen ausgeschaltet im Schulranzen. Bei dringenden Notfällen hilft das Sekretariat jederzeit gern.
-- Förderverein der Heimbürgeschule: Engagierte Eltern, Lehrkräfte und Förderer unterstützen Schulprojekte, Preise bei Wettbewerben, Schulfeste und Ausstattung. Beitrittserklärungen sind im Sekretariat oder online erhältlich.
+- Förderverein der Heimbürgeschule: Engagierte Eltern, Lehrkräfte und Förderer unterstützen Schulprojekte, Preise bei Wettbewerben, Schulfeste und Ausstattung (u. a. digitale und bewegungsfreundliche Ausstattung). Beitrittserklärungen sind im Sekretariat oder online erhältlich.
+
+## 10. Das innovative Lernformat „Tu-Es-Day“ (ab Schuljahr 2025/26 in Klasse 5)
+- Was ist der Tu-Es-Day?
+  - Jeden Dienstag arbeiten die Schülerinnen und Schüler der 5. Klassen für 5 Schulstunden in einem freien, projektorientierten Lernformat.
+  - Schüler:innen wählen und bearbeiten selbstgewählte Fragestellungen mit hoher gesellschaftlicher Relevanz – orientiert an den 17 Zielen für nachhaltige Entwicklung (SDGs) der Vereinten Nationen.
+- Die 3 pädagogischen Leitgedanken des Tu-Es-Days:
+  1. Selbstbestimmtes Lernen: Kinder lernen am besten, wenn sie eigene Fragen stellen dürfen.
+  2. Projektorientierung: Statt passiver Stoffvermittlung entwickeln Schüler:innen eigene Projekte – sie recherchieren, planen, führen durch, dokumentieren und präsentieren. Sie entwickeln Durchhaltevermögen, Kreativität und Eigenverantwortung.
+  3. Zukunftskompetenzen (kein Notendruck!): Im Vordergrund stehen Teamarbeit, Kommunikation, kritisches Denken, Kreativität, Selbstorganisation und Handlungsfähigkeit in einer komplexen Welt.
+- Die 3 Jahres-Etappen des Tu-Es-Days:
+  1. Etappe 1 (September – Dezember): „Licht und Gemeinschaft“
+     - Fokus: Gemeinschaft, Empathie, Kreativität, generationenübergreifendes Lernen.
+     - Fächer: Deutsch, Musik, Kunst, Werken.
+     - SDGs: SDG 3 (Gesundheit & Wohlergehen), SDG 4 (Hochwertige Bildung), SDG 11 (Nachhaltige Städte & Gemeinden), SDG 17 (Partnerschaften).
+     - Partner: Altenheim, Kindergarten, Forstamt, Ernst-Abbe-Bibliothek.
+     - Projektideen: Vorlesen für Jung & Alt, Ausstellungen, musisch-künstlerische Aktionen.
+  2. Etappe 2 (Januar – April): „Gut für mich – gut für die Welt“
+     - Fokus: Gesunde Ernährung, Self Care, Achtsamkeit im Alltag und in der Umwelt, Klima & Wetter begreifen.
+     - Fächer: Deutsch, Biologie/MNT, Ethik/Religion, Geschichte, Mathematik.
+     - SDGs: SDG 3 (Gesundheit & Wohlergehen), SDG 10 (Weniger Ungleichheiten), SDG 15 (Leben an Land), SDG 17 (Partnerschaften).
+     - Partner: Biobauern, Hofläden, Gärtnereien, Umweltbildungszentren / NABU, Wetterdienste, Krankenkassen / Gesundheitsexperten.
+     - Projektideen: Ernährungstagebuch, NutriScore-Analyse, Wetterstation bauen & Messdaten statistisch auswerten, Anlegen von Hochbeeten, gesundes Kochen.
+  3. Etappe 3 (Mai – Juli): „Entdeckungsreise – Nachhaltigkeit in und um Kahla“
+     - Fokus: Regionale Nachhaltigkeit, Umwelt entdecken, Verantwortung vor Ort übernehmen.
+     - Fächer: Geografie, MNT, Deutsch, Mathematik, Werken, Kunst, Musik, Geschichte.
+     - SDGs: SDG 11 (Nachhaltige Städte), SDG 12 (Nachhaltiger Konsum & Produktion), SDG 13 (Klimaschutz), SDG 15 (Leben an Land), SDG 17 (Partnerschaften).
+     - Partner: Stadtverwaltung Kahla, Forst, Kahla Porzellan, Griesson - de Beukelaer, NABU.
+     - Projektideen: Interaktive Geocaching-Route mit thematischen Stationen (QR-Codes, Rätsel, Klangaufnahmen, Naturbeobachtungen).
+- Didaktisches Schüler-Logbuch & die „Froschaufgabe“:
+  - Jedes Kind führt ein eigenes Tu-Es-Day-Logbuch mit Stimmungsabfrage, Zielen, Achtsamkeitsmoment („Heute achte ich besonders auf...“) und Wochenreflexion.
+  - Das Prinzip der „Froschaufgabe“ (nach dem englischen Sprichwort „Eat the frog“): Die Aufgabe, auf die man am wenigsten Lust hat, wird bewusst als Erstes benannt und erledigt. Didaktischer Sinn: Aufschieberitis überwinden, sich der eigenen Lernhaltung bewusst werden und durch den frühen Erfolg Motivation für den restlichen Tag tanken.
+
+## 11. Schulentwicklung zur Thüringer Gemeinschaftsschule & Pädagogisches Konzept
+- Entwicklungsvision: Die Heimbürgeschule strebt die offizielle Weiterentwicklung zur Thüringer Gemeinschaftsschule an – für längeres gemeinsames Lernen, maximale Chancengleichheit und individuelle Spitzenförderung ohne frühzeitige Selektion.
+- 3-stufige Binnendifferenzierung: Der Unterricht erfolgt durchgängig auf 3 Anspruchsebenen (Grundniveau, mittleres Niveau, erweitertes Niveau), unterstützt durch Sonderpädagoginnen und pädagogische Assistenten.
+- Offener Unterricht, Individuelle Lernzeit (ILZ) & Lernbüro: Schüler:innen bearbeiten Aufgaben in individuellem Tempo und Reihenfolge; bei Fragen steht das Lernbüro beratend zur Seite.
+- Diagnoseinstrument ILeA: Individuelle Lernstandsanalyse zu Beginn der 5. Klasse zur passgenauen Förderung jedes einzelnen Kindes.
+- Mentoring-System & Kompetenzraster:
+  - Lehrkräfte agieren als Lernberater / Coaches mit regelmäßigen Lernentwicklungsgesprächen.
+  - Kompetenzraster in Kernfächern (Deutsch, Mathe, Englisch) machen Lernfortschritte transparent.
+  - Logbücher und wöchentlicher Klassenrat zur Reflexion und Stärkung von Selbst- und Sozialkompetenz.
+- Gesunde Schule & Verpflegung:
+  - Täglich geöffnetes Schülercafé in den Pausen mit warmen/kalten Snacks und Getränken.
+  - Warmes Mittagessen über die Diakonie Apolda.
+  - Regelmäßige gesunde Verkaufsbasare aus dem hauswirtschaftlichen Unterricht im Fach Wirtschaft-Recht-Technik (WRT).
+  - Gesundheitssprechstunde und präventive Sportangebote (z. B. schulinterne Fußballliga in der Mittagspause).
+- Erasmus+ & Internationales:
+  - Jährliche 14-tägige voll finanzierte und begleitete Auslandspraktika und Schulbesuche im europäischen Ausland für Schüler:innen.
+  - Feste Partnerschaft mit einer italienischen Partnerschule.
+  - Jährliches Skilager und Surfcamp.
+- Vertrauensschule der Stiftung der Deutschen Wirtschaft (sdw):
+  - Direkter Kontakt zu Stipendiatinnen und Stipendiaten.
+  - Enge Kooperationen mit der Universität Jena (Zentrum für Lehrerbildung) und witelo e.V.
+
+## 12. Schüleranmeldung & Aufnahmeverfahren (Allgemeine Abläufe)
+- Schnuppertage für Grundschulen: Schüler:innen der 4. Klassen der abgebenden Grundschulen besuchen die Heimbürgeschule für einen kompletten Schultag.
+- Anmeldeablauf:
+  1. Anmeldeformular (Aufnahmebogen) digital oder analog ausfüllen und im Sekretariat einreichen.
+  2. Optionales persönliches Aufnahmegespräch zur Klärung individueller Fragen.
+  3. Bei stark steigenden Schülerzahlen wird eine zeitnahe Anmeldung empfohlen.
+- Unterjähriger Schulwechsel:
+  - Schulwechsel an die Heimbürgeschule während des laufenden Schuljahres sind jederzeit unkompliziert möglich und an keine Anmeldefristen gebunden!
 `;
+

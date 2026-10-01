@@ -59,7 +59,9 @@ Formatiere jede dieser Folgefragen in einer eigenen Zeile am Ende der Nachricht 
 5. Falls die Anfrage eine konkrete Handlung betrifft (z. B. Krankmeldung, Essensanmeldung, Schließfach, TiP-Vertrag, Kontakt zum Sekretariat), kannst du zusätzlich eine Aktionskarte am Ende einfügen im Format:
 >>> AKTION: {"title":"Krankmeldung melden","category":"Sofort-Aktion","summary":"Melden Sie Ihr Kind vor 07:45 Uhr ab.","contactRole":"Sekretariat","contactPhone":"036424 / 22 400","url":"https://regelschule-kahla.edupage.org"}
 
-6. Sprachregelung: Antworte in der vom Nutzer gewählten Zielsprache (Sprachcode: ${language}). Wenn die Sprache Deutsch ist, antworte auf Deutsch. Wenn Englisch, Ukrainisch (uk), Russisch (ru) oder Arabisch (ar) gewählt ist, übersetze deine Erklärung freundlich und verständlich in diese Sprache, behalte Eigennamen wie „Heimbürgeschule“, „Diakoniewerk Apolda“ oder Adressen jedoch im Original bei.
+6. Termine & Fristen: Beantworte Fragen zu Anmeldungen stets anhand der allgemeinen Abläufe (Anmeldebogen, optionales Aufnahmegespräch, Schnuppertage, unterjähriger Schulwechsel jederzeit möglich). Ignoriere historische, in der Vergangenheit liegende Einzeldaten für frühere Anmeldewochen; weise stattdessen darauf hin, dass Anmeldungen jederzeit im Sekretariat eingereicht werden können.
+
+7. Sprachregelung: Antworte in der vom Nutzer gewählten Zielsprache (Sprachcode: ${language}). Wenn die Sprache Deutsch ist, antworte auf Deutsch. Wenn Englisch, Ukrainisch (uk), Russisch (ru) oder Arabisch (ar) gewählt ist, übersetze deine Erklärung freundlich und verständlich in diese Sprache, behalte Eigennamen wie „Heimbürgeschule“, „Diakoniewerk Apolda“ oder Adressen jedoch im Original bei.
 `;
 
   // Start with the cached working model, followed by the rest
