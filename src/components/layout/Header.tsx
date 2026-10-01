@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SupportedLanguage } from '../../types/assistant';
 import { JarvisReactor } from '../jarvis/JarvisReactor';
-import { Globe, Key, ShieldCheck, X } from 'lucide-react';
+import { liveSyncService, LiveDocData } from '../../services/liveSyncService';
+import { Globe, Settings, ShieldCheck, X, FileText, RefreshCw, CheckCircle, ExternalLink } from 'lucide-react';
 
 interface HeaderProps {
   currentLanguage: SupportedLanguage;
   onLanguageChange: (lang: SupportedLanguage) => void;
   jarvisStatus: 'idle' | 'thinking' | 'speaking';
   onNavigateToChat: () => void;
+  onSyncUpdated?: () => void;
 }
 
 const LANGUAGES: { code: SupportedLanguage; label: string; flag: string }[] = [
@@ -22,13 +24,55 @@ export const Header: React.FC<HeaderProps> = ({
   currentLanguage,
   onLanguageChange,
   jarvisStatus,
-  onNavigateToChat
+  onNavigateToChat,
+  onSyncUpdated
 }) => {
-  const [showKeyModal, setShowKeyModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<'sync' | 'api'>('sync');
+
+  // Google Doc Sync State
+  const [googleDocUrl, setGoogleDocUrl] = useState(() => liveSyncService.getDocUrl());
+  const [syncStatus, setSyncStatus] = useState<LiveDocData | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncFeedback, setSyncFeedback] = useState<string | null>(null);
+
+  // Gemini Key State
   const [customKey, setCustomKey] = useState(
     () => localStorage.getItem('hbs_custom_gemini_api_key') || ''
   );
   const [savedSuccess, setSavedSuccess] = useState(false);
+
+  useEffect(() => {
+    // Initialer Live-Sync Check
+    if (googleDocUrl) {
+      liveSyncService.fetchLiveKnowledge(false).then((data) => {
+        setSyncStatus(data);
+      });
+    }
+  }, []);
+
+  const handleTestAndSaveDocSync = async () => {
+    setIsSyncing(true);
+    setSyncFeedback(null);
+    liveSyncService.setDocUrl(googleDocUrl);
+
+    try {
+      const data = await liveSyncService.fetchLiveKnowledge(true);
+      setSyncStatus(data);
+      if (data.isOnline && data.rawText) {
+        setSyncFeedback(`✓ Erfolgreich synchronisiert! ${data.rawText.length} Zeichen geladen.`);
+        onSyncUpdated?.();
+      } else if (googleDocUrl.trim()) {
+        setSyncFeedback('Hinweis: Dokument gespeichert. Bitte sicherstellen, dass die Freigabe auf "Jeder mit dem Link kann lesen" steht.');
+      } else {
+        setSyncFeedback('Live-Sync deaktiviert (Standard-Wissensbasis aktiv).');
+      }
+    } catch (e) {
+      setSyncFeedback('Fehler beim Abruf. Bitte Link prüfen.');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   const handleSaveKey = () => {
     if (customKey.trim()) {
@@ -39,19 +83,19 @@ export const Header: React.FC<HeaderProps> = ({
     setSavedSuccess(true);
     setTimeout(() => {
       setSavedSuccess(false);
-      setShowKeyModal(false);
-    }, 1200);
+    }, 1500);
   };
 
   return (
     <>
-      <header className="sticky top-0 z-30 bg-[#FFFBF5]/90 backdrop-blur-md border-b border-[#F1E9DA] px-4 py-2.5 transition-all shadow-sm">
-        <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
+      <header className="sticky top-0 z-30 bg-[#FFFBF5]/95 backdrop-blur-md border-b border-[#F1E9DA] transition-all shadow-xs">
+        {/* Responsive-School-Apps Fluid Container */}
+        <div className="w-full max-w-[2100px] mx-auto px-3 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-2.5 sm:py-3 flex items-center justify-between gap-3">
           {/* Brand & School Logo */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={onNavigateToChat}>
+          <div className="flex items-center gap-3 cursor-pointer select-none" onClick={onNavigateToChat}>
             <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-school-blue to-school-blueDark flex items-center justify-center text-white shadow-soft">
-                {/* Embedded Mini-Shield */}
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-school-blue to-school-blueDark flex items-center justify-center text-white shadow-soft">
+                {/* Embedded HBS Shield */}
                 <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   <path d="M12 8v4" />
@@ -66,25 +110,31 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             <div>
-              <div className="flex items-center gap-1.5">
-                <h1 className="text-base md:text-lg font-bold text-slate-900 tracking-tight leading-none">
+              <div className="flex items-center gap-2">
+                <h1 className="text-base sm:text-lg lg:text-xl font-extrabold text-slate-900 tracking-tight leading-none">
                   Heimbürgeschule Kahla
                 </h1>
-                <span className="hidden sm:inline-block px-2 py-0.5 bg-school-blueLight text-school-blue text-[10px] font-semibold rounded-full border border-school-blue/20">
+                <span className="hidden sm:inline-block px-2 py-0.5 bg-school-blueLight text-school-blue text-[10px] font-bold rounded-full border border-school-blue/20">
                   Elternassistent
                 </span>
+                {syncStatus?.isOnline && (
+                  <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full border border-emerald-200" title="Live-Sync über Google Docs aktiv">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                    Live-Sync
+                  </span>
+                )}
               </div>
-              <p className="text-xs text-slate-500 font-medium leading-tight">
+              <p className="text-xs text-slate-500 font-medium leading-tight mt-0.5">
                 Digitaler Wegweiser & Dialog ohne Login
               </p>
             </div>
           </div>
 
-          {/* Right Area: JARVIS Core Indicator & Language Chooser */}
-          <div className="flex items-center gap-2 md:gap-3">
+          {/* Right Area: JARVIS Core Indicator, Language Chooser & Settings */}
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Live JARVIS Hologram Reactor Widget */}
             <div
-              className="flex items-center gap-1.5 px-2.5 py-1 bg-white border border-[#F1E9DA] rounded-xl shadow-soft cursor-pointer hover:border-school-blue/40 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#F1E9DA] rounded-xl shadow-soft cursor-pointer hover:border-school-blue/40 transition-colors h-10 select-none"
               title={
                 jarvisStatus === 'thinking'
                   ? 'JARVIS Kognitionskern analysiert die Anfrage...'
@@ -108,95 +158,210 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Language Selector */}
             <div className="relative group">
-              <div className="flex items-center gap-1.5 bg-white border border-[#F1E9DA] px-2.5 py-1.5 rounded-xl shadow-soft cursor-pointer text-xs font-semibold text-slate-700 hover:border-school-blue/40 transition-colors">
-                <Globe className="w-3.5 h-3.5 text-school-blue" />
+              <div className="flex items-center gap-1.5 bg-white border border-[#F1E9DA] px-3 py-2 rounded-xl shadow-soft cursor-pointer text-xs font-bold text-slate-700 hover:border-school-blue/40 transition-colors h-10 select-none">
+                <Globe className="w-4 h-4 text-school-blue" />
                 <span className="uppercase">{currentLanguage}</span>
               </div>
-              <div className="absolute right-0 mt-1 w-36 bg-white border border-[#F1E9DA] rounded-xl shadow-float py-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all z-50">
+              <div className="absolute right-0 mt-1 w-40 bg-white border border-[#F1E9DA] rounded-2xl shadow-float py-1.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all z-50">
                 {LANGUAGES.map((l) => (
                   <button
                     key={l.code}
                     onClick={() => onLanguageChange(l.code)}
-                    className={`w-full px-3 py-1.5 text-left text-xs font-medium flex items-center justify-between hover:bg-school-blueLight/50 transition-colors ${
+                    className={`w-full px-3.5 py-2 text-left text-xs font-medium flex items-center justify-between hover:bg-school-blueLight/50 transition-colors min-h-[40px] ${
                       currentLanguage === l.code ? 'text-school-blue font-bold bg-school-blueLight/30' : 'text-slate-700'
                     }`}
                   >
                     <span>{l.label}</span>
-                    <span>{l.flag}</span>
+                    <span className="text-base">{l.flag}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Optional Key Icon */}
+            {/* Settings & Live Sync Modal Button */}
             <button
-              onClick={() => setShowKeyModal(true)}
-              className="p-2 text-slate-400 hover:text-school-blue bg-white border border-[#F1E9DA] rounded-xl hover:border-school-blue/40 shadow-soft transition-colors"
-              title="API-Einstellungen (Optional)"
+              onClick={() => setShowSettingsModal(true)}
+              className="p-2.5 text-slate-500 hover:text-school-blue bg-white border border-[#F1E9DA] rounded-xl hover:border-school-blue/40 shadow-soft transition-colors h-10 w-10 flex items-center justify-center relative"
+              title="Schul-Sync & Einstellungen"
             >
-              <Key className="w-4 h-4" />
+              <Settings className="w-4 h-4" />
+              {syncStatus?.isOnline && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500" />
+              )}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Key / Settings Modal */}
-      {showKeyModal && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-float border border-school-border relative animate-in fade-in zoom-in-95 duration-200">
-            <button
-              onClick={() => setShowKeyModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-lg"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-2.5 text-school-blue mb-3">
-              <ShieldCheck className="w-6 h-6" />
-              <h3 className="text-lg font-bold text-slate-900">
-                KI-Verbindung & Schlüssel
-              </h3>
-            </div>
-
-            <p className="text-xs text-slate-600 mb-4 leading-relaxed">
-              Standardmäßig nutzt der Assistent den integrierten <strong className="text-school-blue">Heimbürgeschule-Schlüssel</strong> mit Google Gemini Flash. Weder Eltern noch Schüler müssen einen Key eingeben!
-            </p>
-
-            <div className="mb-4">
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Eigener Gemini API-Key (Optional für Lehrkräfte/Admins):
-              </label>
-              <input
-                type="password"
-                placeholder="AIzaSy..."
-                value={customKey}
-                onChange={(e) => setCustomKey(e.target.value)}
-                className="w-full text-xs font-mono px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-school-blue/30 focus:border-school-blue"
-              />
-              <span className="text-[11px] text-slate-400 mt-1 block">
-                Wird nur lokal in Ihrem Browser gespeichert. Frei lassen für Standard-Schulzugang.
-              </span>
-            </div>
-
-            {savedSuccess && (
-              <div className="p-2 mb-3 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-lg border border-emerald-200 text-center">
-                ✓ Einstellungen erfolgreich gespeichert!
+      {/* Settings & Live Sync Modal (Responsive-School-Apps Standard) */}
+      {showSettingsModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-3xl max-w-xl w-full max-h-[92vh] sm:max-h-[85vh] shadow-float border border-school-border flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/50">
+              <div className="flex items-center gap-2.5 text-school-blue">
+                <ShieldCheck className="w-6 h-6" />
+                <div>
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+                    Schulverwaltung & Live-Synchronisation
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-slate-500">
+                    Heimbürgeschule Kahla • Daten tagesaktuell halten
+                  </p>
+                </div>
               </div>
-            )}
-
-            <div className="flex justify-end gap-2">
               <button
-                onClick={() => setShowKeyModal(false)}
-                className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg"
+                onClick={() => setShowSettingsModal(false)}
+                className="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Sub-Tabs */}
+            <div className="flex border-b border-slate-100 bg-[#FFFBF5] px-4 sm:px-6 shrink-0 gap-4">
+              <button
+                onClick={() => setActiveTab('sync')}
+                className={`py-3 text-xs font-bold border-b-2 flex items-center gap-2 transition-all ${
+                  activeTab === 'sync'
+                    ? 'border-school-blue text-school-blue'
+                    : 'border-transparent text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <FileText className="w-4 h-4" />
+                <span>Weg 1: Google Doc Live-Notiz</span>
+                {syncStatus?.isOnline && (
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                )}
+              </button>
+              <button
+                onClick={() => setActiveTab('api')}
+                className={`py-3 text-xs font-bold border-b-2 flex items-center gap-2 transition-all ${
+                  activeTab === 'api'
+                    ? 'border-school-blue text-school-blue'
+                    : 'border-transparent text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span>KI-Schlüssel (Optional)</span>
+              </button>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+              {activeTab === 'sync' && (
+                <div className="space-y-4">
+                  <div className="bg-school-blueLight/40 p-4 rounded-2xl border border-school-blue/20">
+                    <h4 className="text-xs font-bold text-school-blueDark flex items-center gap-1.5 mb-1">
+                      <FileText className="w-4 h-4" />
+                      <span>Wie funktioniert Weg 1 (Google Doc Live-Sync)?</span>
+                    </h4>
+                    <p className="text-xs text-slate-700 leading-relaxed">
+                      Erstelle ein Google Doc (z. B. <em>„HBS Aktuelle Schulinformationen“</em>) mit der Freigabe <strong>„Jeder mit dem Link kann lesen“</strong>. Trage dort geänderte Klassenleitungen, Schülerzahlen, Elternabende oder Eilmeldungen ein.
+                      Der Assistent liest dieses Dokument live im Hintergrund bei allen Eltern ein – ohne dass Vercel neu gebaut werden muss!
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-800 mb-1.5">
+                      Link zu deinem freigegebenen Google Doc:
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://docs.google.com/document/d/.../edit"
+                      value={googleDocUrl}
+                      onChange={(e) => setGoogleDocUrl(e.target.value)}
+                      className="w-full text-xs px-3.5 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-school-blue/20 focus:border-school-blue"
+                    />
+                    <span className="text-[11px] text-slate-500 mt-1 block">
+                      Tipp: Für Eilmeldungen schreibe in das Dokument einfach: <code>[EILMELDUNG]: Hier der Text</code>
+                    </span>
+                  </div>
+
+                  {syncFeedback && (
+                    <div className="p-3 bg-slate-50 border border-slate-200 text-xs text-slate-800 rounded-xl">
+                      {syncFeedback}
+                    </div>
+                  )}
+
+                  {syncStatus && syncStatus.isOnline && (
+                    <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs rounded-xl flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-emerald-600" />
+                        <span>Live-Verbindung aktiv (Zuletzt: {syncStatus.lastUpdated})</span>
+                      </div>
+                      {syncStatus.sourceUrl && (
+                        <a
+                          href={syncStatus.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-emerald-700 underline font-semibold flex items-center gap-1"
+                        >
+                          Öffnen <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'api' && (
+                <div className="space-y-4">
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Standardmäßig nutzt der Assistent den integrierten <strong className="text-school-blue">Heimbürgeschule-Schlüssel</strong> mit Google Gemini Flash. Weder Eltern noch Schüler müssen einen Key eingeben!
+                  </p>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      Eigener Gemini API-Key (Optional für Lehrkräfte/Admins):
+                    </label>
+                    <input
+                      type="password"
+                      placeholder="AIzaSy..."
+                      value={customKey}
+                      onChange={(e) => setCustomKey(e.target.value)}
+                      className="w-full text-xs font-mono px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-school-blue/30 focus:border-school-blue"
+                    />
+                    <span className="text-[11px] text-slate-400 mt-1 block">
+                      Wird nur lokal in Ihrem Browser gespeichert. Frei lassen für Standard-Schulzugang.
+                    </span>
+                  </div>
+
+                  {savedSuccess && (
+                    <div className="p-2.5 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-xl border border-emerald-200 text-center">
+                      ✓ Einstellungen erfolgreich gespeichert!
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Sticky Footer (Thumb-friendly on mobile) */}
+            <div className="p-4 sm:p-5 border-t border-slate-100 shrink-0 bg-slate-50 flex items-center justify-between gap-3">
+              <button
+                onClick={() => setShowSettingsModal(false)}
+                className="px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-200/60 rounded-xl transition-colors h-11"
               >
                 Schließen
               </button>
-              <button
-                onClick={handleSaveKey}
-                className="px-4 py-1.5 text-xs font-semibold text-white bg-school-blue hover:bg-school-blueDark rounded-lg shadow-sm"
-              >
-                Speichern
-              </button>
+
+              {activeTab === 'sync' ? (
+                <button
+                  onClick={handleTestAndSaveDocSync}
+                  disabled={isSyncing}
+                  className="px-5 py-2.5 text-xs font-bold text-white bg-school-blue hover:bg-school-blueDark rounded-xl shadow-soft flex items-center gap-2 h-11 transition-all"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+                  <span>{isSyncing ? 'Synchronisiere...' : 'Jetzt testen & synchronisieren'}</span>
+                </button>
+              ) : (
+                <button
+                  onClick={handleSaveKey}
+                  className="px-5 py-2.5 text-xs font-bold text-white bg-school-blue hover:bg-school-blueDark rounded-xl shadow-soft h-11 transition-all"
+                >
+                  Speichern
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -75,28 +75,28 @@ export const ToolsView: React.FC<ToolsViewProps> = ({ onAskQuestion }) => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-4 md:py-6 space-y-6">
+    <div className="w-full max-w-[2100px] mx-auto px-3 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-4 sm:py-6 space-y-6">
       {/* Header Banner */}
-      <div className="bg-white rounded-3xl p-6 border border-school-border shadow-soft">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-school-border shadow-soft">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-school-tealLight text-school-tealDark rounded-full text-xs font-bold mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-school-tealLight text-school-tealDark rounded-full text-xs font-bold mb-2">
               <Sparkles className="w-3.5 h-3.5 text-school-teal" />
               <span>Interaktive Helfer für den Schulalltag</span>
             </div>
-            <h2 className="text-xl md:text-2xl font-bold text-slate-900">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900">
               Eltern-Werkzeuge & Schullaufbahn
             </h2>
-            <p className="text-xs md:text-sm text-slate-600 mt-1">
+            <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
               Erkunden Sie Thüringer Schulabschlüsse, haken Sie wichtige Vorbereitungen ab und behalten Sie die Schultakt-Zeiten im Blick.
             </p>
           </div>
 
-          {/* Sub-Tabs Selector */}
-          <div className="flex bg-[#FFFBF5] p-1.5 rounded-2xl border border-school-border self-start md:self-center">
+          {/* Sub-Tabs Selector with touch-friendly >=44px targets */}
+          <div className="flex flex-wrap sm:flex-nowrap bg-[#FFFBF5] p-1.5 rounded-2xl border border-school-border self-start md:self-center gap-1">
             <button
               onClick={() => setActiveSubTab('careers')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold min-h-[44px] transition-all ${
                 activeSubTab === 'careers'
                   ? 'bg-school-blue text-white shadow-soft'
                   : 'text-slate-600 hover:text-school-blue'
@@ -107,7 +107,7 @@ export const ToolsView: React.FC<ToolsViewProps> = ({ onAskQuestion }) => {
             </button>
             <button
               onClick={() => setActiveSubTab('checklists')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold min-h-[44px] transition-all ${
                 activeSubTab === 'checklists'
                   ? 'bg-school-orange text-white shadow-soft'
                   : 'text-slate-600 hover:text-school-orange'
@@ -118,7 +118,7 @@ export const ToolsView: React.FC<ToolsViewProps> = ({ onAskQuestion }) => {
             </button>
             <button
               onClick={() => setActiveSubTab('schedule')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold min-h-[44px] transition-all ${
                 activeSubTab === 'schedule'
                   ? 'bg-school-teal text-white shadow-soft'
                   : 'text-slate-600 hover:text-school-teal'

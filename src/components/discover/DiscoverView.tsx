@@ -55,79 +55,79 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
     : TOPIC_ITEMS.filter((t) => t.category === activeFilter);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-4 md:py-6 space-y-6">
+    <div className="w-full max-w-[2100px] mx-auto px-3 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-4 sm:py-6 space-y-6">
       {/* Welcome Hero Card */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-school-blue via-school-blueDark to-[#064259] rounded-3xl p-6 md:p-8 text-white shadow-float border border-school-blueLight/20">
+      <div className="relative overflow-hidden bg-gradient-to-br from-school-blue via-school-blueDark to-[#064259] rounded-3xl p-6 sm:p-8 lg:p-10 text-white shadow-float border border-school-blueLight/20">
         {/* Decorative background circles */}
-        <div className="absolute -right-10 -bottom-10 w-60 h-60 bg-white/5 rounded-full pointer-events-none blur-2xl" />
-        <div className="absolute right-20 top-0 w-40 h-40 bg-school-teal/20 rounded-full pointer-events-none blur-xl" />
+        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-white/5 rounded-full pointer-events-none blur-2xl" />
+        <div className="absolute right-20 top-0 w-60 h-60 bg-school-teal/20 rounded-full pointer-events-none blur-xl" />
 
-        <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-xs font-semibold text-white/90 mb-3 border border-white/20">
+        <div className="relative z-10 max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/15 backdrop-blur-md rounded-full text-xs font-semibold text-white/90 mb-3 border border-white/20">
             <Sparkles className="w-3.5 h-3.5 text-school-yellow" />
             <span>Offizieller Digitaler Schulbegleiter</span>
           </div>
 
-          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white mb-2 leading-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mb-3 leading-tight">
             Willkommen an der Heimbürgeschule Kahla
           </h2>
 
-          <p className="text-white/85 text-sm md:text-base leading-relaxed mb-5">
+          <p className="text-white/85 text-sm sm:text-base leading-relaxed mb-6 max-w-2xl">
             Für Eltern, Schüler:innen und interessierte Familien. Erfragen Sie alles rund um den Übergang in Klasse 5, unser Praxis-Profil „Fit fürs Leben“, Schullaufbahnen und den Schulalltag – direkt im Browser, ohne Login.
           </p>
 
-          {/* Quick Action Badges */}
-          <div className="flex flex-wrap gap-2.5">
+          {/* Quick Action Badges with >=44px Touch-Targets */}
+          <div className="flex flex-wrap gap-3">
             <button
               onClick={() => onAskQuestion('Wie läuft die Kennenlernwoche für neue 5.-Klässler ab?')}
-              className="px-4 py-2 bg-white text-school-blue font-bold text-xs rounded-xl shadow-soft hover:bg-school-blueLight hover:scale-[1.02] transition-all flex items-center gap-1.5"
+              className="px-4 py-2.5 min-h-[44px] bg-white text-school-blue font-bold text-xs sm:text-sm rounded-xl shadow-soft hover:bg-school-blueLight hover:scale-[1.02] transition-all flex items-center gap-2"
             >
               <span>Übergang Klasse 5</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+              <ChevronRight className="w-4 h-4" />
             </button>
             <button
               onClick={onOpenCareerCompass}
-              className="px-4 py-2 bg-school-teal text-white font-bold text-xs rounded-xl shadow-soft hover:bg-school-tealDark hover:scale-[1.02] transition-all flex items-center gap-1.5"
+              className="px-4 py-2.5 min-h-[44px] bg-school-teal text-white font-bold text-xs sm:text-sm rounded-xl shadow-soft hover:bg-school-tealDark hover:scale-[1.02] transition-all flex items-center gap-2"
             >
               <span>Abschluss-Kompass</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-4 h-4" />
             </button>
             <button
               onClick={onOpenChecklist}
-              className="px-4 py-2 bg-school-orange text-white font-bold text-xs rounded-xl shadow-soft hover:bg-school-orangeDark hover:scale-[1.02] transition-all flex items-center gap-1.5"
+              className="px-4 py-2.5 min-h-[44px] bg-school-orange text-white font-bold text-xs sm:text-sm rounded-xl shadow-soft hover:bg-school-orangeDark hover:scale-[1.02] transition-all flex items-center gap-2"
             >
               <span>Eltern-Checklisten</span>
-              <CheckCircle2 className="w-3.5 h-3.5" />
+              <CheckCircle2 className="w-4 h-4" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Quick Questions Chips */}
+      {/* Quick Questions Chips with touch-friendly paddings */}
       <div>
-        <div className="flex items-center gap-2 mb-2.5">
+        <div className="flex items-center gap-2 mb-3">
           <HelpCircle className="w-4 h-4 text-school-orange" />
           <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
             Häufige Elternfragen (1-Klick-Antwort)
           </h3>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2.5">
           {QUICK_STARTER_QUESTIONS.map((q, idx) => (
             <button
               key={idx}
               onClick={() => onAskQuestion(q)}
-              className="text-left text-xs font-medium text-slate-700 bg-white hover:bg-school-blueLight hover:text-school-blue border border-[#F1E9DA] hover:border-school-blue/40 px-3.5 py-2 rounded-xl shadow-soft transition-all duration-150 flex items-center gap-2 group"
+              className="min-h-[42px] text-left text-xs sm:text-sm font-medium text-slate-700 bg-white hover:bg-school-blueLight hover:text-school-blue border border-[#F1E9DA] hover:border-school-blue/40 px-4 py-2.5 rounded-xl shadow-soft transition-all duration-150 flex items-center gap-2.5 group"
             >
               <span>{q}</span>
-              <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-school-blue group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-school-blue group-hover:translate-x-0.5 transition-all shrink-0" />
             </button>
           ))}
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs font-semibold">
+      {/* Filter Tabs with touch-pan-x */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-none touch-pan-x text-xs sm:text-sm font-semibold">
         {[
           { id: 'all', label: 'Alle Themen' },
           { id: 'grade5', label: 'Klasse 5 / Neu an HBS' },
@@ -139,7 +139,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
           <button
             key={f.id}
             onClick={() => setActiveFilter(f.id)}
-            className={`px-3.5 py-1.5 rounded-full transition-all whitespace-nowrap ${
+            className={`min-h-[40px] px-4 py-2 rounded-xl transition-all whitespace-nowrap ${
               activeFilter === f.id
                 ? 'bg-school-blue text-white shadow-soft font-bold'
                 : 'bg-white text-slate-600 border border-[#F1E9DA] hover:bg-slate-50'
@@ -150,14 +150,14 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
         ))}
       </div>
 
-      {/* Topic Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Dynamic Bento & Card Grid (1 bis 5 Spalten gemäß responsive-school-apps) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-5">
         {filteredTopics.map((topic) => {
           const isExpanded = selectedTopic?.id === topic.id;
           return (
             <div
               key={topic.id}
-              className={`bg-white rounded-2xl border transition-all duration-200 overflow-hidden flex flex-col justify-between ${
+              className={`bg-white rounded-3xl border transition-all duration-200 overflow-hidden flex flex-col justify-between ${
                 isExpanded
                   ? 'border-school-blue ring-2 ring-school-blue/15 shadow-float'
                   : 'border-[#F1E9DA] hover:border-school-blue/40 shadow-soft hover:-translate-y-0.5'

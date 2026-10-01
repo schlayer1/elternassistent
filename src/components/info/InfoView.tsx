@@ -35,9 +35,9 @@ export const InfoView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-4 md:py-6 space-y-6">
+    <div className="w-full max-w-[2100px] mx-auto px-3 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-4 sm:py-6 space-y-6">
       {/* Emergency & Krankmelde-Banner */}
-      <div className="bg-gradient-to-r from-rose-50 to-orange-50 border border-rose-200 rounded-3xl p-5 md:p-6 shadow-soft">
+      <div className="bg-gradient-to-r from-rose-50 to-orange-50 border border-rose-200 rounded-3xl p-5 sm:p-6 lg:p-7 shadow-soft">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3.5">
             <div className="p-3 rounded-2xl bg-rose-500 text-white shrink-0 shadow-soft">
@@ -45,38 +45,38 @@ export const InfoView: React.FC = () => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-rose-950">
+                <h3 className="text-base sm:text-lg font-bold text-rose-950">
                   Krankmeldung & Dringende Notfälle
                 </h3>
-                <span className="px-2 py-0.5 bg-rose-200/80 text-rose-900 text-[10px] font-bold rounded-full">
+                <span className="px-2.5 py-0.5 bg-rose-200/80 text-rose-900 text-[10px] sm:text-xs font-bold rounded-full">
                   Vor 07:45 Uhr
                 </span>
               </div>
-              <p className="text-xs text-rose-800 mt-1 leading-relaxed">
+              <p className="text-xs sm:text-sm text-rose-800 mt-1 leading-relaxed max-w-2xl">
                 Melden Sie Fehlzeiten bitte morgens direkt per <strong>EduPage-App</strong> oder telefonisch im Sekretariat. Ab dem 3. Fehltag ist eine schriftliche Entschuldigung einzureichen.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 self-stretch sm:self-auto">
             <a
               href="tel:03642422400"
-              className="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-soft transition-all flex items-center gap-2"
+              className="w-full sm:w-auto px-5 py-3 min-h-[44px] bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs sm:text-sm shadow-soft transition-all flex items-center justify-center gap-2"
             >
-              <Phone className="w-3.5 h-3.5" />
+              <Phone className="w-4 h-4" />
               <span>036424 / 22 400</span>
             </a>
           </div>
         </div>
       </div>
 
-      {/* Contacts Grid */}
+      {/* Contacts Grid (1 bis 5 Spalten gemäß responsive-school-apps) */}
       <div className="space-y-3">
-        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+        <h3 className="text-xs sm:text-sm font-bold text-slate-800 uppercase tracking-wider">
           Wichtige Ansprechpartner der Heimbürgeschule
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-5">
           {SCHOOL_CONTACTS.map((contact) => (
             <div
               key={contact.id}

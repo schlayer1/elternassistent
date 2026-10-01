@@ -1,6 +1,7 @@
 import { CANDIDATE_FLASH_MODELS, getActiveApiKey } from '../config/geminiConfig';
 import { SCHOOL_KNOWLEDGE_BASE } from '../data/schoolKnowledge';
 import { ActionCardData } from '../types/assistant';
+import { liveSyncService } from './liveSyncService';
 
 let cachedWorkingModel = CANDIDATE_FLASH_MODELS[0];
 
@@ -21,9 +22,28 @@ export const executeGeminiCascade = async (
     throw new Error('Kein gültiger Google Gemini API-Schlüssel gefunden. Bitte hinterlegen Sie einen Schlüssel.');
   }
 
+  // Live-Wissensdaten aus Google Docs abrufen (falls konfiguriert)
+  let liveKnowledgeSection = '';
+  try {
+    const liveDoc = await liveSyncService.fetchLiveKnowledge();
+    if (liveDoc.rawText) {
+      liveKnowledgeSection = `
+## 0. TAGESAKTUELLE LIVE-MITTEILUNGEN & SCHUL-UPDATES (Stand: ${liveDoc.lastUpdated})
+Folgende tagesaktuelle Mitteilungen und Notizen wurden soeben live von der Schule hinterlegt:
+${liveDoc.rawText}
+
+WICHTIGER HINWEIS ZUR PRIORITÄT:
+Falls Angaben in diesen tagesaktuellen Live-Mitteilungen (z. B. Klassenleitungen, Termine, kurzfristige Ausfälle) von der allgemeinen Wissensbasis abweichen, haben IMMER DIESE LIVE-ANGABEN VORRANG!
+`;
+    }
+  } catch (e) {
+    console.warn('Live knowledge sync skip:', e);
+  }
+
   const systemInstruction = `
 Du bist der offizielle, hochkompetente und herzliche Digitale Schul- und Elternassistent der Staatlichen Regelschule „Johann Wilhelm Heimbürge“ Kahla (HBS).
 Dein Ziel ist es, Eltern, Schüler:innen und interessierten Familien wertschätzend, verständlich, barrierefrei und präzise Auskunft zu geben.
+${liveKnowledgeSection}
 
 Nutze für alle Antworten die folgende verifizierte Wissensbasis der Heimbürgeschule:
 ${SCHOOL_KNOWLEDGE_BASE}

@@ -257,27 +257,86 @@ Wobei darf ich Ihnen heute helfen?`,
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-3 md:px-4 py-3 flex flex-col h-[calc(100vh-140px)] md:h-[calc(100vh-160px)]">
+    <div className="w-full max-w-[2100px] mx-auto px-3 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-3 sm:py-4 flex flex-col h-[calc(100vh-130px)] md:h-[calc(100vh-145px)]">
       {/* Top Chat Bar with Clear and Status */}
-      <div className="flex items-center justify-between px-3 py-1.5 bg-white/70 backdrop-blur-sm rounded-xl border border-school-border mb-3 shadow-xs">
+      <div className="flex items-center justify-between px-3 sm:px-4 py-2 bg-white/80 backdrop-blur-sm rounded-2xl border border-school-border mb-3 shadow-xs shrink-0">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-semibold text-slate-600">
-            HBS Wissensassistent • Sofortauskunft
+          <span className="text-xs sm:text-sm font-bold text-slate-700">
+            HBS Wissensassistent • Sofortauskunft ohne Login
           </span>
         </div>
         <button
           onClick={handleClearChat}
-          className="text-xs font-medium text-slate-500 hover:text-school-orange flex items-center gap-1 transition-colors px-2 py-0.5 rounded-lg hover:bg-orange-50"
+          className="text-xs font-semibold text-slate-500 hover:text-school-orange flex items-center gap-1.5 transition-colors px-3 py-1.5 rounded-xl hover:bg-orange-50 min-h-[36px]"
           title="Verlauf löschen"
         >
           <RotateCcw className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Neuer Dialog</span>
+          <span>Neuer Dialog</span>
         </button>
       </div>
 
-      {/* Messages Feed */}
-      <div className="flex-1 overflow-y-auto pr-1 space-y-4 scroll-smooth">
+      {/* Main Content Area: Asymmetric Dual-Column Workbench on Laptop/iMac (responsive-school-apps) */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 min-h-0 overflow-hidden">
+        {/* Left Side Panel on iMac & Laptop (Col-Span 4 / 3) */}
+        <div className="hidden lg:flex lg:col-span-4 xl:col-span-4 2xl:col-span-3 flex-col gap-4 overflow-y-auto pr-1">
+          {/* JARVIS Kognitionskern Card */}
+          <div className="bg-white rounded-3xl p-5 border border-school-border shadow-soft flex flex-col items-center text-center">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-school-blue bg-school-blueLight px-2.5 py-0.5 rounded-full border border-school-blue/20 mb-3">
+              HBS Kognitionskern
+            </span>
+            <div className="w-36 h-36 flex items-center justify-center my-1">
+              <JarvisReactor
+                status={jarvisStatus}
+                size="md"
+                label={
+                  jarvisStatus === 'thinking'
+                    ? 'Analysiere Wissensbasis...'
+                    : jarvisStatus === 'speaking'
+                    ? 'Sprachausgabe aktiv'
+                    : 'System bereit'
+                }
+              />
+            </div>
+            <p className="text-xs text-slate-500 mt-2 leading-relaxed">
+              Verarbeitet Schulkonzept, TiP-Praxistage, Doppelstundentakt und Live-Google-Doc-Notizen.
+            </p>
+          </div>
+
+          {/* Quick Questions Card for Rapid Exploration */}
+          <div className="bg-white rounded-3xl p-5 border border-school-border shadow-soft flex-1 flex flex-col">
+            <div className="flex items-center gap-2 mb-3 text-slate-800">
+              <HelpCircle className="w-4 h-4 text-school-orange" />
+              <h4 className="text-xs font-bold uppercase tracking-wider">
+                Direkt-Themen
+              </h4>
+            </div>
+            <div className="space-y-2 overflow-y-auto flex-1 pr-1">
+              {[
+                'Wie läuft die Kennenlernwoche für neue 5.-Klässler ab?',
+                'Wie melde ich mein Kind morgens richtig krank?',
+                'Wie funktioniert das Projekt „Tag in der Praxis“ (TiP)?',
+                'Welche Arbeitsgemeinschaften (AGs) gibt es?',
+                'Wie melde ich das Schulessen beim Diakoniewerk Apolda an?',
+                'Welche Abschlüsse kann mein Kind an der HBS machen?'
+              ].map((q, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSendMessage(q)}
+                  className="w-full text-left text-xs p-2.5 rounded-xl border border-slate-100 hover:border-school-blue/30 hover:bg-school-blueLight/30 text-slate-700 transition-all flex items-center justify-between group"
+                >
+                  <span className="line-clamp-2">{q}</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-school-blue group-hover:translate-x-0.5 shrink-0 transition-transform" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side / Mobile Full: Active Chat Messages & Sticky Input */}
+        <div className="lg:col-span-8 xl:col-span-8 2xl:col-span-9 flex flex-col h-full min-h-0 bg-transparent">
+          {/* Messages Feed */}
+          <div className="flex-1 overflow-y-auto pr-1 space-y-4 scroll-smooth">
         {messages.map((msg) => {
           const isUser = msg.sender === 'user';
           const isAssistant = msg.sender === 'assistant';
@@ -503,6 +562,8 @@ Wobei darf ich Ihnen heute helfen?`,
           </div>
         </div>
       </div>
+    </div>
+    </div>
     </div>
   );
 };
