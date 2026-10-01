@@ -115,7 +115,7 @@ export const JarvisReactor: React.FC<JarvisReactorProps> = ({
             />
           </g>
 
-          {/* Core Shield & HBS Emblem */}
+          {/* Core Shield & HBS School Seal Logo */}
           <g className="origin-center">
             {/* Hexagonal Shield Core */}
             <polygon
@@ -126,26 +126,39 @@ export const JarvisReactor: React.FC<JarvisReactorProps> = ({
               className={isActive ? 'animate-pulse' : ''}
             />
 
-            {/* Pulsing Energy Core */}
+            {/* Pulsing Energy Core Ring */}
             <circle
               cx="100"
               cy="95"
-              r={isActive ? '24' : '20'}
+              r={isActive ? '27' : '23'}
               fill={isSpeaking ? 'url(#jarvisAmber)' : 'url(#jarvisBlue)'}
               className="transition-all duration-300"
             />
 
-            {/* School Stylized "H" / Crest Icon */}
-            <path
-              d="M87 84V106M113 84V106M87 95H113"
-              stroke="#FFFFFF"
-              strokeWidth="3.5"
-              strokeLinecap="round"
+            {/* School Seal Logo Mask & Image */}
+            <defs>
+              <clipPath id="schoolLogoClip">
+                <circle cx="100" cy="95" r={isActive ? '24' : '20'} />
+              </clipPath>
+            </defs>
+
+            {/* White Circular Backdrop behind seal for contrast */}
+            <circle
+              cx="100"
+              cy="95"
+              r={isActive ? '24' : '20'}
+              fill="#FFFFFF"
             />
-            {/* Crown / Star Element */}
-            <polygon
-              points="100,74 104,82 96,82"
-              fill="#F59E0B"
+
+            {/* Official School Seal (Siegel bunt) */}
+            <image
+              href="/siegel_bunt.png"
+              x={isActive ? '76' : '80'}
+              y={isActive ? '71' : '75'}
+              width={isActive ? '48' : '40'}
+              height={isActive ? '48' : '40'}
+              clipPath="url(#schoolLogoClip)"
+              className="transition-all duration-300 pointer-events-none"
             />
           </g>
 

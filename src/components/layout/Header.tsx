@@ -116,13 +116,13 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Brand & School Logo */}
           <div className="flex items-center gap-3 cursor-pointer select-none" onClick={onNavigateToChat}>
             <div className="relative">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-school-blue to-school-blueDark flex items-center justify-center text-white shadow-soft">
-                {/* Embedded HBS Shield */}
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  <path d="M12 8v4" />
-                  <circle cx="12" cy="15" r="1" fill="currentColor" />
-                </svg>
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-white border border-[#F1E9DA] flex items-center justify-center p-1 shadow-soft overflow-hidden">
+                {/* Official School Seal */}
+                <img
+                  src="/siegel_bunt.png"
+                  alt="Heimbürgeschule Kahla Siegel"
+                  className="w-full h-full object-contain"
+                />
               </div>
               {/* Online Pulse Dot */}
               <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3">
