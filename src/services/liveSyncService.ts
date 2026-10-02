@@ -6,6 +6,8 @@ const LIVE_DATA_CACHE_KEY = 'hbs_live_doc_cache_data';
 const LIVE_DATA_CACHE_TIMESTAMP = 'hbs_live_doc_cache_time';
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 Minuten Cache
 
+const DEFAULT_GOOGLE_DOC_URL = 'https://docs.google.com/document/d/1Uy7cszDXxbhui2k2mkCe9zeHFczPXkMSC4RxhVeNFSs/edit?usp=sharing';
+
 export interface LiveDocData {
   rawText: string;
   urgentNotice?: string;
@@ -18,7 +20,7 @@ export const liveSyncService = {
   // Gespeicherte Google Doc URL/ID abrufen:
   // 1. Manuell über Einstellungen eingegebener Link im localStorage (hat Priorität für Tests)
   // 2. Zentral bei Vercel hinterlegte Umgebungsvariable VITE_GOOGLE_DOC_URL
-  // 3. Fallback leer
+  // 3. Offizieller Standard-Google-Doc-Link der Heimbürgeschule
   getDocUrl: (): string => {
     const local = localStorage.getItem(GOOGLE_DOC_STORAGE_KEY);
     if (local && local.trim().length > 0) {
@@ -28,7 +30,7 @@ export const liveSyncService = {
     if (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 0) {
       return envUrl.trim();
     }
-    return '';
+    return DEFAULT_GOOGLE_DOC_URL;
   },
 
   // Neue Google Doc URL/ID lokal speichern
