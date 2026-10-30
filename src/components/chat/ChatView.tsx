@@ -20,7 +20,8 @@ import {
   ChevronRight,
   Info,
   CheckCircle,
-  HelpCircle
+  HelpCircle,
+  Languages
 } from 'lucide-react';
 
 interface ChatViewProps {
@@ -287,6 +288,43 @@ Wobei darf ich Ihnen heute helfen?`,
 
         {/* Right Side / Mobile Full: Active Chat Messages & Sticky Input */}
         <div className="lg:col-span-8 xl:col-span-8 2xl:col-span-9 flex flex-col h-full min-h-0 bg-transparent">
+          {/* Multilingual Assistance Banner for non-German speaking parents */}
+          {currentLanguage !== 'de' && (
+            <div className="bg-gradient-to-r from-teal-900 to-school-blueDark text-white p-3.5 sm:p-4 rounded-2xl shadow-soft border border-teal-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shrink-0 mb-3 animate-in fade-in">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-teal-500/20 rounded-xl border border-teal-400/30 text-teal-300">
+                  <Languages className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold block text-white">
+                    HBS Translator App & Brief-Dolmetscher
+                  </span>
+                  <span className="text-[11px] text-teal-100/90 leading-tight block">
+                    Gedruckte Briefe übersetzen oder Live-Sprachübersetzung für Elterngespräche in der Schule nutzen.
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 self-stretch sm:self-auto shrink-0">
+                <button
+                  onClick={onNavigateToTools}
+                  className="flex-1 sm:flex-none px-3 py-1.5 bg-white text-slate-800 hover:bg-slate-100 rounded-lg text-xs font-bold transition-all shadow-xs"
+                >
+                  Brief-Dolmetscher
+                </button>
+                <a
+                  href="https://translator-hbs.vercel.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 sm:flex-none px-3 py-1.5 bg-teal-400 hover:bg-teal-300 text-slate-900 rounded-lg text-xs font-extrabold transition-all shadow-xs inline-flex items-center justify-center gap-1"
+                >
+                  <span>Translator App</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+          )}
+
           {/* Messages Feed */}
           <div className="flex-1 overflow-y-auto pr-1 space-y-4 scroll-smooth">
         {messages.map((msg) => {

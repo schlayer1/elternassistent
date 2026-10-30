@@ -72,7 +72,7 @@ Wichtige Verhaltens- und Usability-Regeln:
    Beantworte Fragen zu Anmeldungen stets anhand der allgemeinen Abläufe (Anmeldebogen, optionales Aufnahmegespräch, Schnuppertage, unterjähriger Schulwechsel jederzeit unbürokratisch möglich). Ignoriere historische, in der Vergangenheit liegende Einzeldaten für frühere Schuljahre.
 
 8. Sprachregelung:
-   Antworte in der vom Nutzer gewählten Zielsprache (Sprachcode: ${language}). Bei Deutsch antworte auf Deutsch. Bei anderen Sprachen (z. B. Ukrainisch uk, Russisch ru, Arabisch ar, Englisch en) übersetze freundlich und verständlich, behalte Eigennamen („Heimbürgeschule“, „Diakoniewerk Apolda“, „Frau Wittmann“, „Frau Herold“) jedoch im Original bei.
+   Antworte in der vom Nutzer gewählten Zielsprache (Sprachcode: ${language}). Bei Deutsch antworte auf Deutsch. Bei anderen Sprachen (z. B. Rumänisch ro, Ukrainisch uk, Russisch ru, Arabisch ar, Englisch en) übersetze freundlich und verständlich, behalte Eigennamen („Heimbürgeschule“, „Diakoniewerk Apolda“, „Frau Wittmann“, „Frau Herold“) jedoch im Original bei.
 
 9. Rechtlicher Hinweis bei Abschlüssen & Schulrecht:
    Wenn du Fragen zu Schulabschlüssen, Prüfungen (§§ 62, 63, 67 ThürSchulO), Projektarbeit (§ 47a), Versetzungsregeln (§ 56) oder Schullaufbahnen beantwortest, füge am Ende deiner Erklärung immer folgenden Hinweis an:
@@ -192,4 +192,130 @@ Wichtige Verhaltens- und Usability-Regeln:
   }
 
   throw lastError || new Error('Leider konnte keine Verbindung zum KI-Dienst hergestellt werden. Bitte versuchen Sie es in wenigen Sekunden erneut.');
+};
+
+export interface LetterAnalysisResult {
+  title: string;
+  originalSummary: string;
+  translation: string;
+  actionItems: string[];
+  deadline?: string;
+  cost?: string;
+  signatureRequired: boolean;
+  contactPerson?: string;
+}
+
+export const analyzeLetterWithGemini = async (
+  params: {
+    fileBase64?: string;
+    mimeType?: string;
+    rawText?: string;
+    targetLanguage: string;
+  }
+): Promise<LetterAnalysisResult> => {
+  const activeKey = getActiveApiKey();
+  if (!activeKey) {
+    throw new Error('Kein gültiger Google Gemini API-Schlüssel gefunden.');
+  }
+
+  const langNames: Record<string, string> = {
+    ro: 'Rumänisch (Română)',
+    uk: 'Ukrainisch (Українська)',
+    ru: 'Russisch (Русский)',
+    ar: 'Arabisch (العربية)',
+    en: 'Englisch (English)',
+    de: 'Deutsch'
+  };
+  const targetLangLabel = langNames[params.targetLanguage] || params.targetLanguage;
+
+  const promptText = `
+Du bist der offizielle Elternbrief-Dolmetscher der Staatlichen Regelschule „Johann Wilhelm Heimbürge“ Kahla.
+Analysiere diesen Schulbrief/Aushang/Text für Eltern, die kein oder wenig Deutsch sprechen.
+Zielsprache der Eltern: ${targetLangLabel} (Sprachcode: ${params.targetLanguage}).
+
+Aufgabe:
+1. Lies den deutschen Text oder das Bild sorgfältig.
+2. Übersetze den wesentlichen Inhalt vollständig, verständlich und einfühlsam in die Zielsprache (${targetLangLabel}).
+3. Extrahiere die wichtigsten To-Dos für Eltern in einer klaren „Was muss ich tun?“-Aktionsliste.
+4. Identifiziere konkrete Fristen/Deadlines, anfallende Kosten/Geldbeträge, ob eine Unterschrift erforderlich ist, und wer der schulische Ansprechpartner ist.
+
+Antworte AUSSCHLIESSLICH im folgenden JSON-Format ohne Markdown-Codeblöcke (kein \`\`\`json):
+{
+  "title": "Kurzer, aussagekräftiger Titel in der Zielsprache",
+  "originalSummary": "Kurze Zusammenfassung des deutschen Originaltextes in 1-2 Sätzen auf Deutsch",
+  "translation": "Vollständige, gut verständliche Übersetzung in der Zielsprache (${targetLangLabel})",
+  "actionItems": ["Handlungsschritt 1 in Zielsprache", "Handlungsschritt 2 in Zielsprache"],
+  "deadline": "Konkretes Datum oder Frist (z. B. 'Freitag, 14.11.2026' oder 'Bis Montag'), oder leer falls keine Frist",
+  "cost": "Geldbetrag (z. B. '10,00 € Kopiergeld' oder 'Kostenfrei'), oder leer falls keine Kosten",
+  "signatureRequired": false,
+  "contactPerson": "Z. B. 'Frau Wittmann (Sekretariat)' oder 'Klassenleitung'"
+}
+`;
+
+  const parts: any[] = [{ text: promptText }];
+  if (params.rawText) {
+    parts.push({ text: `\n\n--- Hier ist der Text des Elternbriefs: ---\n${params.rawText}` });
+  }
+  if (params.fileBase64 && params.mimeType) {
+    parts.push({
+      inlineData: {
+        data: params.fileBase64,
+        mimeType: params.mimeType
+      }
+    });
+  }
+
+  const candidateModels = [
+    cachedWorkingModel,
+    ...CANDIDATE_FLASH_MODELS.filter((m) => m !== cachedWorkingModel)
+  ];
+
+  let lastError: Error | null = null;
+
+  for (const model of candidateModels) {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`;
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts }],
+          generationConfig: {
+            temperature: 0.2,
+            maxOutputTokens: 2048,
+            responseMimeType: 'application/json'
+          }
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (rawJson) {
+          try {
+            const cleaned = rawJson.replace(/```(?:json)?/g, '').replace(/```/g, '').trim();
+            const parsed = JSON.parse(cleaned);
+            cachedWorkingModel = model;
+            return {
+              title: parsed.title || 'Schulmitteilung',
+              originalSummary: parsed.originalSummary || '',
+              translation: parsed.translation || '',
+              actionItems: Array.isArray(parsed.actionItems) ? parsed.actionItems : [],
+              deadline: parsed.deadline || undefined,
+              cost: parsed.cost || undefined,
+              signatureRequired: !!parsed.signatureRequired,
+              contactPerson: parsed.contactPerson || undefined
+            };
+          } catch (pe) {
+            console.warn('JSON parse error from Gemini:', pe);
+          }
+        }
+      }
+    } catch (err: any) {
+      lastError = err;
+    }
+  }
+
+  throw lastError || new Error('Die Analyse des Elternbriefs ist fehlgeschlagen. Bitte versuchen Sie es erneut.');
 };

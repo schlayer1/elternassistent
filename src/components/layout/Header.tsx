@@ -19,6 +19,7 @@ const LANGUAGES: { code: SupportedLanguage; label: string; flag: string }[] = [
   { code: 'en', label: 'English', flag: '🇬🇧' },
   { code: 'uk', label: 'Українська', flag: '🇺🇦' },
   { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+  { code: 'ro', label: 'Română', flag: '🇷🇴' },
   { code: 'ar', label: 'العربية', flag: '🇸🇾' }
 ];
 

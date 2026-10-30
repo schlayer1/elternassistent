@@ -28,7 +28,7 @@ export interface ActionCardData {
   actionPayload?: string;
 }
 
-export type SupportedLanguage = 'de' | 'en' | 'uk' | 'ru' | 'ar';
+export type SupportedLanguage = 'de' | 'en' | 'uk' | 'ru' | 'ro' | 'ar';
 
 export interface LanguageConfig {
   code: SupportedLanguage;

@@ -23,6 +23,7 @@ function edgeTtsDevPlugin(): Plugin {
           en: 'en-US-JennyNeural',
           uk: 'uk-UA-PolinaNeural',
           ru: 'ru-RU-SvetlanaNeural',
+          ro: 'ro-RO-AlinaNeural',
           ar: 'ar-SA-ZariyahNeural'
         };
 

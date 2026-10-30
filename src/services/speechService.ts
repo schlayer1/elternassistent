@@ -108,6 +108,7 @@ export class SpeechService {
       en: 'en-US',
       uk: 'uk-UA',
       ru: 'ru-RU',
+      ro: 'ro-RO',
       ar: 'ar-SA'
     };
     utterance.lang = langMap[lang] || 'de-DE';
@@ -206,6 +207,7 @@ export class SpeechService {
         en: 'en-US',
         uk: 'uk-UA',
         ru: 'ru-RU',
+        ro: 'ro-RO',
         ar: 'ar-SA'
       };
       this.recognition.lang = langMap[lang] || 'de-DE';

@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CAREER_PATHS } from '../../data/careerPathsData';
 import { SCHEDULE_BLOCKS } from '../../data/contactsData';
 import { storageService } from '../../services/storageService';
 import { ChecklistGroup } from '../../types/school';
+import { SupportedLanguage } from '../../types/assistant';
+import { MultilingualHub } from './MultilingualHub';
 import confetti from 'canvas-confetti';
 import {
   GraduationCap,
@@ -16,15 +18,31 @@ import {
   BookOpen,
   ArrowRight,
   Scale,
-  Info
+  Info,
+  Languages
 } from 'lucide-react';
 
 interface ToolsViewProps {
+  currentLanguage: SupportedLanguage;
   onAskQuestion: (question: string) => void;
+  onNavigateToChat?: () => void;
 }
 
-export const ToolsView: React.FC<ToolsViewProps> = ({ onAskQuestion }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'careers' | 'checklists' | 'schedule'>('careers');
+export const ToolsView: React.FC<ToolsViewProps> = ({
+  currentLanguage,
+  onAskQuestion,
+  onNavigateToChat
+}) => {
+  const [activeSubTab, setActiveSubTab] = useState<'careers' | 'checklists' | 'schedule' | 'multilingual'>(
+    currentLanguage !== 'de' ? 'multilingual' : 'careers'
+  );
+
+  // Auto-switch to multilingual tab when language changes to non-German
+  useEffect(() => {
+    if (currentLanguage !== 'de' && activeSubTab !== 'multilingual') {
+      setActiveSubTab('multilingual');
+    }
+  }, [currentLanguage]);
   const [selectedCareerId, setSelectedCareerId] = useState<string>(CAREER_PATHS[2].id); // Realschulabschluss default
 
   // Checklists state from local storage
@@ -129,6 +147,21 @@ export const ToolsView: React.FC<ToolsViewProps> = ({ onAskQuestion }) => {
               <Clock className="w-4 h-4" />
               <span>Schulzeit-Takt</span>
             </button>
+
+            {/* Multilingual Mode Tab (Shown for non-German language selections) */}
+            {currentLanguage !== 'de' && (
+              <button
+                onClick={() => setActiveSubTab('multilingual')}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold min-h-[44px] transition-all ${
+                  activeSubTab === 'multilingual'
+                    ? 'bg-emerald-600 text-white shadow-soft ring-2 ring-emerald-400/30'
+                    : 'text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200'
+                }`}
+              >
+                <Languages className="w-4 h-4" />
+                <span>Dolmetscher & Briefe</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -431,6 +464,14 @@ export const ToolsView: React.FC<ToolsViewProps> = ({ onAskQuestion }) => {
             })}
           </div>
         </div>
+      )}
+
+      {/* 4. MULTILINGUAL TRANSLATOR & EXCUSE HUB VIEW */}
+      {activeSubTab === 'multilingual' && (
+        <MultilingualHub
+          currentLanguage={currentLanguage}
+          onNavigateToChat={onNavigateToChat || (() => {})}
+        />
       )}
     </div>
   );

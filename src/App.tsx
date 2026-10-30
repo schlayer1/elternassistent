@@ -88,7 +88,11 @@ export default function App() {
         )}
 
         {currentTab === 'tools' && (
-          <ToolsView onAskQuestion={handleAskQuestion} />
+          <ToolsView
+            currentLanguage={currentLanguage}
+            onAskQuestion={handleAskQuestion}
+            onNavigateToChat={() => setCurrentTab('chat')}
+          />
         )}
 
         {currentTab === 'info' && (
