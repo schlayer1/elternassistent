@@ -14,7 +14,8 @@ import {
   CheckCircle2,
   RotateCcw,
   BookOpen,
-  ArrowRight
+  ArrowRight,
+  Scale
 } from 'lucide-react';
 
 interface ToolsViewProps {
@@ -157,8 +158,8 @@ export const ToolsView: React.FC<ToolsViewProps> = ({ onAskQuestion }) => {
                   <h4 className="text-sm font-bold text-slate-900 leading-snug">
                     {path.title}
                   </h4>
-                  <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">
-                    {path.grade}
+                  <p className="text-[11px] text-slate-500 mt-1 line-clamp-1 font-medium">
+                    {path.legalReference ? `${path.grade} • ${path.legalReference}` : path.grade}
                   </p>
                 </button>
               );
@@ -169,12 +170,20 @@ export const ToolsView: React.FC<ToolsViewProps> = ({ onAskQuestion }) => {
           <div className="bg-white rounded-3xl p-6 md:p-8 border border-school-border shadow-float space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-slate-100">
               <div>
-                <span
-                  className="px-3 py-1 rounded-full text-xs font-bold text-white inline-block mb-2"
-                  style={{ backgroundColor: selectedCareer.color }}
-                >
-                  {selectedCareer.grade} • {selectedCareer.badge}
-                </span>
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <span
+                    className="px-3 py-1 rounded-full text-xs font-bold text-white inline-block"
+                    style={{ backgroundColor: selectedCareer.color }}
+                  >
+                    {selectedCareer.grade} • {selectedCareer.badge}
+                  </span>
+                  {selectedCareer.legalReference && (
+                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 inline-flex items-center gap-1 shadow-xs">
+                      <Scale className="w-3.5 h-3.5 text-amber-600" />
+                      <span>{selectedCareer.legalReference}</span>
+                    </span>
+                  )}
+                </div>
                 <h3 className="text-xl md:text-2xl font-bold text-slate-900">
                   {selectedCareer.title}
                 </h3>

@@ -33,6 +33,7 @@ export interface CareerPath {
   badge: string;
   color: string;
   description: string;
+  legalReference?: string;
   requirements: string[];
   exams: string[];
   nextSteps: string[];

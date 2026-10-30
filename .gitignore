@@ -27,3 +27,6 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Local source reference documents (large PDFs/PPTXs)
+Elternassistent Dateien/

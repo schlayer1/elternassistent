@@ -14,7 +14,8 @@ import {
   ArrowRight,
   BookOpen,
   CheckCircle2,
-  ExternalLink
+  ExternalLink,
+  Award
 } from 'lucide-react';
 
 interface DiscoverViewProps {
@@ -45,6 +46,10 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
         return <TrendingUp className="w-5 h-5 text-emerald-600" />;
       case 'Utensils':
         return <Utensils className="w-5 h-5 text-amber-600" />;
+      case 'Sparkles':
+        return <Sparkles className="w-5 h-5 text-amber-500" />;
+      case 'Award':
+        return <Award className="w-5 h-5 text-school-orange" />;
       default:
         return <BookOpen className="w-5 h-5 text-school-blue" />;
     }

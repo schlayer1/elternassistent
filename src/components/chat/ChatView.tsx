@@ -3,6 +3,7 @@ import { ChatMessage, SupportedLanguage, ActionCardData } from '../../types/assi
 import { executeGeminiCascade } from '../../services/geminiService';
 import { SpeechService } from '../../services/speechService';
 import { storageService } from '../../services/storageService';
+import { QUICK_STARTER_QUESTIONS } from '../../data/topicCategories';
 import { JarvisReactor } from '../jarvis/JarvisReactor';
 import {
   Send,
@@ -53,8 +54,8 @@ Wobei darf ich Ihnen heute helfen?`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         suggestions: [
           'Wie läuft die Kennenlernwoche für Klasse 5 ab?',
-          'Wie melde ich mein Kind morgens krank?',
-          'Wie funktioniert der Tag in der Praxis (TiP)?'
+          'Was bedeutet es, dass die Schule ZDF Partnerschule ist?',
+          'Wie melde ich mein Kind morgens bei Frau Wittmann krank?'
         ]
       }
     ];
@@ -312,14 +313,7 @@ Wobei darf ich Ihnen heute helfen?`,
               </h4>
             </div>
             <div className="space-y-2 overflow-y-auto flex-1 pr-1">
-              {[
-                'Wie läuft die Kennenlernwoche für neue 5.-Klässler ab?',
-                'Wie melde ich mein Kind morgens richtig krank?',
-                'Wie funktioniert das Projekt „Tag in der Praxis“ (TiP)?',
-                'Welche Arbeitsgemeinschaften (AGs) gibt es?',
-                'Wie melde ich das Schulessen beim Diakoniewerk Apolda an?',
-                'Welche Abschlüsse kann mein Kind an der HBS machen?'
-              ].map((q, idx) => (
+              {QUICK_STARTER_QUESTIONS.map((q, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSendMessage(q)}

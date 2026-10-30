@@ -53,7 +53,7 @@ export const InfoView: React.FC = () => {
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-rose-800 mt-1 leading-relaxed max-w-2xl">
-                Melden Sie Fehlzeiten bitte morgens direkt per <strong>EduPage-App</strong> oder telefonisch im Sekretariat. Ab dem 3. Fehltag ist eine schriftliche Entschuldigung einzureichen.
+                Melden Sie Fehlzeiten bitte morgens direkt per <strong>EduPage-App</strong> oder telefonisch im Sekretariat bei <strong>Frau Wittmann (036424 / 22 400)</strong>. Ab dem 3. Fehltag ist eine schriftliche Entschuldigung einzureichen.
               </p>
             </div>
           </div>

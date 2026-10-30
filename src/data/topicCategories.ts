@@ -22,6 +22,26 @@ export const TOPIC_ITEMS: TopicItem[] = [
     ]
   },
   {
+    id: 'tu-es-day',
+    title: 'Innovativer Tu-Es-Day',
+    badge: 'Zukunftslernen',
+    iconName: 'Sparkles',
+    category: 'grade5',
+    shortDesc: 'Projektbasiertes Lernen jeden Dienstag in Klasse 5 zu den 17 UN-Nachhaltigkeitszielen (SDGs) ohne Notendruck.',
+    fullAnswer: 'Der Tu-Es-Day ist unser innovativer Projekttag für die 5. Klassen:\n\n• **Wöchentlicher Praxistag**: Jeden Dienstag forschen die 5. Klassen für 5 Schulstunden an praxisnahen Projekten.\n• **17 Nachhaltigkeitsziele (SDGs)**: Vom Schulgarten über soziale Aktionen im Altenheim bis zu Wetterdaten.\n• **3 Jahres-Etappen**: 1. Licht & Gemeinschaft, 2. Gut für mich – gut für die Welt, 3. Entdeckungsreise Kahla.\n• **Froschaufgabe („Eat the frog“)**: Schüler:innen erledigen die unangenehmste Aufgabe zuerst und dokumentieren ihre Fortschritte im Tu-Es-Day-Logbuch.',
+    keyPoints: [
+      'Jeden Dienstag 5 Schulstunden freies Projektlernen',
+      'Stärkung von Teamgeist, Kreativität und Selbstständigkeit',
+      'Kein Notendruck – Fokus auf Zukunfts- und Medienkompetenz',
+      'Eigenes didaktisches Logbuch mit Froschaufgabe'
+    ],
+    relatedQuestions: [
+      'Was ist der Tu-Es-Day in Klasse 5?',
+      'Was bedeutet das Prinzip der Froschaufgabe?',
+      'Welche Projekte bearbeiten die Kinder am Tu-Es-Day?'
+    ]
+  },
+  {
     id: 'tip-projekt',
     title: 'Tag in der Praxis (TiP)',
     badge: 'Besonderes Profil',
@@ -42,23 +62,43 @@ export const TOPIC_ITEMS: TopicItem[] = [
     ]
   },
   {
+    id: 'profil-auszeichnungen',
+    title: 'Profile, ZDF & Verfassung',
+    badge: 'Ausgezeichnet',
+    iconName: 'Award',
+    category: 'prospective',
+    shortDesc: 'ZDF Partnerschule („ZDF goes Schule“), Verfassungsviertelstunde, Erasmus+, MINT-Schule & bewegungsfreundlich.',
+    fullAnswer: 'Die Staatliche Regelschule Heimbürge Kahla zeichnet sich durch herausragende Qualitätssiegel aus:\n\n• **ZDF Partnerschule („ZDF goes Schule“)**: Seit dieser Woche offizielle Partnerschule für Medienkompetenz und Journalismus-Workshops.\n• **Pilotschule Verfassungsviertelstunde**: Wöchentliche 15-minütige Demokratieimpulse in Thüringen (Kernteam: Hr. Bastian Illesy & Fr. Marie-Christin Thum).\n• **Erasmus+ Schule**: 14-tägige voll finanzierte Auslandspraktika, italienische Partnerschule und Surfcamp.\n• **MINT-freundlich & Digital**: Makerspace, 3D-Druck, Robotik und Auszeichnungen bei Jugend forscht.\n• **Bewegungsfreundliche Schule**: Neue Zweifeldhalle, Pausenliga Fußball/Volleyball, Skilager.\n• **Duales Lehramtsstudium**: Partnerschule der Universität Erfurt.',
+    keyPoints: [
+      'Brandaktuell: ZDF Partnerschule für Medienkompetenz',
+      'Pilotschule Verfassungsviertelstunde mit Hr. Illesy & Fr. Thum',
+      'Erasmus+ Auslandspraktika und europäischer Schulaustausch',
+      'MINT-Zertifikat, Makerspace und neue Zweifeld-Turnhalle'
+    ],
+    relatedQuestions: [
+      'Was beinhaltet die Partnerschaft mit dem ZDF („ZDF goes Schule“)?',
+      'Wie funktioniert die Thüringer Verfassungsviertelstunde an der Schule?',
+      'Welche Möglichkeiten bietet das Erasmus+-Programm?'
+    ]
+  },
+  {
     id: 'schultakt-doppelstunden',
     title: 'Schulalltag & Rhythmus',
     badge: 'Stressfreier lernen',
     iconName: 'Clock',
     category: 'daily',
-    shortDesc: '80- bis 90-Minuten-Doppelstunden, individuelle Lernzeiten (ILZ) und Klassenrat.',
-    fullAnswer: 'Die Heimbürgeschule setzt auf einen rhythmisierten Schultag:\n\n• **Doppelstundensystem**: 80-Minuten-Blöcke sorgen für Ruhe, tiefergehendes Arbeiten und reduzieren die Anzahl der Fächer pro Tag sowie das Ranzen-Gewicht.\n• **Individuelle Lernzeiten (ILZ)**: Feste Zeiten zum Vertiefen, Wiederholen und selbstständigen Bearbeiten von Aufgabenpools.\n• **Klassenrat**: Wöchentlich fester Termin zur Stärkung der Klassengemeinschaft und gemeinsamen Lösungsfindung.\n• **Grünes Klassenzimmer**: Unterricht im Schulgarten und Erholung auf dem neu gestalteten grünen Schulhof.',
+    shortDesc: 'Verbindlicher 8-Stunden-Takt, Doppelstundensystem, individuelle Lernzeiten (ILZ) und Klassenrat.',
+    fullAnswer: 'Die Heimbürgeschule setzt auf einen rhythmisierten Schultag:\n\n• **Schultakt**: Unterricht von 07:45 bis 15:15 Uhr, aufgeteilt in 8 Stunden mit 25 Minuten Hofpause und 30 Minuten Mittagsband.\n• **Doppelstundensystem**: 80- bis 90-Minuten-Blöcke sorgen für Ruhe, tiefergehendes Arbeiten und reduzieren das Ranzen-Gewicht.\n• **Ganztag**: Günstiger Ganztagsbeitrag von nur 36 €/Jahr für verlässliche Hausaufgabenbetreuung bis 15:30 Uhr.\n• **Kostenfreie AGs**: Turnen, Technik, Zirkus MoMoLo, Naturforscher, Schach und Volleyball.',
     keyPoints: [
-      'Doppelstundenprinzip vermeidet Hektik und ständige Raumwechsel',
-      'ILZ zur individuellen Förderung jedes Kindes',
-      'Großzügige Hofpausen auf dem grünen Campus',
-      'Neue Zweifeldsporthalle für modernen Sportunterricht'
+      'Unterrichtsbeginn um 07:45 Uhr, Einlass ab 07:30 Uhr',
+      'Ganztagsangebot für nur 36 € pro Schuljahr bis 15:30 Uhr',
+      'Alle Arbeitsgemeinschaften sind kostenfrei',
+      'Über 97% Unterrichtsabdeckung und hohe Zufriedenheit'
     ],
     relatedQuestions: [
-      'Wie sind die genauen Blockzeiten und Pausenzeiten?',
-      'Gibt es eine Hausaufgabenbetreuung nach dem Unterricht?',
-      'Was ist das Grüne Klassenzimmer?'
+      'Wie sind die genauen Unterrichtszeiten und Pausen?',
+      'Was kostet die Ganztagsbetreuung an der Heimbürgeschule?',
+      'Welche Arbeitsgemeinschaften (AGs) gibt es?'
     ]
   },
   {
@@ -68,7 +108,7 @@ export const TOPIC_ITEMS: TopicItem[] = [
     iconName: 'Smartphone',
     category: 'digital',
     shortDesc: 'Digitales Klassenbuch seit 2014: Noten, Stundenplan, Vertretungsplan und Krankmeldungen auf einen Klick.',
-    fullAnswer: 'Die Heimbürgeschule ist digitaler Vorreiter in Thüringen:\n\n• **EduPage seit 2014**: Als Eltern haben Sie per Smartphone-App oder Browser Einblick in Noten, Stundenpläne, Vertretungen und Hausaufgaben.\n• **Krankmeldung**: Ein Kind kann morgens mit zwei Klicks direkt über die App entschuldigt werden.\n• **iPad-Klassensätze**: Regelmäßiger Einsatz digitaler Werkzeuge im Unterricht.\n• **Thüringer Schulcloud (TSC)**: Für gemeinsame Aufgaben, Projekte und Datenaustausch.',
+    fullAnswer: 'Die Heimbürgeschule ist digitaler Vorreiter in Thüringen:\n\n• **EduPage seit 2014**: Als Eltern haben Sie per Smartphone-App oder Browser Einblick in Noten, Stundenpläne, Vertretungen und Hausaufgaben.\n• **Krankmeldung**: Ein Kind kann morgens mit zwei Klicks direkt über die App vor 07:45 Uhr entschuldigt werden.\n• **iPad-Klassensätze**: Regelmäßiger Einsatz digitaler Werkzeuge im Unterricht.\n• **Thüringer Schulcloud (TSC)**: Für gemeinsame Aufgaben, Projekte und Datenaustausch.',
     keyPoints: [
       'Zugangsdaten für Eltern direkt in der 1. Schulwoche',
       'Schnelle Krankmeldung vor 07:45 Uhr per App möglich',
@@ -84,21 +124,21 @@ export const TOPIC_ITEMS: TopicItem[] = [
   {
     id: 'schulabschluesse-wege',
     title: 'Abschlüsse & Bildungswege',
-    badge: 'Zukunft planen',
+    badge: 'Rechtssicher',
     iconName: 'TrendingUp',
     category: 'careers',
-    shortDesc: 'Hauptschulabschluss, Qualifizierender Hauptschulabschluss und Realschulabschluss nach Klasse 10.',
-    fullAnswer: 'An der Staatlichen Regelschule Heimbürgeschule Kahla stehen allen Schüler:innen starke Bildungswege offen:\n\n• **Hauptschulabschluss**: Mit Bestehen der 9. Klasse.\n• **Qualifizierender Hauptschulabschluss**: Nach Klasse 9 durch freiwillige Teilnahme an der Besonderen Leistungsfeststellung (BLF).\n• **Realschulabschluss**: Nach Klasse 10 und erfolgreichen zentralen Prüfungen.\n• **Weiterführende Wege**: Mit gutem Realschulabschluss ist der Wechsel ans Berufliche Gymnasium (Abitur in 3 Jahren) oder an eine Fachoberschule (Fachhochschulreife) möglich.',
+    shortDesc: 'Hauptschulabschluss (§ 62), Qualifizierender Hauptschulabschluss (§ 63) und Realschulabschluss (§ 67 ThürSchulO).',
+    fullAnswer: 'An der Heimbürgeschule stehen alle Abschlüsse der Thüringer Schulordnung (ThürSchulO) offen:\n\n• **Hauptschulabschluss (§ 62 ThürSchulO)**: Automatisch bei Versetzung nach Klasse 9 (keine Prüfung).\n• **Qualifizierender Hauptschulabschluss (§ 63 ThürSchulO)**: Freiwillige BLF-Prüfung in Deutsch, Mathe und Englisch/Naturwissenschaft.\n• **Realschulabschluss (§ 67 ThürSchulO)**: Zentrale schriftliche Prüfungen (D, Ma, En), mündliche Prüfung und Projektarbeit (§ 47a ThürSchulO) in Klasse 10.\n• **Übergang zum Abitur (§ 68 ThürSchulO)**: Bei entsprechendem Notendurchschnitt Wechsel an ein Berufliches Gymnasium (3 Jahre) oder an die Fachoberschule FOS (2 Jahre).',
     keyPoints: [
-      'Orientierungsstufe in Klasse 5 & 6 ohne Notendruck',
-      'Leistungsdifferenzierung ab Klasse 7',
-      'Vollwertiger Realschulabschluss mit bundesweiter Anerkennung',
-      'Durchlässigkeit: Option auf Abitur über Berufliches Gymnasium'
+      'Rechtssichere Grundlagen der Thüringer Schulordnung',
+      'Leistungsdifferenzierung in Grund- und Erweiterungskursen (§§ 28–30)',
+      'Projektarbeit in Klasse 10 als Pflichtbestandteil (§ 47a)',
+      'Wechsel zum Abitur ans Berufliche Gymnasium möglich'
     ],
     relatedQuestions: [
-      'Welche Noten braucht mein Kind für den Realschulabschluss?',
-      'Kann mein Kind nach Klasse 10 noch Abitur machen?',
-      'Was ist der Qualifizierende Hauptschulabschluss?'
+      'Welche Voraussetzungen gelten für den Realschulabschluss nach § 67 ThürSchulO?',
+      'Was beinhaltet die Projektarbeit nach § 47a ThürSchulO?',
+      'Wie funktioniert die Kurseinstufung in Grund- und Erweiterungskurse?'
     ]
   },
   {
@@ -107,27 +147,27 @@ export const TOPIC_ITEMS: TopicItem[] = [
     badge: 'Wichtige Formalia',
     iconName: 'Utensils',
     category: 'formal',
-    shortDesc: 'Mittagessen vom Diakoniewerk Apolda, Schließfächer über AstraDirect, Krankmeldung vor 07:45 Uhr.',
-    fullAnswer: 'Wichtige praktische Angelegenheiten im Überblick:\n\n• **Mittagessen**: Diakoniewerk Apolda gGmbH versorgt unsere Schulküche mit warmem Mittagessen. Anmeldung online über bestellung-diakonie-apolda.de (Prepaid mit Transponder).\n• **Schließfächer**: Über AstraDirect (astradirect.de) mietbar, um Bücher und Sportsachen sicher in der Schule zu lagern.\n• **Krankmeldung**: Unbedingt am 1. Tag vor 07:45 Uhr über EduPage oder Telefon 036424/22400 melden. Ab Tag 3 schriftliche Entschuldigung vorlegen.',
+    shortDesc: 'Mittagessen vom Diakoniewerk Apolda, Schließfächer über AstraDirect, Krankmeldung vor 07:45 Uhr bei Fr. Wittmann.',
+    fullAnswer: 'Wichtige praktische Angelegenheiten im Überblick:\n\n• **Mittagessen**: Diakoniewerk Apolda gGmbH versorgt unsere Schulküche mit warmem Mittagessen. Anmeldung online über bestellung-diakonie-apolda.de (Prepaid mit Transponder).\n• **Schließfächer**: Über AstraDirect (astradirect.de) mietbar, um Bücher und Sportsachen sicher in der Schule zu lagern.\n• **Krankmeldung**: Unbedingt am 1. Tag vor 07:45 Uhr über EduPage oder Telefon 036424/22400 im Sekretariat bei Frau Wittmann melden. Ab Tag 3 schriftliche Entschuldigung vorlegen.',
     keyPoints: [
       'Essenanbieter: Diakoniewerk Apolda (Online-Transponder)',
       'Schließfächer über astradirect.de',
-      'Krankmeldung immer vor 07:45 Uhr',
-      'Handys bleiben während der Schulzeit im Ranzen'
+      'Krankmeldung immer vor 07:45 Uhr bei Frau Wittmann',
+      'Handys bleiben während der Schulzeit ausgeschaltet im Ranzen'
     ],
     relatedQuestions: [
       'Wie melde ich das Mittagessen beim Diakoniewerk Apolda an?',
       'Wie miete ich ein Schließfach an der Heimbürgeschule?',
-      'Bis wann muss eine schriftliche Krankmeldung vorliegen?'
+      'Bis wann muss eine Krankmeldung im Sekretariat vorliegen?'
     ]
   }
 ];
 
 export const QUICK_STARTER_QUESTIONS = [
   'Wie läuft die Kennenlernwoche für neue 5.-Klässler ab?',
+  'Was bedeutet es, dass die Schule ZDF Partnerschule ist?',
   'Wie funktioniert das Projekt „Tag in der Praxis“ (TiP)?',
-  'Wie melde ich mein Kind morgens richtig krank?',
+  'Wie melde ich mein Kind morgens bei Frau Wittmann krank?',
   'Welche Arbeitsgemeinschaften (AGs) gibt es an der Schule?',
-  'Wie melde ich mein Kind für das Schulessen an?',
-  'Welche Abschlüsse kann mein Kind an der Heimbürgeschule machen?'
+  'Welche Schulabschlüsse kann mein Kind nach Thüringer Schulordnung machen?'
 ];
