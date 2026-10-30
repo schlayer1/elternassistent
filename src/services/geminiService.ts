@@ -40,7 +40,30 @@ Falls Angaben in diesen tagesaktuellen Live-Mitteilungen (z. B. Klassenleitungen
     console.warn('Live knowledge sync skip:', e);
   }
 
+  const langNames: Record<string, string> = {
+    de: 'Deutsch',
+    ro: 'Rumänisch (Limba Română)',
+    uk: 'Ukrainisch (Українська мова)',
+    ru: 'Russisch (Русский язык)',
+    ar: 'Arabisch (اللغة العربية)',
+    en: 'Englisch (English)'
+  };
+  const targetLangLabel = langNames[language] || language;
+
+  const mandatoryLanguageDirective = language !== 'de' ? `
+================================================================================
+CRITICAL LANGUAGE INSTRUCTION / OBLIGATORISCHE SPRACHVORGABE:
+The user has explicitly selected the language: **${targetLangLabel}** (Language Code: ${language}).
+1. You MUST formulate your ENTIRE response, all paragraphs, bullet points, and greetings strictly in **${targetLangLabel}**!
+2. Do NOT answer in German, even if the user prompt is written in German or refers to German topics!
+3. Translate all explanations, advice, and facts from the school knowledge base into **${targetLangLabel}**!
+4. Any proposed follow-up questions (>>> VORSCHLAG: ...) MUST ALSO BE STRICTLY WRITTEN IN **${targetLangLabel}**!
+5. Only keep official German proper names untranslated (e.g., „Heimbürgeschule“, „Frau Wittmann“, „Frau Herold“, „Diakoniewerk Apolda“).
+================================================================================
+` : '';
+
   const systemInstruction = `
+${mandatoryLanguageDirective}
 Du bist der offizielle, hochkompetente und herzliche Digitale Schul- und Elternassistent der Staatlichen Regelschule „Johann Wilhelm Heimbürge“ Kahla (HBS).
 Dein Ziel ist es, Eltern, Schüler:innen und interessierten Familien wertschätzend, verständlich, barrierefrei und präzise Auskunft zu geben.
 ${liveKnowledgeSection}
@@ -95,7 +118,13 @@ Wichtige Verhaltens- und Usability-Regeln:
     })),
     {
       role: 'user' as const,
-      parts: [{ text: prompt }]
+      parts: [
+        {
+          text: language !== 'de'
+            ? `${prompt}\n\n[WICHTIGE ANWEISUNG / MANDATORY INSTRUCTION: Bitte formuliere deine gesamte Antwort und die 2-3 Vorschläge zwingend auf ${targetLangLabel}!]`
+            : prompt
+        }
+      ]
     }
   ];
 
@@ -167,12 +196,17 @@ Wichtige Verhaltens- und Usability-Regeln:
             cleanedText = cleanedText.replace(actionRegex, '').trim();
           }
 
-          // Fallback suggestions if none were generated
+          // Fallback suggestions in the target language if none were generated
           if (suggestions.length === 0) {
-            suggestions.push(
-              'Gibt es weitere Fragen dazu?',
-              'An wen kann ich mich an der Schule wenden?'
-            );
+            const fallbackMap: Record<string, string[]> = {
+              ro: ['Aveți și alte întrebări despre acest subiect?', 'La cine pot apela la școală?'],
+              uk: ['Чи є у вас додаткові запитання щодо цього?', 'До кого у школі я можу звернутися?'],
+              ru: ['Есть ли у вас дополнительные вопросы по этой теме?', 'К кому в школе я могу обратиться?'],
+              ar: ['هل لديك أي أسئلة أخرى حول هذا الموضوع؟', 'بمن يمكنني الاتصال في المدرسة؟'],
+              en: ['Are there any further questions about this?', 'Who can I contact at the school?'],
+              de: ['Gibt es weitere Fragen dazu?', 'An wen kann ich mich an der Schule wenden?']
+            };
+            suggestions.push(...(fallbackMap[language] || fallbackMap['de']));
           }
 
           return {

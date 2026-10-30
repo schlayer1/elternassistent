@@ -4,6 +4,7 @@ import { SCHEDULE_BLOCKS } from '../../data/contactsData';
 import { storageService } from '../../services/storageService';
 import { ChecklistGroup } from '../../types/school';
 import { SupportedLanguage } from '../../types/assistant';
+import { TRANSLATIONS } from '../../data/translations';
 import { MultilingualHub } from './MultilingualHub';
 import confetti from 'canvas-confetti';
 import {
@@ -33,6 +34,8 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
   onAskQuestion,
   onNavigateToChat
 }) => {
+  const t = TRANSLATIONS[currentLanguage]?.tools || TRANSLATIONS.de.tools;
+
   const [activeSubTab, setActiveSubTab] = useState<'careers' | 'checklists' | 'schedule' | 'multilingual'>(
     currentLanguage !== 'de' ? 'multilingual' : 'careers'
   );
@@ -102,13 +105,13 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-school-tealLight text-school-tealDark rounded-full text-xs font-bold mb-2">
               <Sparkles className="w-3.5 h-3.5 text-school-teal" />
-              <span>Interaktive Helfer für den Schulalltag</span>
+              <span>{t.badge}</span>
             </div>
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900">
-              Eltern-Werkzeuge & Schullaufbahn
+              {t.title}
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
-              Erkunden Sie Thüringer Schulabschlüsse, haken Sie wichtige Vorbereitungen ab und behalten Sie die Schultakt-Zeiten im Blick.
+              {t.subtitle}
             </p>
           </div>
 
@@ -123,7 +126,7 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
               }`}
             >
               <GraduationCap className="w-4 h-4" />
-              <span>Abschluss-Kompass</span>
+              <span>{t.tabCareers}</span>
             </button>
             <button
               onClick={() => setActiveSubTab('checklists')}
@@ -134,7 +137,7 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
               }`}
             >
               <CheckSquare className="w-4 h-4" />
-              <span>Checklisten</span>
+              <span>{t.tabChecklists}</span>
             </button>
             <button
               onClick={() => setActiveSubTab('schedule')}
@@ -145,7 +148,7 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
               }`}
             >
               <Clock className="w-4 h-4" />
-              <span>Schulzeit-Takt</span>
+              <span>{t.tabSchedule}</span>
             </button>
 
             {/* Multilingual Mode Tab (Shown for non-German language selections) */}
@@ -159,7 +162,7 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
                 }`}
               >
                 <Languages className="w-4 h-4" />
-                <span>Dolmetscher & Briefe</span>
+                <span>{t.tabMultilingual}</span>
               </button>
             )}
           </div>
@@ -222,7 +225,7 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
                   {selectedCareer.title}
                 </h3>
                 <p className="text-xs md:text-sm font-semibold text-slate-600 mt-1">
-                  Ziel: {selectedCareer.target}
+                  {t.targetLabel} {selectedCareer.target}
                 </p>
               </div>
 
@@ -232,7 +235,7 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
                 }
                 className="px-4 py-2.5 bg-school-blue text-white font-bold text-xs rounded-xl shadow-soft hover:bg-school-blueDark transition-colors flex items-center gap-1.5 self-start md:self-center"
               >
-                <span>Im KI-Assistenten vertiefen</span>
+                <span>{t.deepenInChat}</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -246,7 +249,7 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
                 <div className="flex items-center gap-2 mb-3 text-slate-800 font-bold text-xs uppercase tracking-wider">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>Voraussetzungen</span>
+                  <span>{t.requirementsTitle}</span>
                 </div>
                 <ul className="space-y-2 text-xs text-slate-700">
                   {selectedCareer.requirements.map((req, i) => (
@@ -261,7 +264,7 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
                 <div className="flex items-center gap-2 mb-3 text-slate-800 font-bold text-xs uppercase tracking-wider">
                   <BookOpen className="w-4 h-4 text-school-blue" />
-                  <span>Prüfungsbestandteile</span>
+                  <span>{t.examsTitle}</span>
                 </div>
                 <ul className="space-y-2 text-xs text-slate-700">
                   {selectedCareer.exams.map((ex, i) => (
@@ -276,7 +279,7 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
                 <div className="flex items-center gap-2 mb-3 text-slate-800 font-bold text-xs uppercase tracking-wider">
                   <Award className="w-4 h-4 text-school-orange" />
-                  <span>Anschluss & Zukunft</span>
+                  <span>{t.nextStepsTitle}</span>
                 </div>
                 <ul className="space-y-2 text-xs text-slate-700">
                   {selectedCareer.nextSteps.map((step, i) => (
@@ -296,10 +299,10 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
               </div>
               <div className="text-xs space-y-1">
                 <p className="font-bold text-amber-900 text-xs sm:text-sm">
-                  Wichtiger rechtlicher Hinweis & KI-Transparenz:
+                  {t.legalNoticeTitle}
                 </p>
                 <p className="text-amber-800 leading-relaxed text-[11px] sm:text-xs">
-                  Die dargestellten Schullaufbahn-Empfehlungen und generierten Antworten sind KI-gestützt und basieren auf den Regelungen der Thüringer Schulordnung (ThürSchulO). Sie dienen ausschließlich der <strong>ersten Information und Orientierung</strong>. Eine eigenständige Information sowie die offiziellen Auskünfte und Konferenzbeschlüsse der Schule (Schulleitung, Klassen- und Versetzungskonferenz) haben <strong>inhaltlich stets Vorrang</strong>.
+                  {t.legalNoticeDesc}
                 </p>
               </div>
             </div>
@@ -452,7 +455,7 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
                   <div className="flex items-center gap-2">
                     {active && (
                       <span className="px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-bold rounded-full animate-pulse">
-                        Jetzt aktiv
+                        {t.activeNow}
                       </span>
                     )}
                     <span className="text-xs font-mono font-bold text-slate-600">

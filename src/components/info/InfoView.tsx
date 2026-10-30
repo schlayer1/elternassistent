@@ -1,5 +1,7 @@
 import React from 'react';
 import { SCHOOL_CONTACTS } from '../../data/contactsData';
+import { SupportedLanguage } from '../../types/assistant';
+import { TRANSLATIONS } from '../../data/translations';
 import {
   Phone,
   Mail,
@@ -16,7 +18,60 @@ import {
   Download
 } from 'lucide-react';
 
-export const InfoView: React.FC = () => {
+interface InfoViewProps {
+  currentLanguage: SupportedLanguage;
+}
+
+export const InfoView: React.FC<InfoViewProps> = ({ currentLanguage }) => {
+  const t = TRANSLATIONS[currentLanguage]?.info || TRANSLATIONS.de.info;
+
+  const callBtnLabel = 
+    currentLanguage === 'ro' ? 'Sună' :
+    currentLanguage === 'uk' ? 'Подзвонити' :
+    currentLanguage === 'ru' ? 'Позвонить' :
+    currentLanguage === 'ar' ? 'اتصال' :
+    currentLanguage === 'en' ? 'Call' : 'Anrufen';
+
+  const systemsTitle =
+    currentLanguage === 'ro' ? 'Linkuri directe către sistemele școlare & parteneri' :
+    currentLanguage === 'uk' ? 'Прямі посилання на шкільні платформи та партнерів' :
+    currentLanguage === 'ru' ? 'Прямые ссылки на школьные платформы и партнеров' :
+    currentLanguage === 'ar' ? 'روابط مباشرة للأنظمة المدرسية والشركاء' :
+    currentLanguage === 'en' ? 'Direct Links to School Systems & Partners' :
+    'Direkte Links zu Schulsystemen & Partnern';
+
+  const addressTitle =
+    currentLanguage === 'ro' ? 'Adresa școlii & Cum ajungeți' :
+    currentLanguage === 'uk' ? 'Адреса школи та проїзд' :
+    currentLanguage === 'ru' ? 'Адрес школы и проезд' :
+    currentLanguage === 'ar' ? 'عنوان المدرسة والوصول' :
+    currentLanguage === 'en' ? 'School Address & Directions' :
+    'Schulanschrift & Anreise';
+
+  const addressDesc =
+    currentLanguage === 'ro' ? 'Am Langen Bürgel 19, 07768 Kahla\nAutobuzele școlare opresc direct în fața intrării principale.' :
+    currentLanguage === 'uk' ? 'Am Langen Bürgel 19, 07768 Kahla\nШкільні автобуси зупиняються прямо перед головним входом.' :
+    currentLanguage === 'ru' ? 'Am Langen Bürgel 19, 07768 Kahla\nШкольные автобусы останавливаются прямо перед главным входом.' :
+    currentLanguage === 'ar' ? 'Am Langen Bürgel 19, 07768 Kahla\nتتوقف حافلات المدارس مباشرة أمام المدخل الرئيسي.' :
+    currentLanguage === 'en' ? 'Am Langen Bürgel 19, 07768 Kahla\nSchool buses stop directly in front of the main entrance.' :
+    'Am Langen Bürgel 19, 07768 Kahla\nSchulbusse halten direkt auf dem Vorplatz vor dem Haupteingang.';
+
+  const bankTitle =
+    currentLanguage === 'ro' ? 'Cont bancar oficial al școlii' :
+    currentLanguage === 'uk' ? 'Офіційний банківський рахунок школи' :
+    currentLanguage === 'ru' ? 'Официальный банковский счет школы' :
+    currentLanguage === 'ar' ? 'الحساب المصرفي الرسمي للمدرسة' :
+    currentLanguage === 'en' ? 'Official School Bank Account' :
+    'Offizielles Schulkonto';
+
+  const bankDesc =
+    currentLanguage === 'ro' ? 'Pentru plăți oficiale (fondul de copiere, caiete de lucru, excursii):' :
+    currentLanguage === 'uk' ? 'Для офіційних шкільних платежів (копіювання, робочі зошити, екскурсії):' :
+    currentLanguage === 'ru' ? 'Для официальных школьных платежей (копирование, рабочие тетради, экскурсии):' :
+    currentLanguage === 'ar' ? 'للمدفوعات المدرسية الرسمية (رسوم النسخ، دفاتر التمارين، الرحلات المدرسية):' :
+    currentLanguage === 'en' ? 'For official school payments (copying fees, workbooks, excursions):' :
+    'Für offizielle Schulzahlungen (Kopiergeld, Arbeitshefte, Exkursionen):';
+
   const getContactIcon = (name: string) => {
     switch (name) {
       case 'Building':
@@ -46,14 +101,14 @@ export const InfoView: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base sm:text-lg font-bold text-rose-950">
-                  Krankmeldung & Dringende Notfälle
+                  {t.emergencyTitle}
                 </h3>
                 <span className="px-2.5 py-0.5 bg-rose-200/80 text-rose-900 text-[10px] sm:text-xs font-bold rounded-full">
-                  Vor 07:45 Uhr
+                  {t.emergencyBadge}
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-rose-800 mt-1 leading-relaxed max-w-2xl">
-                Melden Sie Fehlzeiten bitte morgens direkt per <strong>EduPage-App</strong> oder telefonisch im Sekretariat bei <strong>Frau Wittmann (036424 / 22 400)</strong>. Ab dem 3. Fehltag ist eine schriftliche Entschuldigung einzureichen.
+                {t.emergencyDesc}
               </p>
             </div>
           </div>
@@ -73,7 +128,7 @@ export const InfoView: React.FC = () => {
       {/* Contacts Grid (1 bis 5 Spalten gemäß responsive-school-apps) */}
       <div className="space-y-3">
         <h3 className="text-xs sm:text-sm font-bold text-slate-800 uppercase tracking-wider">
-          Wichtige Ansprechpartner der Heimbürgeschule
+          {t.contactsTitle}
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-5">
@@ -126,7 +181,7 @@ export const InfoView: React.FC = () => {
                     className="flex-1 py-2 px-3 bg-school-blue hover:bg-school-blueDark text-white rounded-xl font-semibold text-xs shadow-xs text-center flex items-center justify-center gap-1.5 transition-colors"
                   >
                     <Phone className="w-3.5 h-3.5" />
-                    <span>Anrufen</span>
+                    <span>{callBtnLabel}</span>
                   </a>
                 )}
                 {contact.email && (
@@ -147,7 +202,7 @@ export const InfoView: React.FC = () => {
       {/* External Portals & Services */}
       <div className="bg-white rounded-3xl p-6 border border-school-border shadow-soft space-y-4">
         <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
-          Direkte Links zu Schulsystemen & Partnern
+          {systemsTitle}
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -224,24 +279,23 @@ export const InfoView: React.FC = () => {
         <div className="bg-white rounded-2xl p-5 border border-school-border shadow-soft space-y-2">
           <div className="flex items-center gap-2 text-school-blue font-bold text-xs uppercase tracking-wider mb-1">
             <MapPin className="w-4 h-4" />
-            <span>Schulanschrift & Anreise</span>
+            <span>{addressTitle}</span>
           </div>
           <p className="text-sm font-semibold text-slate-900">
             Staatliche Regelschule „Johann Wilhelm Heimbürge“
           </p>
-          <p className="text-xs text-slate-600">
-            Am Langen Bürgel 19, 07768 Kahla<br />
-            Schulbusse halten direkt auf dem Vorplatz vor dem Haupteingang.
+          <p className="text-xs text-slate-600 whitespace-pre-line">
+            {addressDesc}
           </p>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-school-border shadow-soft space-y-2">
           <div className="flex items-center gap-2 text-school-orange font-bold text-xs uppercase tracking-wider mb-1">
             <CreditCard className="w-4 h-4" />
-            <span>Offizielles Schulkonto</span>
+            <span>{bankTitle}</span>
           </div>
           <p className="text-xs text-slate-600">
-            Für offizielle Schulzahlungen (Kopiergeld, Arbeitshefte, Exkursionen):
+            {bankDesc}
           </p>
           <p className="text-xs font-mono font-bold text-slate-900 bg-[#FFFBF5] p-2 rounded-xl border border-school-border select-all">
             IBAN: DE29 8309 4454 0348 2956 08<br />

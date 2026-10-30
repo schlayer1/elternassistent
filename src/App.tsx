@@ -70,6 +70,7 @@ export default function App() {
       <main className="flex-1 flex flex-col relative w-full pb-20 md:pb-6">
         {currentTab === 'discover' && (
           <DiscoverView
+            currentLanguage={currentLanguage}
             onAskQuestion={handleAskQuestion}
             onOpenChecklist={() => setCurrentTab('tools')}
             onOpenCareerCompass={() => setCurrentTab('tools')}
@@ -96,7 +97,7 @@ export default function App() {
         )}
 
         {currentTab === 'info' && (
-          <InfoView />
+          <InfoView currentLanguage={currentLanguage} />
         )}
       </main>
 
@@ -104,6 +105,7 @@ export default function App() {
       <Navigation
         currentTab={currentTab}
         onSelectTab={setCurrentTab}
+        currentLanguage={currentLanguage}
       />
     </div>
   );

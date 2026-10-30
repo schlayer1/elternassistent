@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { TOPIC_ITEMS, QUICK_STARTER_QUESTIONS } from '../../data/topicCategories';
 import { TopicItem } from '../../types/school';
+import { SupportedLanguage } from '../../types/assistant';
+import { TRANSLATIONS } from '../../data/translations';
 import { renderFormattedMarkdown } from '../../utils/formatText';
 import {
   GraduationCap,
@@ -20,18 +22,58 @@ import {
 } from 'lucide-react';
 
 interface DiscoverViewProps {
+  currentLanguage: SupportedLanguage;
   onAskQuestion: (question: string) => void;
   onOpenChecklist: () => void;
   onOpenCareerCompass: () => void;
 }
 
 export const DiscoverView: React.FC<DiscoverViewProps> = ({
+  currentLanguage,
   onAskQuestion,
   onOpenChecklist,
   onOpenCareerCompass
 }) => {
   const [selectedTopic, setSelectedTopic] = useState<TopicItem | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>('all');
+
+  const t = TRANSLATIONS[currentLanguage]?.discover || TRANSLATIONS.de.discover;
+  const toolsT = TRANSLATIONS[currentLanguage]?.tools || TRANSLATIONS.de.tools;
+
+  const grade5BtnLabel =
+    currentLanguage === 'ro' ? 'Trecerea în clasa a 5-a' :
+    currentLanguage === 'uk' ? 'Перехід до 5 класу' :
+    currentLanguage === 'ru' ? 'Переход в 5 класс' :
+    currentLanguage === 'ar' ? 'الانتقال للصف الخامس' :
+    currentLanguage === 'en' ? 'Grade 5 Transition' :
+    'Übergang Klasse 5';
+
+  const quickQuestionsHeader =
+    currentLanguage === 'ro' ? 'Întrebări frecvente ale părinților (Răspuns cu 1 clic)' :
+    currentLanguage === 'uk' ? 'Часті запитання батьків (Відповідь в 1 клік)' :
+    currentLanguage === 'ru' ? 'Частые вопросы родителей (Ответ в 1 клик)' :
+    currentLanguage === 'ar' ? 'أسئلة شائعة لأولياء الأمور (إجابة بنقرة واحدة)' :
+    currentLanguage === 'en' ? 'Frequent Parent Questions (1-Click Answer)' :
+    'Häufige Elternfragen (1-Klick-Antwort)';
+
+  const askInChatLabel =
+    currentLanguage === 'ro' ? 'Întreabă în chat' :
+    currentLanguage === 'uk' ? 'Запитати в чаті' :
+    currentLanguage === 'ru' ? 'Спросить в чате' :
+    currentLanguage === 'ar' ? 'اسأل في المحادثة' :
+    currentLanguage === 'en' ? 'Ask in Chat' :
+    'Im Chat fragen';
+
+  const quickQuestionsList = TRANSLATIONS[currentLanguage]?.chat?.quickQuestions || QUICK_STARTER_QUESTIONS;
+
+  const filterOptions = [
+    { id: 'all', label: t.filterAll },
+    { id: 'grade5', label: t.filterGrade5 },
+    { id: 'careers', label: t.filterCareers },
+    { id: 'daily', label: t.filterDaily },
+    { id: 'digital', label: t.filterDigital },
+    { id: 'formal', label: t.filterFormal },
+  ];
 
   const getIcon = (name: string) => {
     switch (name) {
@@ -71,38 +113,38 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
         <div className="relative z-10 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/15 backdrop-blur-md rounded-full text-xs font-semibold text-white/90 mb-3 border border-white/20">
             <Sparkles className="w-3.5 h-3.5 text-school-yellow" />
-            <span>Offizieller Digitaler Schulbegleiter</span>
+            <span>{t.heroBadge}</span>
           </div>
 
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mb-3 leading-tight">
-            Willkommen an der Heimbürgeschule Kahla
+            {t.heroTitle}
           </h2>
 
           <p className="text-white/85 text-sm sm:text-base leading-relaxed mb-6 max-w-2xl">
-            Für Eltern, Schüler:innen und interessierte Familien. Erfragen Sie alles rund um den Übergang in Klasse 5, unser Praxis-Profil „Fit fürs Leben“, Schullaufbahnen und den Schulalltag – direkt im Browser, ohne Login.
+            {t.heroSubtitle}
           </p>
 
           {/* Quick Action Badges with >=44px Touch-Targets */}
           <div className="flex flex-wrap gap-3">
             <button
-              onClick={() => onAskQuestion('Wie läuft die Kennenlernwoche für neue 5.-Klässler ab?')}
+              onClick={() => onAskQuestion(quickQuestionsList[0] || 'Wie läuft die Kennenlernwoche für neue 5.-Klässler ab?')}
               className="px-4 py-2.5 min-h-[44px] bg-white text-school-blue font-bold text-xs sm:text-sm rounded-xl shadow-soft hover:bg-school-blueLight hover:scale-[1.02] transition-all flex items-center gap-2"
             >
-              <span>Übergang Klasse 5</span>
+              <span>{grade5BtnLabel}</span>
               <ChevronRight className="w-4 h-4" />
             </button>
             <button
               onClick={onOpenCareerCompass}
               className="px-4 py-2.5 min-h-[44px] bg-school-teal text-white font-bold text-xs sm:text-sm rounded-xl shadow-soft hover:bg-school-tealDark hover:scale-[1.02] transition-all flex items-center gap-2"
             >
-              <span>Abschluss-Kompass</span>
+              <span>{toolsT.tabCareers}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
               onClick={onOpenChecklist}
               className="px-4 py-2.5 min-h-[44px] bg-school-orange text-white font-bold text-xs sm:text-sm rounded-xl shadow-soft hover:bg-school-orangeDark hover:scale-[1.02] transition-all flex items-center gap-2"
             >
-              <span>Eltern-Checklisten</span>
+              <span>{toolsT.tabChecklists}</span>
               <CheckCircle2 className="w-4 h-4" />
             </button>
           </div>
@@ -114,12 +156,12 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
         <div className="flex items-center gap-2 mb-3">
           <HelpCircle className="w-4 h-4 text-school-orange" />
           <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-            Häufige Elternfragen (1-Klick-Antwort)
+            {quickQuestionsHeader}
           </h3>
         </div>
 
         <div className="flex flex-wrap gap-2.5">
-          {QUICK_STARTER_QUESTIONS.map((q, idx) => (
+          {quickQuestionsList.map((q, idx) => (
             <button
               key={idx}
               onClick={() => onAskQuestion(q)}
@@ -134,14 +176,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
 
       {/* Filter Tabs with touch-pan-x */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-none touch-pan-x text-xs sm:text-sm font-semibold">
-        {[
-          { id: 'all', label: 'Alle Themen' },
-          { id: 'grade5', label: 'Klasse 5 / Neu an HBS' },
-          { id: 'careers', label: 'TiP & Berufe' },
-          { id: 'daily', label: 'Schulalltag & Zeiten' },
-          { id: 'digital', label: 'Digitales & EduPage' },
-          { id: 'formal', label: 'Essen & Formales' },
-        ].map((f) => (
+        {filterOptions.map((f) => (
           <button
             key={f.id}
             onClick={() => setActiveFilter(f.id)}
@@ -160,6 +195,10 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-5">
         {filteredTopics.map((topic) => {
           const isExpanded = selectedTopic?.id === topic.id;
+          const toggleDetailsLabel = isExpanded
+            ? (currentLanguage === 'ro' ? 'Mai puțin' : currentLanguage === 'uk' ? 'Згорнути' : currentLanguage === 'ru' ? 'Свернуть' : currentLanguage === 'ar' ? 'عرض أقل' : currentLanguage === 'en' ? 'Show less' : 'Weniger anzeigen')
+            : (currentLanguage === 'ro' ? 'Află mai multe' : currentLanguage === 'uk' ? 'Дізнатися більше' : currentLanguage === 'ru' ? 'Узнать больше' : currentLanguage === 'ar' ? 'معرفة المزيد' : currentLanguage === 'en' ? 'Learn more' : 'Mehr erfahren');
+
           return (
             <div
               key={topic.id}
@@ -207,7 +246,7 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
 
                     <div className="space-y-1">
                       <span className="text-[11px] font-bold text-slate-700 block">
-                        Vertiefende Fragen:
+                        {t.relatedQuestionsTitle}
                       </span>
                       {topic.relatedQuestions.map((rq, ri) => (
                         <button
@@ -230,13 +269,13 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                   onClick={() => setSelectedTopic(isExpanded ? null : topic)}
                   className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
                 >
-                  {isExpanded ? 'Weniger anzeigen' : 'Mehr erfahren'}
+                  {toggleDetailsLabel}
                 </button>
                 <button
                   onClick={() => onAskQuestion(topic.relatedQuestions[0] || topic.title)}
                   className="px-3 py-1.5 bg-school-blue text-white font-semibold text-xs rounded-xl shadow-sm hover:bg-school-blueDark transition-colors flex items-center gap-1"
                 >
-                  <span>Im Chat fragen</span>
+                  <span>{askInChatLabel}</span>
                   <ChevronRight className="w-3 h-3" />
                 </button>
               </div>

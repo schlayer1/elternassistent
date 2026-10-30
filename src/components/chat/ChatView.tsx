@@ -4,6 +4,7 @@ import { executeGeminiCascade } from '../../services/geminiService';
 import { SpeechService } from '../../services/speechService';
 import { storageService } from '../../services/storageService';
 import { QUICK_STARTER_QUESTIONS } from '../../data/topicCategories';
+import { TRANSLATIONS } from '../../data/translations';
 import { renderFormattedMarkdown } from '../../utils/formatText';
 import { JarvisReactor } from '../jarvis/JarvisReactor';
 import {
@@ -41,27 +42,37 @@ export const ChatView: React.FC<ChatViewProps> = ({
   onClearInitialQuestion,
   onNavigateToTools
 }) => {
+  const t = TRANSLATIONS[currentLanguage]?.chat || TRANSLATIONS.de.chat;
+
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     const saved = storageService.getChatHistory();
     if (saved.length > 0) return saved;
+    const initialT = TRANSLATIONS[currentLanguage]?.chat || TRANSLATIONS.de.chat;
     return [
       {
-        id: 'welcome_1',
+        id: 'welcome_' + currentLanguage,
         sender: 'assistant',
-        text: `Guten Tag! Ich bin der digitale Assistent der Staatlichen Regelschule „Johann Wilhelm Heimbürge“ Kahla.
-
-Gerne beantworte ich Ihre Fragen rund um unsere Schule – beispielsweise zum **Übergang in die neue 5. Klasse**, zu unserem Praxiskonzept **„Tag in der Praxis“ (TiP)**, zu **Unterrichtszeiten**, **Schulessen**, **EduPage** oder den **Thüringer Schulabschlüssen**.
-
-Wobei darf ich Ihnen heute helfen?`,
+        text: initialT.welcomeMessage,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        suggestions: [
-          'Wie läuft die Kennenlernwoche für Klasse 5 ab?',
-          'Was bedeutet es, dass die Schule ZDF Partnerschule ist?',
-          'Wie melde ich mein Kind morgens bei Frau Wittmann krank?'
-        ]
+        suggestions: initialT.welcomeSuggestions
       }
     ];
   });
+
+  // When language switches: If conversation only consists of the welcome message, adapt it to the new language!
+  useEffect(() => {
+    if (messages.length === 1 && messages[0].id.startsWith('welcome')) {
+      setMessages([
+        {
+          id: 'welcome_' + currentLanguage,
+          sender: 'assistant',
+          text: t.welcomeMessage,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          suggestions: t.welcomeSuggestions
+        }
+      ]);
+    }
+  }, [currentLanguage]);
 
   const [inputText, setInputText] = useState('');
   const [isListening, setIsListening] = useState(false);
@@ -196,20 +207,16 @@ Wobei darf ich Ihnen heute helfen?`,
   };
 
   const handleClearChat = () => {
-    if (window.confirm('Möchten Sie den bisherigen Gesprächsverlauf wirklich zurücksetzen?')) {
+    if (window.confirm(t.clearConfirm)) {
       SpeechService.stopSpeaking();
       storageService.clearChatHistory();
       setMessages([
         {
-          id: 'welcome_reset',
+          id: 'welcome_' + currentLanguage,
           sender: 'assistant',
-          text: 'Der Verlauf wurde geleert. Was kann ich für Sie tun?',
+          text: t.resetMessage,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          suggestions: [
-            'Wie melde ich mein Kind krank?',
-            'Übergang Klasse 5 Informationen',
-            'Welche Arbeitsgemeinschaften gibt es?'
-          ]
+          suggestions: t.welcomeSuggestions
         }
       ]);
       setJarvisStatus('idle');
@@ -223,16 +230,16 @@ Wobei darf ich Ihnen heute helfen?`,
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span className="text-xs sm:text-sm font-bold text-slate-700">
-            HBS Wissensassistent • Sofortauskunft ohne Login
+            {t.topBarTitle}
           </span>
         </div>
         <button
           onClick={handleClearChat}
           className="text-xs font-semibold text-slate-500 hover:text-school-orange flex items-center gap-1.5 transition-colors px-3 py-1.5 rounded-xl hover:bg-orange-50 min-h-[36px]"
-          title="Verlauf löschen"
+          title={t.newChatBtn}
         >
           <RotateCcw className="w-3.5 h-3.5" />
-          <span>Neuer Dialog</span>
+          <span>{t.newChatBtn}</span>
         </button>
       </div>
 
@@ -243,7 +250,7 @@ Wobei darf ich Ihnen heute helfen?`,
           {/* JARVIS Kognitionskern Card */}
           <div className="bg-white rounded-3xl p-5 border border-school-border shadow-soft flex flex-col items-center text-center">
             <span className="text-[10px] font-bold uppercase tracking-wider text-school-blue bg-school-blueLight px-2.5 py-0.5 rounded-full border border-school-blue/20 mb-3">
-              HBS Kognitionskern
+              {t.jarvisLabel}
             </span>
             <div className="w-36 h-36 flex items-center justify-center my-1">
               <JarvisReactor
@@ -259,7 +266,7 @@ Wobei darf ich Ihnen heute helfen?`,
               />
             </div>
             <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-              Verarbeitet Schulkonzept, TiP-Praxistage, Doppelstundentakt und Live-Google-Doc-Notizen.
+              {t.jarvisDesc}
             </p>
           </div>
 
@@ -268,11 +275,11 @@ Wobei darf ich Ihnen heute helfen?`,
             <div className="flex items-center gap-2 mb-3 text-slate-800">
               <HelpCircle className="w-4 h-4 text-school-orange" />
               <h4 className="text-xs font-bold uppercase tracking-wider">
-                Direkt-Themen
+                {t.directTopicsTitle}
               </h4>
             </div>
             <div className="space-y-2 overflow-y-auto flex-1 pr-1">
-              {QUICK_STARTER_QUESTIONS.map((q, idx) => (
+              {t.quickQuestions.map((q, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSendMessage(q)}
@@ -297,10 +304,10 @@ Wobei darf ich Ihnen heute helfen?`,
                 </div>
                 <div>
                   <span className="text-xs font-bold block text-white">
-                    HBS Translator App & Brief-Dolmetscher
+                    {t.bannerTitle}
                   </span>
                   <span className="text-[11px] text-teal-100/90 leading-tight block">
-                    Gedruckte Briefe übersetzen oder Live-Sprachübersetzung für Elterngespräche in der Schule nutzen.
+                    {t.bannerDesc}
                   </span>
                 </div>
               </div>
@@ -310,7 +317,7 @@ Wobei darf ich Ihnen heute helfen?`,
                   onClick={onNavigateToTools}
                   className="flex-1 sm:flex-none px-3 py-1.5 bg-white text-slate-800 hover:bg-slate-100 rounded-lg text-xs font-bold transition-all shadow-xs"
                 >
-                  Brief-Dolmetscher
+                  {TRANSLATIONS[currentLanguage]?.tools?.tabMultilingual || 'Brief-Dolmetscher'}
                 </button>
                 <a
                   href="https://translator-hbs.vercel.app"
@@ -318,7 +325,7 @@ Wobei darf ich Ihnen heute helfen?`,
                   rel="noopener noreferrer"
                   className="flex-1 sm:flex-none px-3 py-1.5 bg-teal-400 hover:bg-teal-300 text-slate-900 rounded-lg text-xs font-extrabold transition-all shadow-xs inline-flex items-center justify-center gap-1"
                 >
-                  <span>Translator App</span>
+                  <span>{t.openTranslatorBtn}</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
@@ -409,17 +416,17 @@ Wobei darf ich Ihnen heute helfen?`,
                             ? 'bg-orange-100 text-school-orange animate-pulse'
                             : 'hover:bg-slate-100 text-slate-500 hover:text-school-blue'
                         }`}
-                        title={isSpeaking ? 'Vorlesen stoppen' : 'Antwort vorlesen (TTS)'}
+                        title={isSpeaking ? t.stopSpeaking : t.readAloud}
                       >
                         {isSpeaking ? (
                           <>
                             <VolumeX className="w-3.5 h-3.5 text-school-orange" />
-                            <span>Stopp</span>
+                            <span>{t.stopSpeaking}</span>
                           </>
                         ) : (
                           <>
                             <Volume2 className="w-3.5 h-3.5" />
-                            <span>Vorlesen</span>
+                            <span>{t.readAloud}</span>
                           </>
                         )}
                       </button>
@@ -495,8 +502,8 @@ Wobei darf ich Ihnen heute helfen?`,
             }}
             placeholder={
               isListening
-                ? 'Sprechen Sie jetzt... (Mikrofon aktiv)'
-                : 'Stellen Sie Ihre Frage zur Heimbürgeschule...'
+                ? (currentLanguage === 'ro' ? 'Vorbiți acum... (microfon activ)' : currentLanguage === 'uk' ? 'Говоріть зараз... (мікрофон активний)' : currentLanguage === 'ru' ? 'Говорите сейчас... (микрофон включен)' : 'Sprechen Sie jetzt... (Mikrofon aktiv)')
+                : t.placeholder
             }
             className="w-full text-xs md:text-sm text-slate-800 placeholder:text-slate-400 resize-none outline-none px-2 py-1 max-h-32 bg-transparent"
           />

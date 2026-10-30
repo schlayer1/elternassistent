@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SupportedLanguage } from '../../types/assistant';
+import { TRANSLATIONS } from '../../data/translations';
 import { JarvisReactor } from '../jarvis/JarvisReactor';
 import { liveSyncService, LiveDocData } from '../../services/liveSyncService';
 import { Globe, Settings, ShieldCheck, X, FileText, RefreshCw, CheckCircle, ExternalLink, Lock, KeyRound } from 'lucide-react';
@@ -47,6 +48,8 @@ export const Header: React.FC<HeaderProps> = ({
     () => localStorage.getItem('hbs_custom_gemini_api_key') || ''
   );
   const [savedSuccess, setSavedSuccess] = useState(false);
+
+  const t = TRANSLATIONS[currentLanguage]?.header || TRANSLATIONS.de.header;
 
   useEffect(() => {
     // Initialer Live-Sync Check
@@ -148,7 +151,7 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </div>
               <p className="text-xs text-slate-500 font-medium leading-tight mt-0.5">
-                Digitaler Wegweiser & Dialog ohne Login
+                {t.subtitle}
               </p>
             </div>
           </div>
@@ -160,10 +163,10 @@ export const Header: React.FC<HeaderProps> = ({
               className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#F1E9DA] rounded-xl shadow-soft cursor-pointer hover:border-school-blue/40 transition-colors h-10 select-none"
               title={
                 jarvisStatus === 'thinking'
-                  ? 'JARVIS Kognitionskern analysiert die Anfrage...'
+                  ? t.thinking
                   : jarvisStatus === 'speaking'
-                  ? 'JARVIS Sprachausgabe aktiv'
-                  : 'JARVIS Kognitionskern bereit'
+                  ? t.speaking
+                  : t.ready
               }
               onClick={onNavigateToChat}
             >
@@ -172,10 +175,10 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
               <span className="text-xs font-semibold text-slate-700 hidden sm:inline">
                 {jarvisStatus === 'thinking'
-                  ? 'Denkt nach...'
+                  ? t.thinking
                   : jarvisStatus === 'speaking'
-                  ? 'Spricht...'
-                  : 'Bereit'}
+                  ? t.speaking
+                  : t.ready}
               </span>
             </div>
 

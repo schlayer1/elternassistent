@@ -1,41 +1,46 @@
 import React from 'react';
-import { TabType } from '../../types/assistant';
+import { TabType, SupportedLanguage } from '../../types/assistant';
+import { TRANSLATIONS } from '../../data/translations';
 import { Compass, MessageSquareCode, Wrench, Info } from 'lucide-react';
 
 interface NavigationProps {
   currentTab: TabType;
   onSelectTab: (tab: TabType) => void;
+  currentLanguage: SupportedLanguage;
   unreadCount?: number;
 }
 
 export const Navigation: React.FC<NavigationProps> = ({
   currentTab,
-  onSelectTab
+  onSelectTab,
+  currentLanguage
 }) => {
+  const t = TRANSLATIONS[currentLanguage]?.nav || TRANSLATIONS.de.nav;
+
   const tabs = [
     {
       id: 'discover' as TabType,
-      label: 'Themen',
+      label: t.discover,
       icon: Compass,
-      desc: 'Themenwelten & Einblicke'
+      desc: t.discoverDesc
     },
     {
       id: 'chat' as TabType,
-      label: 'KI-Assistent',
+      label: t.chat,
       icon: MessageSquareCode,
-      desc: 'Fragen stellen & Vorlesen'
+      desc: t.chatDesc
     },
     {
       id: 'tools' as TabType,
-      label: 'Eltern-Tools',
+      label: t.tools,
       icon: Wrench,
-      desc: 'Abschlüsse & Checklisten'
+      desc: t.toolsDesc
     },
     {
       id: 'info' as TabType,
-      label: 'Schule & Notfall',
+      label: t.info,
       icon: Info,
-      desc: 'Kontakte & Zeiten'
+      desc: t.infoDesc
     }
   ];
 
