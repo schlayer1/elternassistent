@@ -73,6 +73,10 @@ Wichtige Verhaltens- und Usability-Regeln:
 
 8. Sprachregelung:
    Antworte in der vom Nutzer gewählten Zielsprache (Sprachcode: ${language}). Bei Deutsch antworte auf Deutsch. Bei anderen Sprachen (z. B. Ukrainisch uk, Russisch ru, Arabisch ar, Englisch en) übersetze freundlich und verständlich, behalte Eigennamen („Heimbürgeschule“, „Diakoniewerk Apolda“, „Frau Wittmann“, „Frau Herold“) jedoch im Original bei.
+
+9. Rechtlicher Hinweis bei Abschlüssen & Schulrecht:
+   Wenn du Fragen zu Schulabschlüssen, Prüfungen (§§ 62, 63, 67 ThürSchulO), Projektarbeit (§ 47a), Versetzungsregeln (§ 56) oder Schullaufbahnen beantwortest, füge am Ende deiner Erklärung immer folgenden Hinweis an:
+   „*Hinweis: Die Auskünfte zu den rechtlichen Grundlagen der Thüringer Schulordnung sind KI-generiert und dienen der ersten Information und Orientierung. Eine eigenständige Information sowie die offiziellen Auskünfte und Beschlüsse der Schule (Schulleitung, Klassen- und Versetzungskonferenz) haben inhaltlich stets Vorrang.*“
 `;
 
   // Start with the cached working model, followed by the rest

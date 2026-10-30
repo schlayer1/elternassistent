@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TOPIC_ITEMS, QUICK_STARTER_QUESTIONS } from '../../data/topicCategories';
 import { TopicItem } from '../../types/school';
+import { renderFormattedMarkdown } from '../../utils/formatText';
 import {
   GraduationCap,
   Briefcase,
@@ -200,9 +201,9 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
                 {/* Expanded Details when clicked */}
                 {isExpanded && (
                   <div className="mt-4 pt-4 border-t border-slate-100 space-y-3 animate-in fade-in duration-200">
-                    <p className="text-xs text-slate-700 whitespace-pre-line leading-relaxed bg-[#FFFBF5] p-3 rounded-xl border border-school-border">
-                      {topic.fullAnswer}
-                    </p>
+                    <div className="text-xs text-slate-700 leading-relaxed bg-[#FFFBF5] p-3 rounded-xl border border-school-border space-y-1">
+                      {renderFormattedMarkdown(topic.fullAnswer)}
+                    </div>
 
                     <div className="space-y-1">
                       <span className="text-[11px] font-bold text-slate-700 block">

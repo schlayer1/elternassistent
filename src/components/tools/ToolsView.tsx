@@ -15,7 +15,8 @@ import {
   RotateCcw,
   BookOpen,
   ArrowRight,
-  Scale
+  Scale,
+  Info
 } from 'lucide-react';
 
 interface ToolsViewProps {
@@ -252,6 +253,21 @@ export const ToolsView: React.FC<ToolsViewProps> = ({ onAskQuestion }) => {
                     </li>
                   ))}
                 </ul>
+              </div>
+            </div>
+
+            {/* Rechtlicher Hinweis & KI-Transparenz (Abschlusskompass) */}
+            <div className="bg-amber-50/90 border border-amber-200/90 rounded-2xl p-4 sm:p-5 flex items-start gap-3.5 text-amber-950 shadow-xs">
+              <div className="p-2 rounded-xl bg-amber-100 text-amber-700 shrink-0 mt-0.5">
+                <Info className="w-4 h-4" />
+              </div>
+              <div className="text-xs space-y-1">
+                <p className="font-bold text-amber-900 text-xs sm:text-sm">
+                  Wichtiger rechtlicher Hinweis & KI-Transparenz:
+                </p>
+                <p className="text-amber-800 leading-relaxed text-[11px] sm:text-xs">
+                  Die dargestellten Schullaufbahn-Empfehlungen und generierten Antworten sind KI-gestützt und basieren auf den Regelungen der Thüringer Schulordnung (ThürSchulO). Sie dienen ausschließlich der <strong>ersten Information und Orientierung</strong>. Eine eigenständige Information sowie die offiziellen Auskünfte und Konferenzbeschlüsse der Schule (Schulleitung, Klassen- und Versetzungskonferenz) haben <strong>inhaltlich stets Vorrang</strong>.
+                </p>
               </div>
             </div>
           </div>

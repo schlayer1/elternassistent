@@ -87,8 +87,8 @@ export const TOPIC_ITEMS: TopicItem[] = [
     badge: 'Stressfreier lernen',
     iconName: 'Clock',
     category: 'daily',
-    shortDesc: 'Verbindlicher 8-Stunden-Takt, Doppelstundensystem, individuelle Lernzeiten (ILZ) und Klassenrat.',
-    fullAnswer: 'Die Heimbürgeschule setzt auf einen rhythmisierten Schultag:\n\n• **Schultakt**: Unterricht von 07:45 bis 15:15 Uhr, aufgeteilt in 8 Stunden mit 25 Minuten Hofpause und 30 Minuten Mittagsband.\n• **Doppelstundensystem**: 80- bis 90-Minuten-Blöcke sorgen für Ruhe, tiefergehendes Arbeiten und reduzieren das Ranzen-Gewicht.\n• **Ganztag**: Günstiger Ganztagsbeitrag von nur 36 €/Jahr für verlässliche Hausaufgabenbetreuung bis 15:30 Uhr.\n• **Kostenfreie AGs**: Turnen, Technik, Zirkus MoMoLo, Naturforscher, Schach und Volleyball.',
+    shortDesc: 'Verbindlicher 7-Stunden-Takt, Doppelstundensystem, individuelle Lernzeiten (ILZ) und Klassenrat.',
+    fullAnswer: 'Die Heimbürgeschule setzt auf einen rhythmisierten Schultag:\n\n• **Schultakt**: Unterricht von 07:45 bis 14:20 Uhr (1. bis 7. Stunde) mit 25 Minuten Hofpause und 30 Minuten Mittagsband. Im Anschluss verlässliche Hausaufgabenbetreuung und AGs bis 15:30 Uhr.\n• **Doppelstundensystem**: 80- bis 90-Minuten-Blöcke sorgen für Ruhe, tiefergehendes Arbeiten und reduzieren das Ranzen-Gewicht.\n• **Ganztag**: Günstiger Ganztagsbeitrag von nur 36 €/Jahr für verlässliche Hausaufgabenbetreuung bis 15:30 Uhr.\n• **Kostenfreie AGs**: Turnen, Technik, Zirkus MoMoLo, Naturforscher, Schach und Volleyball.',
     keyPoints: [
       'Unterrichtsbeginn um 07:45 Uhr, Einlass ab 07:30 Uhr',
       'Ganztagsangebot für nur 36 € pro Schuljahr bis 15:30 Uhr',

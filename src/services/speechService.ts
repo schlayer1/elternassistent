@@ -5,6 +5,7 @@ export class SpeechService {
   private static currentUtterance: SpeechSynthesisUtterance | null = null;
   private static currentAudio: HTMLAudioElement | null = null;
   private static recognition: any = null;
+  private static isExplicitlyStopped: boolean = false;
 
   // Vorlesefunktion (Text-to-Speech) mit Edge TTS & Fallback
   public static speak(
@@ -14,6 +15,7 @@ export class SpeechService {
     onEnd?: () => void
   ): boolean {
     this.stopSpeaking();
+    this.isExplicitlyStopped = false;
 
     // Bereinige Markdown für flüssiges Vorlesen
     const plainText = text
@@ -35,12 +37,16 @@ export class SpeechService {
         if (!hasEnded) {
           hasEnded = true;
           this.currentAudio = null;
-          onEnd?.();
+          if (!this.isExplicitlyStopped) {
+            onEnd?.();
+          }
         }
       };
 
       audio.onplay = () => {
-        onStart?.();
+        if (!this.isExplicitlyStopped) {
+          onStart?.();
+        }
       };
 
       audio.onended = () => {
@@ -48,6 +54,11 @@ export class SpeechService {
       };
 
       audio.onerror = (e) => {
+        // Falls der Nutzer bewusst auf "Stopp" geklickt hat: NIEMALS Fallback starten!
+        if (this.isExplicitlyStopped) {
+          this.currentAudio = null;
+          return;
+        }
         console.warn('Edge TTS nicht verfügbar oder Netzwerkfehler, schalte auf Web Speech API um:', e);
         this.currentAudio = null;
         this.speakWithWebSpeech(plainText, lang, onStart, onEnd);
@@ -56,6 +67,11 @@ export class SpeechService {
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.catch((playErr) => {
+          // Falls bewusst gestoppt oder pausiert wurde (z.B. AbortError durch Stopp-Klick): Ignorieren!
+          if (this.isExplicitlyStopped) {
+            this.currentAudio = null;
+            return;
+          }
           console.warn('Audio Playback abgefangen, Fallback auf Web Speech API:', playErr);
           this.currentAudio = null;
           this.speakWithWebSpeech(plainText, lang, onStart, onEnd);
@@ -64,6 +80,7 @@ export class SpeechService {
 
       return true;
     } catch (err) {
+      if (this.isExplicitlyStopped) return false;
       console.warn('Edge TTS Aufruf fehlgeschlagen, nutze Web Speech API Fallback:', err);
       return this.speakWithWebSpeech(plainText, lang, onStart, onEnd);
     }
@@ -76,7 +93,7 @@ export class SpeechService {
     onStart?: () => void,
     onEnd?: () => void
   ): boolean {
-    if (!this.synth) {
+    if (this.isExplicitlyStopped || !this.synth) {
       onEnd?.();
       return false;
     }
@@ -103,18 +120,24 @@ export class SpeechService {
     }
 
     utterance.onstart = () => {
-      onStart?.();
+      if (!this.isExplicitlyStopped) {
+        onStart?.();
+      }
     };
 
     utterance.onend = () => {
       this.currentUtterance = null;
-      onEnd?.();
+      if (!this.isExplicitlyStopped) {
+        onEnd?.();
+      }
     };
 
     utterance.onerror = (e) => {
-      console.warn('SpeechSynthesis Fehler:', e);
       this.currentUtterance = null;
-      onEnd?.();
+      if (!this.isExplicitlyStopped) {
+        console.warn('SpeechSynthesis Fehler:', e);
+        onEnd?.();
+      }
     };
 
     this.currentUtterance = utterance;
@@ -123,16 +146,28 @@ export class SpeechService {
   }
 
   public static stopSpeaking(): void {
+    this.isExplicitlyStopped = true;
+
+    // Laufendes Audio sicher und ohne Event-Triggers stoppen
     if (this.currentAudio) {
-      try {
-        this.currentAudio.pause();
-        this.currentAudio.currentTime = 0;
-        this.currentAudio.src = '';
-      } catch (e) {}
+      const audio = this.currentAudio;
       this.currentAudio = null;
+
+      audio.onplay = null;
+      audio.onended = null;
+      audio.onerror = null;
+      audio.onpause = null;
+
+      try {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.removeAttribute('src');
+        audio.load();
+      } catch (e) {}
     }
 
-    if (this.synth && this.synth.speaking) {
+    // Lokale Web Speech API stoppen
+    if (this.synth) {
       try {
         this.synth.cancel();
       } catch (e) {}
@@ -161,8 +196,8 @@ export class SpeechService {
     if (!this.isSpeechRecognitionSupported()) return false;
 
     try {
-      const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      this.recognition = new SpeechRecognitionClass();
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      this.recognition = new SpeechRecognition();
       this.recognition.continuous = false;
       this.recognition.interimResults = true;
 
@@ -176,15 +211,18 @@ export class SpeechService {
       this.recognition.lang = langMap[lang] || 'de-DE';
 
       this.recognition.onresult = (event: any) => {
-        let transcript = '';
+        let finalTranscript = '';
         for (let i = event.resultIndex; i < event.results.length; ++i) {
-          transcript += event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          }
         }
-        onResult(transcript);
+        if (finalTranscript) {
+          onResult(finalTranscript.trim());
+        }
       };
 
       this.recognition.onerror = (event: any) => {
-        console.warn('SpeechRecognition Fehler:', event.error);
         onError(event.error);
       };
 
@@ -194,9 +232,8 @@ export class SpeechService {
 
       this.recognition.start();
       return true;
-    } catch (err) {
-      console.error('Fehler beim Starten der Spracherkennung:', err);
-      onError(err);
+    } catch (e) {
+      onError(e);
       return false;
     }
   }

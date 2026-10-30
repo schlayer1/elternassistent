@@ -54,9 +54,8 @@ export const SCHOOL_KNOWLEDGE_BASE = `
 - Mittagsband / Mittagspause: 11:20 – 11:50 Uhr (30 Minuten warmes Essen in der Mensa & Erholung)
 - 5. Unterrichtsstunde: 11:50 – 12:35 Uhr (Pause: 5 Minuten)
 - 6. Unterrichtsstunde: 12:40 – 13:25 Uhr (Pause: 10 Minuten)
-- 7. Unterrichtsstunde: 13:35 – 14:20 Uhr (Pause: 10 Minuten)
-- 8. Unterrichtsstunde / GTS / AGs: 14:30 – 15:15 Uhr
-- Nachmittagsbetreuung & AGs: bis 15:30 Uhr
+- 7. Unterrichtsstunde: 13:35 – 14:20 Uhr (Ende des regulären Fachunterrichts)
+- Ganztagsbetreuung, Hausaufgabenhilfe & AGs: 14:30 – 15:30 Uhr
 
 ## 4. Brandaktuelle Auszeichnungen, Zertifikate & Schulprofil
 - **ZDF Partnerschule („ZDF goes Schule“ - brandaktuell seit 2026):**

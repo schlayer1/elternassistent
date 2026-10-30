@@ -77,6 +77,5 @@ export const SCHEDULE_BLOCKS: ScheduleBlock[] = [
   { period: '5. Stunde', time: '11:50 – 12:35', label: '5. Unterrichtsstunde' },
   { period: '6. Stunde', time: '12:40 – 13:25', label: '6. Unterrichtsstunde' },
   { period: '7. Stunde', time: '13:35 – 14:20', label: '7. Unterrichtsstunde' },
-  { period: '8. Stunde', time: '14:30 – 15:15', label: '8. Unterrichtsstunde / GTS / AGs' },
-  { period: 'Nachmittagsbetreuung', time: '15:15 – 15:30', label: 'Individuelle Hausaufgabenförderung & Freizeit' }
+  { period: 'Ganztag & AGs', time: '14:30 – 15:30', label: 'Individuelle Hausaufgabenförderung, Lernzeit & AGs' }
 ];

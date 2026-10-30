@@ -4,6 +4,7 @@ import { executeGeminiCascade } from '../../services/geminiService';
 import { SpeechService } from '../../services/speechService';
 import { storageService } from '../../services/storageService';
 import { QUICK_STARTER_QUESTIONS } from '../../data/topicCategories';
+import { renderFormattedMarkdown } from '../../utils/formatText';
 import { JarvisReactor } from '../jarvis/JarvisReactor';
 import {
   Send,
@@ -214,49 +215,6 @@ Wobei darf ich Ihnen heute helfen?`,
     }
   };
 
-  // Helper to render simple markdown elements (bold, bullet points)
-  const renderFormattedText = (raw: string) => {
-    const lines = raw.split('\n');
-    return lines.map((line, i) => {
-      // Bullet points
-      if (line.startsWith('• ') || line.startsWith('- ')) {
-        const content = line.substring(2);
-        return (
-          <li key={i} className="ml-4 list-disc text-slate-700 my-1 leading-relaxed">
-            <span dangerouslySetInnerHTML={{ __html: formatBoldAndLinks(content) }} />
-          </li>
-        );
-      }
-      // Section Headers
-      if (line.startsWith('### ')) {
-        return (
-          <h4 key={i} className="font-bold text-sm text-school-blueDark mt-3 mb-1">
-            {line.replace('### ', '')}
-          </h4>
-        );
-      }
-      if (line.startsWith('## ')) {
-        return (
-          <h3 key={i} className="font-bold text-base text-slate-900 mt-4 mb-2">
-            {line.replace('## ', '')}
-          </h3>
-        );
-      }
-      if (!line.trim()) {
-        return <div key={i} className="h-2" />;
-      }
-      return (
-        <p key={i} className="my-1 text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: formatBoldAndLinks(line) }} />
-      );
-    });
-  };
-
-  const formatBoldAndLinks = (str: string) => {
-    return str
-      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>')
-      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-school-blue underline hover:text-school-blueDark font-medium">$1</a>');
-  };
-
   return (
     <div className="w-full max-w-[2100px] mx-auto px-3 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-3 sm:py-4 flex flex-col h-[calc(100vh-130px)] md:h-[calc(100vh-145px)]">
       {/* Top Chat Bar with Clear and Status */}
@@ -361,7 +319,7 @@ Wobei darf ich Ihnen heute helfen?`,
                     {isUser ? (
                       <p className="whitespace-pre-wrap">{msg.text}</p>
                     ) : (
-                      <div>{renderFormattedText(msg.text)}</div>
+                      <div>{renderFormattedMarkdown(msg.text)}</div>
                     )}
                   </div>
 
