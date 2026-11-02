@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SCHOOL_CONTACTS } from '../../data/contactsData';
 import { SupportedLanguage } from '../../types/assistant';
 import { TRANSLATIONS } from '../../data/translations';
@@ -15,7 +15,11 @@ import {
   Award,
   Utensils,
   CreditCard,
-  Download
+  Download,
+  Smartphone,
+  Share2,
+  PlusSquare,
+  Check
 } from 'lucide-react';
 
 interface InfoViewProps {
@@ -24,6 +28,43 @@ interface InfoViewProps {
 
 export const InfoView: React.FC<InfoViewProps> = ({ currentLanguage }) => {
   const t = TRANSLATIONS[currentLanguage]?.info || TRANSLATIONS.de.info;
+
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    if (
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as any).standalone
+    ) {
+      setIsInstalled(true);
+    }
+
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('appinstalled', () => {
+      setIsInstalled(true);
+      setDeferredPrompt(null);
+    });
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setIsInstalled(true);
+    }
+    setDeferredPrompt(null);
+  };
 
   const callBtnLabel = 
     currentLanguage === 'ro' ? 'Sună' :
@@ -71,6 +112,54 @@ export const InfoView: React.FC<InfoViewProps> = ({ currentLanguage }) => {
     currentLanguage === 'ar' ? 'للمدفوعات المدرسية الرسمية (رسوم النسخ، دفاتر التمارين، الرحلات المدرسية):' :
     currentLanguage === 'en' ? 'For official school payments (copying fees, workbooks, excursions):' :
     'Für offizielle Schulzahlungen (Kopiergeld, Arbeitshefte, Exkursionen):';
+
+  const pwaTitle =
+    currentLanguage === 'ro' ? 'Instalează aplicația pe telefon' :
+    currentLanguage === 'uk' ? 'Встановити як додаток на смартфон' :
+    currentLanguage === 'ru' ? 'Установить как приложение на смартфон' :
+    currentLanguage === 'ar' ? 'تثبيت كتطبيق للهاتف الذكي' :
+    currentLanguage === 'en' ? 'Install as Smartphone App' :
+    'Als Smartphone-App installieren';
+
+  const pwaDesc =
+    currentLanguage === 'ro' ? 'Acces direct de pe ecranul de pornire – rapid, fără descărcare din App Store, cu sigla oficială a școlii.' :
+    currentLanguage === 'uk' ? 'Швидкий доступ з головного екрана – миттєво, без App Store, з офіційним гербом школи.' :
+    currentLanguage === 'ru' ? 'Быстрый доступ с главного экрана – мгновенно, без App Store, с официальным гербом школы.' :
+    currentLanguage === 'ar' ? 'وصول سريع ومباشر من الشاشة الرئيسية – فوري وبدون تنزيل من متجر التطبيقات وبشعار المدرسة الرسمي.' :
+    currentLanguage === 'en' ? 'Direct home screen access – instant, no app store download required, with official school seal icon.' :
+    'Direkter Schnellzugriff vom Startbildschirm – blitzschnell, ohne App-Store-Download und mit offiziellem Schulsiegel.';
+
+  const pwaInstalledText =
+    currentLanguage === 'ro' ? 'Aplicația este deja instalată pe ecranul dvs. de pornire' :
+    currentLanguage === 'uk' ? 'Додаток вже встановлено на вашому головному екрані' :
+    currentLanguage === 'ru' ? 'Приложение уже установлено на вашем главном экране' :
+    currentLanguage === 'ar' ? 'التطبيق مثبت بالفعل على شاشتك الرئيسية' :
+    currentLanguage === 'en' ? 'App is already installed on your home screen' :
+    'App ist bereits auf Ihrem Startbildschirm installiert';
+
+  const pwaInstallButton =
+    currentLanguage === 'ro' ? 'Instalează pe ecranul de pornire' :
+    currentLanguage === 'uk' ? 'Встановити на екran' :
+    currentLanguage === 'ru' ? 'Установить на экран' :
+    currentLanguage === 'ar' ? 'تثبيت على الشاشة الرئيسية' :
+    currentLanguage === 'en' ? 'Install to Home Screen' :
+    'Jetzt auf Homescreen installieren';
+
+  const pwaIosHint =
+    currentLanguage === 'ro' ? 'Tippen Sie in Safari auf das Teilen-Symbol und wählen Sie „Adăugați pe ecranul principal”.' :
+    currentLanguage === 'uk' ? 'Торкніться в Safari кнопки «Поділитися» та виберіть «На початковий екран».' :
+    currentLanguage === 'ru' ? 'Нажмите в Safari кнопку «Поделиться» и выберите «На экран «Домой»».' :
+    currentLanguage === 'ar' ? 'اضغط في Safari على زر المشاركة ثم اختر «إضافة إلى الشاشة الرئيسية».' :
+    currentLanguage === 'en' ? 'In Safari, tap the Share button and select "Add to Home Screen".' :
+    'Tippen Sie in Safari unten auf das Teilen-Symbol und wählen Sie „Zum Home-Bildschirm“.';
+
+  const pwaAndroidHint =
+    currentLanguage === 'ro' ? 'Apăsați pe meniul ⋮ din Chrome și selectați „Instalați aplicația”.' :
+    currentLanguage === 'uk' ? 'Торкніться меню ⋮ в Chrome і виберіть «Встановити додаток».' :
+    currentLanguage === 'ru' ? 'Нажмите меню ⋮ в Chrome и выберите «Установить приложение».' :
+    currentLanguage === 'ar' ? 'اضغط على القائمة ⋮ في متصفح Chrome واختر «تثبيت التطبيق».' :
+    currentLanguage === 'en' ? 'Tap the ⋮ menu in Chrome and select "Install app".' :
+    'Tippen Sie in Chrome oben rechts auf das Dreipunkt-Menü ⋮ und wählen Sie „App installieren“.';
 
   const getContactIcon = (name: string) => {
     switch (name) {
@@ -196,6 +285,71 @@ export const InfoView: React.FC<InfoViewProps> = ({ currentLanguage }) => {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* PWA App-Installation Card */}
+      <div className="bg-gradient-to-br from-teal-50/80 via-white to-amber-50/40 border border-teal-200/80 rounded-3xl p-5 sm:p-6 shadow-soft">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+          <div className="flex items-start gap-4">
+            <img
+              src="/pwa-192x192.png"
+              alt="HBS App Siegel"
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl shadow-md border-2 border-white shrink-0 object-cover bg-white"
+            />
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+                  <Smartphone className="w-5 h-5 text-school-teal" />
+                  {pwaTitle}
+                </h3>
+                {isInstalled ? (
+                  <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-full flex items-center gap-1">
+                    <Check className="w-3.5 h-3.5" />
+                    {pwaInstalledText}
+                  </span>
+                ) : (
+                  <span className="px-2.5 py-0.5 bg-teal-100/90 text-teal-800 text-[10px] sm:text-xs font-bold rounded-full">
+                    PWA • Offline-bereit
+                  </span>
+                )}
+              </div>
+              <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
+                {pwaDesc}
+              </p>
+            </div>
+          </div>
+
+          {/* Interactive Install Button (Chrome / Edge with beforeinstallprompt) */}
+          {deferredPrompt && !isInstalled && (
+            <div className="shrink-0 self-stretch sm:self-auto">
+              <button
+                onClick={handleInstallClick}
+                className="w-full sm:w-auto px-5 py-3 min-h-[44px] bg-school-teal hover:bg-teal-700 text-white rounded-xl font-bold text-xs sm:text-sm shadow-soft transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+              >
+                <Download className="w-4 h-4" />
+                <span>{pwaInstallButton}</span>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Step-by-step instructions for iOS & Android */}
+        <div className="mt-4 pt-4 border-t border-teal-100/80 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-600">
+          <div className="flex items-start gap-2.5 bg-white/80 p-3 rounded-xl border border-teal-100/60 shadow-2xs">
+            <Share2 className="w-4 h-4 text-school-blue shrink-0 mt-0.5" />
+            <div>
+              <strong className="text-slate-800 block mb-0.5">Apple iPhone / iPad (Safari):</strong>
+              <span>{pwaIosHint}</span>
+            </div>
+          </div>
+          <div className="flex items-start gap-2.5 bg-white/80 p-3 rounded-xl border border-teal-100/60 shadow-2xs">
+            <PlusSquare className="w-4 h-4 text-school-teal shrink-0 mt-0.5" />
+            <div>
+              <strong className="text-slate-800 block mb-0.5">Android (Chrome / Edge):</strong>
+              <span>{pwaAndroidHint}</span>
+            </div>
+          </div>
         </div>
       </div>
 
