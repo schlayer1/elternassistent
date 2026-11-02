@@ -567,6 +567,18 @@ export const Header: React.FC<HeaderProps> = ({
                           {webhookTestResult.message}
                         </div>
                       )}
+
+                      <div className="p-3 bg-white/80 rounded-xl border border-amber-200/60 text-[11px] text-slate-600 space-y-1">
+                        <div className="font-bold text-slate-800 flex items-center gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>Executive Dashboard aktiv:</span>
+                        </div>
+                        <p className="leading-relaxed">
+                          • Neueste Fragen erscheinen automatisch in <strong>Zeile 2 ganz oben</strong>.<br />
+                          • Farbcodiertes Status-Dropdown (🔴 Offen, 🟡 In Bearbeitung, 🟢 Im Google Doc ergänzt, ⚪ Erledigt).<br />
+                          • Automatische E-Mail-Benachrichtigung an <code>schlayer1@hotmail.com</code> bei jeder neuen Frage.
+                        </p>
+                      </div>
                     </div>
                   </div>
 
