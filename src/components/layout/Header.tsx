@@ -3,7 +3,27 @@ import { SupportedLanguage } from '../../types/assistant';
 import { TRANSLATIONS } from '../../data/translations';
 import { JarvisReactor } from '../jarvis/JarvisReactor';
 import { liveSyncService, LiveDocData } from '../../services/liveSyncService';
-import { Globe, Settings, ShieldCheck, X, FileText, RefreshCw, CheckCircle, ExternalLink, Lock, KeyRound } from 'lucide-react';
+import { feedbackService } from '../../services/feedbackService';
+import { UnansweredQuestion } from '../../types/feedback';
+import {
+  Globe,
+  Settings,
+  ShieldCheck,
+  X,
+  FileText,
+  RefreshCw,
+  CheckCircle,
+  ExternalLink,
+  Lock,
+  KeyRound,
+  MessageSquareQuote,
+  Table,
+  Download,
+  Copy,
+  Trash2,
+  Check,
+  AlertCircle
+} from 'lucide-react';
 
 interface HeaderProps {
   currentLanguage: SupportedLanguage;
@@ -35,13 +55,22 @@ export const Header: React.FC<HeaderProps> = ({
   const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [passwordError, setPasswordError] = useState(false);
-  const [activeTab, setActiveTab] = useState<'sync' | 'api'>('sync');
+  const [activeTab, setActiveTab] = useState<'sync' | 'api' | 'feedback'>('sync');
 
   // Google Doc Sync State
   const [googleDocUrl, setGoogleDocUrl] = useState(() => liveSyncService.getDocUrl());
   const [syncStatus, setSyncStatus] = useState<LiveDocData | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncFeedback, setSyncFeedback] = useState<string | null>(null);
+
+  // Wissenslücken & Feedback State
+  const [questionsList, setQuestionsList] = useState<UnansweredQuestion[]>(() =>
+    feedbackService.getAllQuestions()
+  );
+  const [webhookUrl, setWebhookUrl] = useState(() => feedbackService.getWebhookUrl());
+  const [testingWebhook, setTestingWebhook] = useState(false);
+  const [webhookTestResult, setWebhookTestResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [copiedQuestionId, setCopiedQuestionId] = useState<string | null>(null);
 
   // Gemini Key State
   const [customKey, setCustomKey] = useState(
@@ -71,10 +100,54 @@ export const Header: React.FC<HeaderProps> = ({
     if (passwordInput === SETTINGS_PASSWORD) {
       setShowPasswordPrompt(false);
       setPasswordError(false);
+      setQuestionsList(feedbackService.getAllQuestions());
+      setWebhookUrl(feedbackService.getWebhookUrl());
       setShowSettingsModal(true);
     } else {
       setPasswordError(true);
     }
+  };
+
+  const handleTestWebhook = async () => {
+    setTestingWebhook(true);
+    setWebhookTestResult(null);
+    feedbackService.setWebhookUrl(webhookUrl);
+    const res = await feedbackService.testWebhookConnection(webhookUrl);
+    setTestingWebhook(false);
+    setWebhookTestResult(res);
+  };
+
+  const handleSaveWebhook = () => {
+    feedbackService.setWebhookUrl(webhookUrl);
+    setWebhookTestResult({ success: true, message: '✓ Webhook-URL erfolgreich gespeichert!' });
+    setTimeout(() => setWebhookTestResult(null), 3000);
+  };
+
+  const handleCopyQuestion = (item: UnansweredQuestion) => {
+    feedbackService.copyForGoogleDoc(item);
+    setCopiedQuestionId(item.id);
+    setTimeout(() => setCopiedQuestionId(null), 2500);
+  };
+
+  const handleDeleteQuestion = (id: string) => {
+    const updated = feedbackService.deleteQuestion(id);
+    setQuestionsList(updated);
+  };
+
+  const handleToggleResolved = (id: string) => {
+    const updated = feedbackService.toggleResolved(id);
+    setQuestionsList(updated);
+  };
+
+  const handleClearAllQuestions = () => {
+    if (window.confirm('Möchten Sie wirklich alle bisher erfassten offenen Fragen aus der lokalen Ansicht löschen?')) {
+      feedbackService.clearAllQuestions();
+      setQuestionsList([]);
+    }
+  };
+
+  const handleExportCsv = () => {
+    feedbackService.exportToCsv();
   };
 
   const handleTestAndSaveDocSync = async () => {
@@ -319,24 +392,45 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Modal Sub-Tabs */}
-            <div className="flex border-b border-slate-100 bg-[#FFFBF5] px-4 sm:px-6 shrink-0 gap-4">
+            <div className="flex border-b border-slate-100 bg-[#FFFBF5] px-4 sm:px-6 shrink-0 gap-3 overflow-x-auto">
               <button
                 onClick={() => setActiveTab('sync')}
-                className={`py-3 text-xs font-bold border-b-2 flex items-center gap-2 transition-all ${
+                className={`py-3 text-xs font-bold border-b-2 flex items-center gap-2 transition-all shrink-0 ${
                   activeTab === 'sync'
                     ? 'border-school-blue text-school-blue'
                     : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
                 <FileText className="w-4 h-4" />
-                <span>Weg 1: Google Doc Live-Notiz</span>
+                <span>Weg 1: Google Doc</span>
                 {syncStatus?.isOnline && (
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 )}
               </button>
+
+              <button
+                onClick={() => {
+                  setActiveTab('feedback');
+                  setQuestionsList(feedbackService.getAllQuestions());
+                }}
+                className={`py-3 text-xs font-bold border-b-2 flex items-center gap-2 transition-all shrink-0 ${
+                  activeTab === 'feedback'
+                    ? 'border-school-blue text-school-blue'
+                    : 'border-transparent text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <MessageSquareQuote className="w-4 h-4" />
+                <span>Wissenslücken & Feedback</span>
+                {questionsList.length > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-rose-500 text-white font-bold leading-none">
+                    {questionsList.length}
+                  </span>
+                )}
+              </button>
+
               <button
                 onClick={() => setActiveTab('api')}
-                className={`py-3 text-xs font-bold border-b-2 flex items-center gap-2 transition-all ${
+                className={`py-3 text-xs font-bold border-b-2 flex items-center gap-2 transition-all shrink-0 ${
                   activeTab === 'api'
                     ? 'border-school-blue text-school-blue'
                     : 'border-transparent text-slate-500 hover:text-slate-800'
@@ -405,6 +499,203 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
               )}
 
+              {activeTab === 'feedback' && (
+                <div className="space-y-4">
+                  {/* Google Sheet Webhook Sync Box */}
+                  <div className="bg-gradient-to-br from-amber-50 to-orange-50/40 p-4 rounded-2xl border border-amber-200/80 shadow-xs space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <Table className="w-4 h-4 text-amber-700" />
+                        <h4 className="text-xs font-bold text-slate-900">
+                          Zentrales Google Sheet (Apps Script Webhook)
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                        Geräteübergreifend
+                      </span>
+                    </div>
+
+                    <p className="text-[11px] text-slate-600 leading-relaxed">
+                      Offene Fragen von allen Eltern-Smartphones werden automatisch und geräteübergreifend an diesen Webhook gesendet und in Ihre Google-Tabelle eingetragen:
+                    </p>
+
+                    <div className="space-y-2">
+                      <div className="flex gap-2">
+                        <input
+                          type="url"
+                          placeholder="https://script.google.com/macros/s/.../exec"
+                          value={webhookUrl}
+                          onChange={(e) => setWebhookUrl(e.target.value)}
+                          className="flex-1 text-xs font-mono px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-600"
+                        />
+                        <button
+                          onClick={handleSaveWebhook}
+                          className="px-3 py-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-300 rounded-xl text-xs font-bold transition-colors"
+                        >
+                          Speichern
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2 pt-1">
+                        <button
+                          onClick={handleTestWebhook}
+                          disabled={testingWebhook}
+                          className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
+                        >
+                          <RefreshCw className={`w-3 h-3 ${testingWebhook ? 'animate-spin' : ''}`} />
+                          <span>{testingWebhook ? 'Sende Testzeile...' : 'Verbindung testen'}</span>
+                        </button>
+
+                        <a
+                          href="https://script.google.com"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[11px] text-amber-800 underline font-semibold flex items-center gap-1"
+                        >
+                          Apps Script Konsole <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+
+                      {webhookTestResult && (
+                        <div
+                          className={`p-2.5 rounded-xl text-xs font-medium border animate-in fade-in ${
+                            webhookTestResult.success
+                              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                              : 'bg-rose-50 border-rose-200 text-rose-800'
+                          }`}
+                        >
+                          {webhookTestResult.message}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Fragen-Liste Header mit Aktionen */}
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-slate-800">
+                        Erfasste offene Fragen ({questionsList.length})
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {questionsList.length > 0 && (
+                        <>
+                          <button
+                            onClick={handleExportCsv}
+                            className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors"
+                            title="Als CSV-Datei herunterladen"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            <span>CSV</span>
+                          </button>
+                          <button
+                            onClick={handleClearAllQuestions}
+                            className="px-2.5 py-1.5 text-rose-600 hover:bg-rose-50 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors"
+                            title="Liste leeren"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Leeren</span>
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Fragen Feed */}
+                  {questionsList.length === 0 ? (
+                    <div className="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                      <CheckCircle className="w-8 h-8 text-emerald-500 mx-auto mb-2 opacity-80" />
+                      <p className="text-xs font-bold text-slate-700">Aktuell keine Wissenslücken erfasst!</p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        Sobald ein Elternteil eine unbeantwortete Frage stellt oder Daumen-runter klickt, erscheint sie hier und in Ihrem Google Sheet.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
+                      {questionsList.map((item) => (
+                        <div
+                          key={item.id}
+                          className="p-3 bg-white border border-slate-200 rounded-2xl shadow-xs space-y-2 text-xs transition-all hover:border-slate-300"
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700">
+                                {item.dateIso} • {item.timestamp}
+                              </span>
+                              <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                {item.language}
+                              </span>
+                              <span
+                                className={`px-2 py-0.5 rounded-md text-[10px] font-medium ${
+                                  item.reason === 'user_downvote'
+                                    ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                                    : 'bg-amber-50 text-amber-800 border border-amber-200'
+                                }`}
+                              >
+                                {item.reasonLabel}
+                              </span>
+                            </div>
+
+                            <button
+                              onClick={() => handleDeleteQuestion(item.id)}
+                              className="text-slate-400 hover:text-rose-600 p-1 rounded-lg hover:bg-slate-100 transition-colors"
+                              title="Löschen"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                          <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 font-semibold text-slate-900">
+                            „{item.question}“
+                          </div>
+
+                          {item.answerSnippet && (
+                            <p className="text-[11px] text-slate-500 italic line-clamp-2">
+                              KI-Antwort: {item.answerSnippet}
+                            </p>
+                          )}
+
+                          <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-100">
+                            <button
+                              onClick={() => handleCopyQuestion(item)}
+                              className={`px-3 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1.5 transition-all shadow-2xs ${
+                                copiedQuestionId === item.id
+                                  ? 'bg-emerald-600 text-white'
+                                  : 'bg-school-blue hover:bg-school-blueDark text-white'
+                              }`}
+                            >
+                              {copiedQuestionId === item.id ? (
+                                <>
+                                  <Check className="w-3 h-3" />
+                                  <span>Kopiert für Google Doc!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-3 h-3" />
+                                  <span>Für Google Doc kopieren</span>
+                                </>
+                              )}
+                            </button>
+
+                            <button
+                              onClick={() => handleToggleResolved(item.id)}
+                              className={`text-[11px] font-semibold px-2 py-1 rounded-lg transition-colors ${
+                                item.resolved
+                                  ? 'text-emerald-700 bg-emerald-50'
+                                  : 'text-slate-500 hover:bg-slate-100'
+                              }`}
+                            >
+                              {item.resolved ? '✓ Erledigt' : 'Als erledigt markieren'}
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {activeTab === 'api' && (
                 <div className="space-y-4">
                   <p className="text-xs text-slate-600 leading-relaxed">
@@ -453,6 +744,15 @@ export const Header: React.FC<HeaderProps> = ({
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
                   <span>{isSyncing ? 'Synchronisiere...' : 'Jetzt testen & synchronisieren'}</span>
+                </button>
+              ) : activeTab === 'feedback' ? (
+                <button
+                  onClick={handleExportCsv}
+                  disabled={questionsList.length === 0}
+                  className="px-5 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 rounded-xl shadow-soft flex items-center gap-2 h-11 transition-all"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Als CSV exportieren</span>
                 </button>
               ) : (
                 <button

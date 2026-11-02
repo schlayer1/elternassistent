@@ -7,6 +7,7 @@ import { QUICK_STARTER_QUESTIONS } from '../../data/topicCategories';
 import { TRANSLATIONS } from '../../data/translations';
 import { renderFormattedMarkdown } from '../../utils/formatText';
 import { JarvisReactor } from '../jarvis/JarvisReactor';
+import { feedbackService } from '../../services/feedbackService';
 import {
   Send,
   Mic,
@@ -22,7 +23,10 @@ import {
   Info,
   CheckCircle,
   HelpCircle,
-  Languages
+  Languages,
+  ThumbsUp,
+  ThumbsDown,
+  Check
 } from 'lucide-react';
 
 interface ChatViewProps {
@@ -78,6 +82,19 @@ export const ChatView: React.FC<ChatViewProps> = ({
   const [isListening, setIsListening] = useState(false);
   const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
   const [speechError, setSpeechError] = useState<string | null>(null);
+  const [feedbackState, setFeedbackState] = useState<Record<string, 'up' | 'down'>>({});
+
+  const handleFeedback = (msgId: string, type: 'up' | 'down', userQuery: string, answerText: string) => {
+    setFeedbackState((prev) => ({ ...prev, [msgId]: type }));
+    if (type === 'down') {
+      feedbackService.logUnansweredQuestion({
+        question: userQuery || 'Eltern-Frage',
+        answer: answerText,
+        reason: 'user_downvote',
+        language: currentLanguage
+      });
+    }
+  };
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -181,6 +198,16 @@ export const ChatView: React.FC<ChatViewProps> = ({
         }));
 
       const res = await executeGeminiCascade(query, currentLanguage, history);
+
+      // Automatischer Fallback-Detektor: Wissenslücken lautlos im Hintergrund protokollieren
+      if (feedbackService.detectKnowledgeGap(res.text)) {
+        feedbackService.logUnansweredQuestion({
+          question: query,
+          answer: res.text,
+          reason: 'auto_fallback',
+          language: currentLanguage
+        });
+      }
 
       const assistantMsg: ChatMessage = {
         id: `assistant_${Date.now()}`,
@@ -334,10 +361,17 @@ export const ChatView: React.FC<ChatViewProps> = ({
 
           {/* Messages Feed */}
           <div className="flex-1 overflow-y-auto pr-1 space-y-4 scroll-smooth">
-        {messages.map((msg) => {
+        {messages.map((msg, idx) => {
           const isUser = msg.sender === 'user';
           const isAssistant = msg.sender === 'assistant';
           const isSpeaking = speakingMessageId === msg.id;
+
+          const precedingUserMsg = messages
+            .slice(0, idx)
+            .reverse()
+            .find((m) => m.sender === 'user');
+          const userQuestionText = precedingUserMsg ? precedingUserMsg.text : '';
+          const currentFeedback = feedbackState[msg.id];
 
           return (
             <div
@@ -409,27 +443,63 @@ export const ChatView: React.FC<ChatViewProps> = ({
                     <span>{msg.timestamp}</span>
 
                     {isAssistant && (
-                      <button
-                        onClick={() => handleToggleSpeak(msg.id, msg.text)}
-                        className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${
-                          isSpeaking
-                            ? 'bg-orange-100 text-school-orange animate-pulse'
-                            : 'hover:bg-slate-100 text-slate-500 hover:text-school-blue'
-                        }`}
-                        title={isSpeaking ? t.stopSpeaking : t.readAloud}
-                      >
-                        {isSpeaking ? (
-                          <>
-                            <VolumeX className="w-3.5 h-3.5 text-school-orange" />
-                            <span>{t.stopSpeaking}</span>
-                          </>
-                        ) : (
-                          <>
-                            <Volume2 className="w-3.5 h-3.5" />
-                            <span>{t.readAloud}</span>
-                          </>
+                      <div className="flex items-center gap-1.5">
+                        {/* Feedback-Status Toast / Inline */}
+                        {currentFeedback === 'up' && (
+                          <span className="text-[10px] text-emerald-600 font-medium flex items-center gap-1 animate-in fade-in">
+                            <Check className="w-3 h-3 text-emerald-500" />
+                            <span>{t.feedbackThanksUp}</span>
+                          </span>
                         )}
-                      </button>
+                        {currentFeedback === 'down' && (
+                          <span className="text-[10px] text-amber-700 font-medium flex items-center gap-1 animate-in fade-in">
+                            <Check className="w-3 h-3 text-amber-600" />
+                            <span>{t.feedbackThanksDown}</span>
+                          </span>
+                        )}
+
+                        {/* Thumbs up & down buttons (visible if not yet voted) */}
+                        {!currentFeedback && (
+                          <div className="flex items-center gap-0.5 border-r border-slate-200 pr-1.5 mr-0.5">
+                            <button
+                              onClick={() => handleFeedback(msg.id, 'up', userQuestionText, msg.text)}
+                              className="p-1 rounded-md text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                              title={t.thumbsUp}
+                            >
+                              <ThumbsUp className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleFeedback(msg.id, 'down', userQuestionText, msg.text)}
+                              className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                              title={t.thumbsDown}
+                            >
+                              <ThumbsDown className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        )}
+
+                        <button
+                          onClick={() => handleToggleSpeak(msg.id, msg.text)}
+                          className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${
+                            isSpeaking
+                              ? 'bg-orange-100 text-school-orange animate-pulse'
+                              : 'hover:bg-slate-100 text-slate-500 hover:text-school-blue'
+                          }`}
+                          title={isSpeaking ? t.stopSpeaking : t.readAloud}
+                        >
+                          {isSpeaking ? (
+                            <>
+                              <VolumeX className="w-3.5 h-3.5 text-school-orange" />
+                              <span>{t.stopSpeaking}</span>
+                            </>
+                          ) : (
+                            <>
+                              <Volume2 className="w-3.5 h-3.5" />
+                              <span>{t.readAloud}</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
