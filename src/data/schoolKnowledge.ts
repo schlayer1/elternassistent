@@ -158,46 +158,61 @@ export const SCHOOL_KNOWLEDGE_BASE = `
 - **Festlegung:** Wird im Rahmen der Klassenkonferenz auf einer breiten Beobachtungsbasis pädagogischer Kompetenzraster gemeinsam beschlossen.
 - **Nachteilsausgleich:** Gesundheitliche Beeinträchtigungen oder festgestellter sonderpädagogischer Förderbedarf werden angemessen berücksichtigt.
 
-## 9. Thüringer Schulordnung (ThürSchulO) & Schullaufbahnen
+## 9. Thüringer Schulordnung (ThürSchulO), Schulgesetz (ThürSchG) & Schullaufbahnen
 
 ### § 62 ThürSchulO – Hauptschulabschluss:
-- Wird am Ende der Klassenstufe 9 erworben.
-- Keine gesonderte Abschlussprüfung erforderlich! Der Erwerb erfolgt automatisch mit der erfolgreichen Versetzung in die Klassenstufe 10 bzw. mit dem Erreichen des Versetzungsmaßstabs nach § 56 ThürSchulO.
+- Wird am Ende der Klassenstufe 9 der Regelschule erworben.
+- **Keine gesonderte Abschlussprüfung erforderlich!** Der Erwerb erfolgt automatisch mit der Erfüllung der Versetzungsbestimmungen am Ende der Klassenstufe 9 (§ 51 und § 52 ThürSchulO).
 
 ### § 63 ThürSchulO – Qualifizierender Hauptschulabschluss („Quali“):
-- Freiwillige Besondere Leistungsfeststellung (BLF) am Ende der Klassenstufe 9.
-- Anmeldung im ersten Schulhalbjahr der Klasse 9.
-- Prüfungsfächer: 1. Deutsch (schriftlich, zentral), 2. Mathematik (schriftlich, zentral), 3. Drittes Fach nach Schülerwahl: Englisch (schriftlich) oder eine Naturwissenschaft (Biologie, Physik oder Chemie – schriftlich).
-- Zweck: Deutliche Erhöhung der Chancen bei Ausbildungsplatzbewerbungen und Berechtigung zur Aufnahme in die Realschulklasse 10 bei knappem Notenbild.
+- Freiwillige Prüfung zum Erwerb des qualifizierenden Hauptschulabschlusses am Ende der Klassenstufe 9.
+- **WICHTIGER RECHTSHINWEIS & ABGRENZUNG ZUR BLF:**
+  - Die sogenannte **„Besondere Leistungsfeststellung (BLF)“ existiert im Thüringer Schulrecht AUSSCHLIESSLICH am Gymnasium in Klassenstufe 10!**
+  - An der Regelschule gibt es **KEINE BLF**! Die Prüfung am Ende der Klasse 9 heißt offiziell „Prüfung zum Erwerb des qualifizierenden Hauptschulabschlusses“ nach § 63 ThürSchulO.
+- **Bestandteile der Prüfung (§ 63 Abs. 2 ThürSchulO):**
+  1. **Schriftlicher Teil:** In den Fächern Deutsch und Mathematik.
+  2. **Praktischer Teil:** Im Fach Wirtschaft-Recht-Technik (WRT) oder im gewählten Wahlpflichtfach (falls Wahlpflichtfach eine Fremdsprache ist, als mündliche Prüfung).
+  3. **Mündlicher Teil:** In einem weiteren Fach nach Wahl des Prüflings.
+- **Bestehensregelung:** Ein Gesamtergebnis mit einem Notendurchschnitt von 3,50 oder besser über die Prüfungsfächer und in keinem Prüfungsfach eine schlechtere Leistung als Note 4 („ausreichend“).
+- **Zweck & Berechtigung:** Deutliche Erhöhung der Chancen bei Ausbildungsplatzbewerbungen UND Berechtigung zur Aufnahme in die Klassenstufe 10 der Regelschule (§ 53 ThürSchulO), wenn die regulären Versetzungsvoraussetzungen knapp verfehlt wurden.
 
 ### § 67 ThürSchulO – Realschulabschluss (Mittlere Reife):
-- Der bundesweit voll anerkannte Standardabschluss nach erfolgreicher 10. Klasse und bestandenen Prüfungen.
-- Bestandteile:
-  1. Zentrale landesweite schriftliche Prüfungen in Deutsch, Mathematik, Englisch.
-  2. Mündliche Prüfung in mindestens einem natur- oder gesellschaftswissenschaftlichen Fach.
-  3. Projektarbeit nach § 47a ThürSchulO (siehe Abschnitt 7).
+- Der bundesweit voll anerkannte Standardabschluss nach erfolgreichem Besuch der 10. Klasse und bestandener Realschulabschlussprüfung.
+- **Bestandteile der Abschlussprüfung:**
+  1. Zentrale landesweite schriftliche Prüfungen in: Deutsch, Mathematik, erste Fremdsprache (Englisch).
+  2. Mündliche Prüfung in mindestens einem naturwissenschaftlichen oder gesellschaftswissenschaftlichen Fach.
+  3. **Projektarbeit nach § 47a ThürSchulO** (verpflichtender Prüfungsbestandteil in Kleingruppen mit praktischem Produkt, schriftlichem PA-Tagebuch und Kolloquiumspräsentation vor der Kommission, siehe Abschnitt 7).
 
-### § 68 ThürSchulO & ThürSchG – Anschlusswege zum Abitur:
+### § 68 ThürSchulO & § 14 ThürSchG – Anschlusswege zum Abitur & Fachabitur:
 - Nach erfolgreichem Realschulabschluss:
   - Wechsel an das Berufliche Gymnasium (3 Jahre bis zur Allgemeinen Hochschulreife / Vollabitur).
   - Wechsel an eine Fachoberschule (FOS, 2 Jahre bis zur Fachhochschulreife).
   - Voraussetzung: In der Regel ein Notendurchschnitt von mindestens 2,5 in den Kernfächern Deutsch, Mathematik, Englisch sowie die Bildungsempfehlung der Klassenkonferenz.
   - An der HBS wechseln regelmäßig 15–20% der Absolventen an Gymnasien / berufliche Gymnasien über!
 
-### §§ 28–30 ThürSchulO – Leistungsdifferenzierung (Grund- und E-Kurse):
-- Ab Klasse 7 Differenzierung in Grundkurse (G-Kurse, Basisniveau) und Erweiterungskurse (E-Kurse, erhöhtes Niveau).
-- Für den Realschulabschluss müssen mindestens zwei Fächer auf E-Kurs-Niveau belegt sein.
+### § 45 Abs. 2 & § 54 ThürSchulO – Verkursung & Leistungsdifferenzierung an der Regelschule:
+- **Gemeinsame Orientierungsphase (Klassen 5 und 6):** Kein Kursunterricht; alle Schüler:innen lernen gemeinsam im Klassenverband.
+- **Äußere Fachleistungsdifferenzierung ab Klassenstufe 7 (§ 45 Abs. 2 ThürSchulO):**
+  - **Fächer:** Ab Klassenstufe 7 in **Mathematik** und **erste Fremdsprache (Englisch)**; spätestens ab Klassenstufe 9 zusätzlich im Fach **Deutsch** sowie in einem **naturwissenschaftlichen Fach** (z. B. Physik).
+  - **Die zwei Anspruchsebenen (Kurse):**
+    - **Kurs I:** Entspricht der Anspruchsebene der **Hauptschule** (grundlegendes Anforderungsniveau, Vorbereitung auf den Hauptschulabschluss).
+    - **Kurs II:** Entspricht der Anspruchsebene der **Realschule** (erweitertes Anforderungsniveau nach KMK-Standards, Vorbereitung auf den Realschulabschluss).
+  - **Einstufung und Umstufung (§ 54 ThürSchulO):**
+    - Die Ersteinstufung in Kurs I oder Kurs II erfolgt am Ende der Klasse 6 durch die Klassenkonferenz. Für Kurs II ist in der Regel mindestens die Note „befriedigend“ (Note 3) im jeweiligen Fach erforderlich.
+    - Das System ist durchlässig: Bei Leistungsveränderungen beschließt die Klassenkonferenz Umstufungen (in der Regel zum Halbjahr oder Schuljahresende in den Klassen 7 und 8). In Klasse 9 sind Umstufungen wegen der bevorstehenden Abschlüsse reglementiert.
+  - **Zeugnisausweisung:** Auf den Zeugnissen ab Klasse 7 wird transparent ausgewiesen, auf welcher Anspruchsebene (Kurs I oder Kurs II) die Leistungen erbracht wurden.
 
-### § 56 ThürSchulO – Versetzungs- und Ausgleichsregeln:
-- Versetzung erfolgt bei mindestens Note 4 („ausreichend“) in allen Fächern.
-- Eine Note 5 kann ausgeglichen werden (Kernfächer nur durch Note 3 oder besser in einem anderen Kernfach).
-- Eine Note 6 oder zwei unausgeglichene Noten 5 führen zur Nichtversetzung.
-- Nachprüfung (§ 58) bei Scheitern an einer einzelnen Note 5 möglich.
+### § 51, § 52, § 53 ThürSchulO – Versetzung, Übertritt in Klasse 10 & Nachprüfung:
+- **§ 51 ThürSchulO (Allgemeine Versetzungsbestimmungen):** Grundsatz: Mindestens Note 4 („ausreichend“) in allen Fächern. Eine Note 5 kann ausgeglichen werden (Kernfächer nur durch Note 3 oder besser in einem anderen Kernfach). Eine Note 6 oder zwei nicht ausgleichbare Noten 5 führen zur Nichtversetzung.
+- **§ 52 ThürSchulO (Versetzung an der Regelschule):** Spezifische Versetzungsregeln unter Berücksichtigung der belegten Anspruchsebenen (Kurs I und Kurs II).
+- **§ 53 ThürSchulO (Versetzung und Aufnahme in die Klassenstufe 10, zusätzliches 10. Schuljahr):** Regelt verbindlich, wer in die 10. Klasse eintreten darf (Erfüllung der Kurs-II-Anforderungen oder Bestehen des qualifizierenden Hauptschulabschlusses nach § 63). Bei Bedarf wird gezielte pädagogische Förderung in den Kernfächern Deutsch, Mathematik und Englisch angeboten.
+- **§ 55 ThürSchulO (Nachprüfung):** Scheitert die Versetzung an einer einzelnen Note 5, kann die Klassenkonferenz eine Nachprüfung am Ende der Sommerferien zulassen. Bei Bestehen gilt der Schüler als versetzt.
+- **§ 56 ThürSchulO (Freiwilliger Rücktritt):** Auf schriftlichen Antrag der Eltern kann ein Schüler einmalig freiwillig in die vorherige Klassenstufe zurücktreten.
 
 ### §§ 6–8 ThürSchulO & § 14 ThürSchG – Schulpflicht, Fehlzeiten & Beurlaubung:
 - **Krankmeldung:** Am ersten Krankheitstag **vor 07:45 Uhr** über die EduPage-App oder telefonisch im Sekretariat bei **Frau Wittmann (036424 / 22 400)**.
-- Spätestens am dritten Fehltag muss eine schriftliche Entschuldigung der Sorgeberechtigten vorliegen.
-- **Beurlaubung:** Bis zu 3 Unterrichtstage schriftlich über die Klassenleitung. Längere Zeiträume oder **unmittelbar vor bzw. nach Schulferien und Feiertagen** dürfen **ausschließlich durch die Schulleitung (Frau Herold / Herr Könitzer)** bei Vorliegen eines wichtigen Ausnahmegrunds genehmigt werden.
+- Spätestens am dritten Fehltag muss eine schriftliche Entschuldigung der Sorgeberechtigten vorliegen. Bei längerer Erkrankung kann ein ärztliches Attest verlangt werden.
+- **Beurlaubung:** Bis zu 3 Unterrichtstage schriftlich über die Klassenleitung. Längere Zeiträume oder **unmittelbar vor bzw. nach Schulferien und Feiertagen** dürfen **ausschließlich durch die Schulleitung (Frau Herold / Herr Könitzer)** bei Vorliegen eines wichtigen, triftigen Ausnahmegrunds genehmigt werden.
 
 ### §§ 43 ff. ThürSchulO & § 5 ThürSchG – Nachteilsausgleich & LRS:
 - Individueller Nachteilsausgleich (Zeitzugabe, technische Hilfsmittel, Notenschutz bei Rechtschreibung) bei LRS und sonderpädagogischem Förderbedarf.

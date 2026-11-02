@@ -128,17 +128,18 @@ export const TOPIC_ITEMS: TopicItem[] = [
     iconName: 'TrendingUp',
     category: 'careers',
     shortDesc: 'Hauptschulabschluss (§ 62), Qualifizierender Hauptschulabschluss (§ 63) und Realschulabschluss (§ 67 ThürSchulO).',
-    fullAnswer: 'An der Heimbürgeschule stehen alle Abschlüsse der Thüringer Schulordnung (ThürSchulO) offen:\n\n• **Hauptschulabschluss (§ 62 ThürSchulO)**: Automatisch bei Versetzung nach Klasse 9 (keine Prüfung).\n• **Qualifizierender Hauptschulabschluss (§ 63 ThürSchulO)**: Freiwillige BLF-Prüfung in Deutsch, Mathe und Englisch/Naturwissenschaft.\n• **Realschulabschluss (§ 67 ThürSchulO)**: Zentrale schriftliche Prüfungen (D, Ma, En), mündliche Prüfung und Projektarbeit (§ 47a ThürSchulO) in Klasse 10.\n• **Übergang zum Abitur (§ 68 ThürSchulO)**: Bei entsprechendem Notendurchschnitt Wechsel an ein Berufliches Gymnasium (3 Jahre) oder an die Fachoberschule FOS (2 Jahre).',
+    fullAnswer: 'An der Heimbürgeschule stehen alle Abschlüsse der Thüringer Schulordnung (ThürSchulO) offen:\n\n• **Hauptschulabschluss (§ 62 ThürSchulO)**: Automatisch bei erfolgreichem Durchlaufen und Versetzung am Ende von Klasse 9 (keine gesonderte Prüfung).\n• **Qualifizierender Hauptschulabschluss (§ 63 ThürSchulO)**: Freiwillige Prüfung am Ende von Klasse 9 (schriftlich in D und Ma, praktisch in WRT oder Wahlpflichtfach, mündlich in einem weiteren Fach nach Wahl). Wichtig: Keine BLF – die BLF existiert in Thüringen ausschließlich am Gymnasium!\n• **Realschulabschluss (§ 67 ThürSchulO)**: Zentrale schriftliche Prüfungen (D, Ma, En), mündliche Prüfung und die verpflichtende Projektarbeit (§ 47a ThürSchulO) in Klasse 10.\n• **Verkursung & Einstufung (§ 45 Abs. 2 & § 54 ThürSchulO)**: Differenzierung in Kurs I (Hauptschulniveau) und Kurs II (Realschulniveau) ab Kl. 7 (Ma, En) und Kl. 9 (De, Naturwissenschaft). Für die Aufnahme in Kl. 10 gilt § 53 ThürSchulO.\n• **Übergang zum Abitur (§ 68 ThürSchulO)**: Mit Realschulabschluss Wechsel an ein Berufliches Gymnasium (3 Jahre bis zur allgemeinen Hochschulreife) oder an die Fachoberschule FOS (2 Jahre bis zur Fachhochschulreife).',
     keyPoints: [
-      'Rechtssichere Grundlagen der Thüringer Schulordnung',
-      'Leistungsdifferenzierung in Grund- und Erweiterungskursen (§§ 28–30)',
+      'Rechtssichere Grundlagen der Thüringer Schulordnung (ThürSchulO)',
+      'Leistungsdifferenzierung in Kurs I und Kurs II (§ 45 Abs. 2, § 54)',
+      'Aufnahme in Klasse 10 nach § 53 ThürSchulO (Kurs II / Quali)',
       'Projektarbeit in Klasse 10 als Pflichtbestandteil (§ 47a)',
-      'Wechsel zum Abitur ans Berufliche Gymnasium möglich'
+      'Keine BLF an der Regelschule (BLF existiert nur am Gymnasium!)'
     ],
     relatedQuestions: [
       'Welche Voraussetzungen gelten für den Realschulabschluss nach § 67 ThürSchulO?',
       'Was beinhaltet die Projektarbeit nach § 47a ThürSchulO?',
-      'Wie funktioniert die Kurseinstufung in Grund- und Erweiterungskurse?'
+      'Wie funktioniert die Kurseinstufung in Kurs I und Kurs II nach § 54 ThürSchulO?'
     ]
   },
   {

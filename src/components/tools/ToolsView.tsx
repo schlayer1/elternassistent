@@ -307,6 +307,72 @@ export const ToolsView: React.FC<ToolsViewProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Infobox: Leistungsdifferenzierung & Verkursung (§ 45 Abs. 2 & § 54 ThürSchulO) */}
+          <div className="bg-gradient-to-br from-blue-50/70 via-indigo-50/40 to-slate-50 border border-blue-200/80 rounded-3xl p-6 md:p-7 shadow-soft space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-blue-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-blue-100 text-blue-700">
+                  <Scale className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-base font-bold text-slate-900">
+                    Leistungsdifferenzierung & Verkursung an der Regelschule
+                  </h4>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Gesetzliche Grundlagen nach § 45 Abs. 2 & § 54 Thüringer Schulordnung (ThürSchulO)
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => onAskQuestion('Wie funktioniert die Verkursung in Kurs I und Kurs II an der Heimbürgeschule nach § 54 ThürSchulO?')}
+                className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1 shadow-xs self-start sm:self-center"
+              >
+                <span>Im Chat vertiefen</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-700">
+              <div className="bg-white/80 p-4 rounded-2xl border border-blue-100 shadow-2xs space-y-1.5">
+                <div className="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                  1. Zwei Anforderungsebenen
+                </div>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  Unterricht ab Kl. 7 differenziert in <strong>Kurs I</strong> (Hauptschulniveau) und <strong>Kurs II</strong> (Realschulniveau). Klassen 5 & 6 lernen gemeinsam im Klassenverband (Orientierungsstufe).
+                </p>
+              </div>
+
+              <div className="bg-white/80 p-4 rounded-2xl border border-blue-100 shadow-2xs space-y-1.5">
+                <div className="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                  2. Fächer & Zeithorizont
+                </div>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  <strong>Ab Kl. 7:</strong> Mathematik und 1. Fremdsprache (Englisch).<br />
+                  <strong>Spätestens ab Kl. 9:</strong> Deutsch und ein naturwissenschaftliches Fach (z. B. Physik).
+                </p>
+              </div>
+
+              <div className="bg-white/80 p-4 rounded-2xl border border-blue-100 shadow-2xs space-y-1.5">
+                <div className="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                  3. Einstufung & Durchlässigkeit
+                </div>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  Ersteinstufung Ende Kl. 6 durch Klassenkonferenz (mind. Note 3 für Kurs II). Hohe Durchlässigkeit: Umstufungen nach § 54 jeweils zum Halbjahr oder Schuljahresende.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3 bg-amber-50/70 rounded-xl border border-amber-200/60 text-[11px] text-amber-900 flex items-start gap-2">
+              <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <span>
+                <strong>Wichtige Rechtsabgrenzung:</strong> An der Regelschule gibt es <strong>keine BLF</strong> (Besondere Leistungsfeststellung). Die BLF existiert in Thüringen ausschließlich am Gymnasium in Klasse 10! Für die Aufnahme in die 10. Klasse der Regelschule gilt § 53 ThürSchulO (Kurs-II-Niveau bzw. freiwillige Prüfung zum Quali nach § 63).
+              </span>
+            </div>
+          </div>
         </div>
       )}
 
