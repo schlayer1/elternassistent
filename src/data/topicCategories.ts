@@ -7,13 +7,13 @@ export const TOPIC_ITEMS: TopicItem[] = [
     badge: 'Sehr gefragt',
     iconName: 'GraduationCap',
     category: 'grade5',
-    shortDesc: 'Kennenlernwoche, Busverbindungen direkt vors Schulhaus, Schulrallye und Teambuilding mit Frau Horn.',
-    fullAnswer: 'Der Übergang von der Grundschule in die Klasse 5 an der Heimbürgeschule ist behutsam gestaltet:\n\n• **Kennenlernwoche ohne Fachunterricht**: Ankommen, Freunde finden, Schulhaus mit einer Rallye erkunden.\n• **Schulbusse**: Halten direkt sicher auf dem Vorplatz vor dem Haupteingang.\n• **Sozialarbeit & Teamgeist**: Begleitete Workshops mit Schulsozialarbeiterin Frau Horn.\n• **Schwimmtag**: Ein gemeinsamer Besuch im Freibad Kahla zur Feststellung der Schwimmfähigkeit und für viel Spaß.\n• **Materialausgabe**: Hefter und Grundmaterialien werden teilweise zentral abgestimmt.',
+    shortDesc: 'Kennenlernwoche, Busverbindungen direkt vors Schulhaus, Schulrallye, Teambuilding und verlässliche Unterrichtsgarantie.',
+    fullAnswer: 'Der Übergang von der Grundschule in die Klasse 5 an der Heimbürgeschule ist behutsam und verlässlich gestaltet:\n\n• **Kennenlernwoche ohne Fachunterricht**: Ankommen, Freunde finden, Schulhaus mit einer Rallye erkunden.\n• **Unterrichtsgarantie**: Feste Schulgarantie – kein Unterrichtsausfall von der 1. bis zur 6. Stunde für die Jahrgänge 5 und 6!\n• **Klassenraumprinzip**: Jede Klasse hat ihren festen Heimat-Klassenraum als vertrautes „Zuhause der Kinder“.\n• **Schulbusse**: Halten direkt sicher auf dem Vorplatz vor dem Haupteingang.\n• **Sozialarbeit & Teamgeist**: Begleitete Workshops mit Schulsozialarbeiterin Frau Horn (Zimmer 103).\n• **Schwimmtag**: Ein gemeinsamer Besuch im Freibad Kahla zur Feststellung der Schwimmfähigkeit und für viel Spaß.\n• **Montags Klassenrat**: Jeden Montag 1. Stunde gemeinsamer Start mit Wochenplan und Lernpatenschaften.',
     keyPoints: [
       'Erste Woche ist reine Kennenlernwoche ohne Notendruck',
-      'Busse halten direkt vor der Tür – kein gefährliches Queren',
-      'Unterstützung durch Schulsozialarbeiterin Frau Horn',
-      'EduPage-Zugang in der ersten Schulwoche'
+      'Unterrichtsgarantie: Kein Ausfall 1.–6. Stunde in Klasse 5 & 6',
+      'Fester Klassenraum als „Zuhause der Kinder“ (Klassenraumprinzip)',
+      'Busse halten direkt vor der Tür – kein gefährliches Queren'
     ],
     relatedQuestions: [
       'Wie läuft die Kennenlernwoche in Klasse 5 genau ab?',
@@ -27,18 +27,18 @@ export const TOPIC_ITEMS: TopicItem[] = [
     badge: 'Zukunftslernen',
     iconName: 'Sparkles',
     category: 'grade5',
-    shortDesc: 'Projektbasiertes Lernen jeden Dienstag in Klasse 5 zu den 17 UN-Nachhaltigkeitszielen (SDGs) ohne Notendruck.',
-    fullAnswer: 'Der Tu-Es-Day ist unser innovativer Projekttag für die 5. Klassen:\n\n• **Wöchentlicher Praxistag**: Jeden Dienstag forschen die 5. Klassen für 5 Schulstunden an praxisnahen Projekten.\n• **17 Nachhaltigkeitsziele (SDGs)**: Vom Schulgarten über soziale Aktionen im Altenheim bis zu Wetterdaten.\n• **3 Jahres-Etappen**: 1. Licht & Gemeinschaft, 2. Gut für mich – gut für die Welt, 3. Entdeckungsreise Kahla.\n• **Froschaufgabe („Eat the frog“)**: Schüler:innen erledigen die unangenehmste Aufgabe zuerst und dokumentieren ihre Fortschritte im Tu-Es-Day-Logbuch.',
+    shortDesc: 'Projektbasiertes Lernen jeden Dienstag in Klasse 5 für 4 Stunden zu den 17 UN-Nachhaltigkeitszielen (SDGs) – bewusst zensurenfrei.',
+    fullAnswer: 'Der Tu-Es-Day ist unser innovativer Projekttag für die 5. Klassen (angelehnt an das bundesweit evaluierte FREI-DAY-Konzept):\n\n• **Wöchentlicher Lernraum**: Jeden Dienstag forschen die 5. Klassen für **vier Schulstunden** an praxisnahen Zukunftsthemen.\n• **Bewusst zensuren- & notenfrei**: Der Tu-Es-Day verzichtet auf klassische Zensuren. Feedback, Reflexion und Prozessbegleitung stehen im Mittelpunkt, damit Kinder echte Neugier und Risikobereitschaft entwickeln.\n• **17 Nachhaltigkeitsziele (SDGs)**: Vom Schulgarten über soziale Aktionen im Seniorenheim bis zum Bau von Insektenhotels.\n• **Lernbegleiter statt Belehrende**: Lehrkräfte coachen die Kinder bei ihren selbstgewählten Projekten.\n• **Froschaufgabe („Eat the frog“)**: Schüler:innen erledigen die unangenehmste Aufgabe morgens zuerst und führen ihr eigenes Tu-Es-Day-Logbuch.',
     keyPoints: [
-      'Jeden Dienstag 5 Schulstunden freies Projektlernen',
-      'Stärkung von Teamgeist, Kreativität und Selbstständigkeit',
-      'Kein Notendruck – Fokus auf Zukunfts- und Medienkompetenz',
+      'Jeden Dienstag 4 Schulstunden freies Projektlernen',
+      'Bewusst noten- und zensurenfrei für freies Ausprobieren',
+      'Zukunftskompetenzen: Teamarbeit, Kreativität, Kritisches Denken',
       'Eigenes didaktisches Logbuch mit Froschaufgabe'
     ],
     relatedQuestions: [
       'Was ist der Tu-Es-Day in Klasse 5?',
-      'Was bedeutet das Prinzip der Froschaufgabe?',
-      'Welche Projekte bearbeiten die Kinder am Tu-Es-Day?'
+      'Gibt es am Tu-Es-Day Noten oder Zensuren?',
+      'Was bedeutet das Prinzip der Froschaufgabe?'
     ]
   },
   {
@@ -159,6 +159,46 @@ export const TOPIC_ITEMS: TopicItem[] = [
       'Wie melde ich das Mittagessen beim Diakoniewerk Apolda an?',
       'Wie miete ich ein Schließfach an der Heimbürgeschule?',
       'Bis wann muss eine Krankmeldung im Sekretariat vorliegen?'
+    ]
+  },
+  {
+    id: 'projektarbeit-10',
+    title: 'Projektarbeit Klasse 10 (§ 47a)',
+    badge: 'Prüfungsrelevant',
+    iconName: 'GraduationCap',
+    category: 'careers',
+    shortDesc: 'Verpflichtend für Realschulabschluss: Produkt, PA-Tagebuch, 100-Punkte-Raster und Betreuung durch Dr. Seifert.',
+    fullAnswer: 'Die Projektarbeit (PA) in Klassenstufe 10 nach § 47a ThürSchulO:\n\n• **Koordination**: Geleitet durch **Herrn Dr. Konstantin Seifert**.\n• **Teamarbeit**: 3 bis 5 Schüler:innen erarbeiten über Monate ein praktisches Produkt zur Weiternutzung in der Schule.\n• **Feste Termine 2026/27**: PA-Vertrag bis 21.09.2026, Zwischenpräsentation beim Tag der offenen Tür (5 Punkte), feste Abgabe von Produkt und schriftlichem PA-Tagebuch am **29. Januar 2027**.\n• **100-Punkte-Bewertung**: 30 Punkte Arbeitsprozess, 40 Punkte Projektergebnis (Tagebuch 10 Pkt, praktisches Produkt 30 Pkt), 30 Punkte mündliche Präsentation/Kolloquium.',
+    keyPoints: [
+      'Pflichtbestandteil für den Realschulabschluss (§ 47a ThürSchulO)',
+      'Koordinator an der Schule: Herr Dr. Konstantin Seifert',
+      'Feste Abgabe am 29. Januar 2027 (Produkt + PA-Tagebuch)',
+      'Offizielles 100-Punkte-Bewertungsraster der Thüringer Prüfungsverordnung'
+    ],
+    relatedQuestions: [
+      'Wie wird die Projektarbeit in Klasse 10 bewertet?',
+      'Bis wann muss die Projektarbeit abgegeben werden?',
+      'Wer betreut die Projektarbeit an der Heimbürgeschule?'
+    ]
+  },
+  {
+    id: 'bewertung-verbal',
+    title: 'Verhalten & Mitarbeit (§ 59 Abs. 2a)',
+    badge: 'Neue Notenregelung',
+    iconName: 'CheckCircle2',
+    category: 'daily',
+    shortDesc: 'Klassenstufe 5 bis 8: 4-stufige schriftliche Einschätzung statt Ziffernnoten für differenzierte Rückmeldung.',
+    fullAnswer: 'Neue Bewertungsregelung nach § 59 Abs. 2a Thüringer Schulordnung (ThürSchulO):\n\n• **Verbale Einschätzung statt Ziffernnoten**: In den Klassenstufen 5 bis 8 wird für Verhalten und Mitarbeit keine Note mehr erteilt, sondern eine 4-stufige verbale Einschätzung.\n• **Die 4 Stufen**: 1. „sehr gut“ (verdient in besonderem Maße Anerkennung), 2. „gut“ (entspricht in vollem Umfang den Erwartungen), 3. „befriedigend“ (entspricht im Ganzen ohne wesentliche Einschränkungen), 4. „nicht befriedigend“ (entspricht nicht den Erwartungen).\n• **Klassenkonferenz**: Beschluss erfolgt gemeinsam auf Basis pädagogischer Beobachtungs- und Kompetenzraster.\n• **Förderbedarf & Gesundheit**: Beeinträchtigungen und sonderpädagogischer Förderbedarf werden angemessen berücksichtigt.',
+    keyPoints: [
+      'Gilt für Klassenstufen 5 bis 8 nach § 59 Abs. 2a ThürSchulO',
+      '4 Stufen: sehr gut, gut, befriedigend, nicht befriedigend',
+      'Gemeinsamer Beschluss in der Klassenkonferenz',
+      'Fördert das Bewusstsein für Lern- und Sozialentwicklung'
+    ],
+    relatedQuestions: [
+      'Wie werden Verhalten und Mitarbeit in Klasse 5 bis 8 bewertet?',
+      'Welche Stufen gibt es bei der verbalen Zeugniseinschätzung?',
+      'Wer legt die Einschätzung für Verhalten und Mitarbeit fest?'
     ]
   }
 ];

@@ -93,6 +93,8 @@ export const DiscoverView: React.FC<DiscoverViewProps> = ({
         return <Sparkles className="w-5 h-5 text-amber-500" />;
       case 'Award':
         return <Award className="w-5 h-5 text-school-orange" />;
+      case 'CheckCircle2':
+        return <CheckCircle2 className="w-5 h-5 text-emerald-600" />;
       default:
         return <BookOpen className="w-5 h-5 text-school-blue" />;
     }

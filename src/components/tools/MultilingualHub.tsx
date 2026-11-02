@@ -30,22 +30,22 @@ interface MultilingualHubProps {
 }
 
 const CLASSES_LIST = [
-  { id: '5a', label: 'Klasse 5a – Herr Bastian Illesy' },
-  { id: '5b', label: 'Klasse 5b – Frau Fuhrmann' },
-  { id: '6a', label: 'Klasse 6a – Herr Hanke' },
-  { id: '6b', label: 'Klasse 6b – Frau Rosenkranz' },
-  { id: '6c', label: 'Klasse 6c – Frau Stiebritz' },
-  { id: '7a', label: 'Klasse 7a – Herr Richter' },
-  { id: '7b', label: 'Klasse 7b – Frau Seifert' },
-  { id: '7c', label: 'Klasse 7c – Herr Göthe' },
-  { id: '8a', label: 'Klasse 8a – Herr Schau' },
-  { id: '8b', label: 'Klasse 8b – Frau Marie-Christin Thum' },
-  { id: '8c', label: 'Klasse 8c – Herr Schmidt' },
-  { id: '9a', label: 'Klasse 9a – Herr Streit' },
-  { id: '9b', label: 'Klasse 9b – Frau Weiland' },
-  { id: '9c', label: 'Klasse 9c – Herr Schirmer' },
-  { id: '10a', label: 'Klasse 10a – Frau Schädlich' },
-  { id: '10b', label: 'Klasse 10b – Frau Oehring' }
+  { id: '5a', label: 'Klasse 5a – Frau Vanessa Halm (Tandem: Fr. Kleinfeld)' },
+  { id: '5b', label: 'Klasse 5b – Herr Max König (Tandem: Fr. Kleinfeld)' },
+  { id: '6a', label: 'Klasse 6a – Frau Marie-Christin Thum' },
+  { id: '6b', label: 'Klasse 6b – Frau Jennifer Keller' },
+  { id: '6c', label: 'Klasse 6c – Herr Lukas Gräfe' },
+  { id: '7a', label: 'Klasse 7a – Herr Bastian Illesy' },
+  { id: '7b', label: 'Klasse 7b – Herr Tobias Allerdt' },
+  { id: '7c', label: 'Klasse 7c – Herr Sebastian Teubert' },
+  { id: '8a', label: 'Klasse 8a – Herr Florian Nowak' },
+  { id: '8b', label: 'Klasse 8b – Frau Marie Funk' },
+  { id: '8c', label: 'Klasse 8c – Herr Maximilian Keim' },
+  { id: '9a', label: 'Klasse 9a – Herr Sebastian Schwappach (Tandem: Hr. Wesely)' },
+  { id: '9b', label: 'Klasse 9b – Frau Stephanie Voigt (Tandem: Hr. Wesely)' },
+  { id: '9c', label: 'Klasse 9c – Frau Romana Schirmer (Tandem: Hr. Wesely)' },
+  { id: '10a', label: 'Klasse 10a – Frau Andrea Surowy (Tandem: Fr. Wagner)' },
+  { id: '10b', label: 'Klasse 10b – Herr Dr. Konstantin Seifert (Tandem: Fr. Wagner)' }
 ];
 
 export const MultilingualHub: React.FC<MultilingualHubProps> = ({
