@@ -14,17 +14,15 @@ const decodeDefaultKey = (): string => {
 
 export const DEFAULT_SCHOOL_GEMINI_KEY = decodeDefaultKey();
 
-// Kaskade aktueller, verifizierter Modelle (Stand 2026, absteigende Priorität)
-// Schließt veraltete/eingestellte 1.5, 2.0 und 2.5 Modelle strikt aus!
+// Kaskade aktueller, verifizierter Free-Tier-Modelle (Stand Nov 2026, absteigende Priorität)
+// Schließt veraltete/eingestellte Modelle (1.5, 2.0, 2.5, 3.5-flash, 3.7-flash) sowie Paid-Tier-Modelle strikt aus!
 export const CANDIDATE_FLASH_MODELS = [
+  'gemini-4-hydrogen',
   'gemini-flash-lite-latest',
-  'gemini-3-flash-preview',
-  'gemini-flash-latest',
-  'gemini-3.6-flash',
-  'gemini-3.7-flash',
+  'gemini-3.5-flash-lite',
   'gemini-3.8-flash',
-  'gemini-3.5-flash',
-  'gemini-3.1-flash-lite-preview',
+  'gemini-3.6-flash',
+  'gemini-flash-latest',
 ];
 
 export const getActiveApiKey = (): string => {
