@@ -17,10 +17,7 @@ export const executeGeminiCascade = async (
   language: string = 'de',
   chatHistory: { role: 'user' | 'model'; text: string }[] = []
 ): Promise<GeminiResponse> => {
-  const activeKey = getActiveApiKey();
-  if (!activeKey) {
-    throw new Error('Kein gültiger Google Gemini API-Schlüssel gefunden. Bitte hinterlegen Sie einen Schlüssel.');
-  }
+  const customKey = getActiveApiKey();
 
   // Live-Wissensdaten aus Google Docs abrufen (falls konfiguriert)
   let liveKnowledgeSection = '';
@@ -173,8 +170,108 @@ Wichtige Verhaltens- und Usability-Regeln:
     }
   ];
 
+  // Helper zum Parsen von Vorschlägen und Aktionskarten
+  const formatAssistantResponse = (candidateText: string, model: string): GeminiResponse => {
+    const suggestions: string[] = [];
+    let actionCard: ActionCardData | undefined = undefined;
+    let cleanedText = candidateText;
+
+    const suggestionRegex = />>>\s*VORSCHLAG:\s*(.+)$/gim;
+    let match: RegExpExecArray | null;
+    while ((match = suggestionRegex.exec(candidateText)) !== null) {
+      if (match[1] && match[1].trim()) {
+        suggestions.push(match[1].trim());
+      }
+    }
+    cleanedText = cleanedText.replace(/>>>\s*VORSCHLAG:\s*.+$/gim, '').trim();
+
+    const actionRegex = />>>\s*AKTION:\s*(\{.*\})/im;
+    const actionMatch = cleanedText.match(actionRegex);
+    if (actionMatch && actionMatch[1]) {
+      try {
+        const parsed = JSON.parse(actionMatch[1]);
+        actionCard = {
+          title: parsed.title || 'Aktion',
+          category: parsed.category || 'Information',
+          summary: parsed.summary || '',
+          contact: parsed.contactRole ? {
+            name: parsed.contactName || '',
+            role: parsed.contactRole,
+            phone: parsed.contactPhone,
+            email: parsed.contactEmail
+          } : undefined,
+          link: parsed.url ? {
+            label: parsed.urlLabel || 'Zur Website',
+            url: parsed.url
+          } : undefined
+        };
+      } catch (e) {
+        console.warn('ActionCard JSON parse error:', e);
+      }
+      cleanedText = cleanedText.replace(actionRegex, '').trim();
+    }
+
+    if (suggestions.length === 0) {
+      const fallbackMap: Record<string, string[]> = {
+        ro: ['Aveți și alte întrebări despre acest subiect?', 'La cine pot apela la școală?'],
+        uk: ['Чи є у вас додаткові запитання щодо цього?', 'До кого у школі я можу звернутися?'],
+        ru: ['Есть ли у вас дополнительные вопросы по этой теме?', 'К кому в школе я могу обратиться?'],
+        ar: ['هل لديك أي أسئلة أخرى حول هذا الموضوع؟', 'بمن يمكنني الاتصال في المدرسة؟'],
+        en: ['Are there any further questions about this?', 'Who can I contact at the school?'],
+        de: ['Gibt es weitere Fragen dazu?', 'An wen kann ich mich an der Schule wenden?']
+      };
+      suggestions.push(...(fallbackMap[language] || fallbackMap['de']));
+    }
+
+    return {
+      text: cleanedText,
+      modelUsed: model,
+      suggestions: suggestions.slice(0, 3),
+      actionCard
+    };
+  };
+
+  // 1. Primärer Pfad: Sicherer Serverless-Proxy (/api/gemini)
+  try {
+    const proxyRes = await fetch('/api/gemini', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        apiKey: customKey || 'serverless-proxy',
+        systemInstruction,
+        contents,
+        model: cachedWorkingModel || 'auto',
+        temperature: 0.2,
+        maxOutputTokens: 2048
+      })
+    });
+
+    if (proxyRes.ok) {
+      const data = await proxyRes.json();
+      if (data?.text) {
+        const usedModel = data.model || cachedWorkingModel;
+        cachedWorkingModel = usedModel;
+        return formatAssistantResponse(data.text, usedModel);
+      }
+    }
+
+    if (proxyRes.status !== 404) {
+      const errData = await proxyRes.json().catch(() => ({}));
+      throw new Error(errData?.error || `HTTP ${proxyRes.status} vom Gemini-Proxy`);
+    }
+  } catch (proxyErr: any) {
+    if (proxyErr?.message && !proxyErr.message.includes('404')) {
+      throw proxyErr;
+    }
+  }
+
+  // 2. Fallback bei 404 nur mit persönlichem BYOK-Schlüssel
+  if (!customKey) {
+    throw new Error('Der Gemini-Server-Proxy (/api/gemini) ist nicht erreichbar.');
+  }
+
   for (const model of candidateModels) {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(customKey)}`;
 
     try {
       const response = await fetch(endpoint, {
@@ -198,68 +295,7 @@ Wichtige Verhaltens- und Usability-Regeln:
 
         if (candidateText && candidateText.trim().length > 0) {
           cachedWorkingModel = model;
-
-          // Parse suggestions and action cards
-          const suggestions: string[] = [];
-          let actionCard: ActionCardData | undefined = undefined;
-          let cleanedText = candidateText;
-
-          // Extract >>> VORSCHLAG: ...
-          const suggestionRegex = />>>\s*VORSCHLAG:\s*(.+)$/gim;
-          let match: RegExpExecArray | null;
-          while ((match = suggestionRegex.exec(candidateText)) !== null) {
-            if (match[1] && match[1].trim()) {
-              suggestions.push(match[1].trim());
-            }
-          }
-          cleanedText = cleanedText.replace(/>>>\s*VORSCHLAG:\s*.+$/gim, '').trim();
-
-          // Extract >>> AKTION: { ... }
-          const actionRegex = />>>\s*AKTION:\s*(\{.*\})/im;
-          const actionMatch = cleanedText.match(actionRegex);
-          if (actionMatch && actionMatch[1]) {
-            try {
-              const parsed = JSON.parse(actionMatch[1]);
-              actionCard = {
-                title: parsed.title || 'Aktion',
-                category: parsed.category || 'Information',
-                summary: parsed.summary || '',
-                contact: parsed.contactRole ? {
-                  name: parsed.contactName || '',
-                  role: parsed.contactRole,
-                  phone: parsed.contactPhone,
-                  email: parsed.contactEmail
-                } : undefined,
-                link: parsed.url ? {
-                  label: parsed.urlLabel || 'Zur Website',
-                  url: parsed.url
-                } : undefined
-              };
-            } catch (e) {
-              console.warn('ActionCard JSON parse error:', e);
-            }
-            cleanedText = cleanedText.replace(actionRegex, '').trim();
-          }
-
-          // Fallback suggestions in the target language if none were generated
-          if (suggestions.length === 0) {
-            const fallbackMap: Record<string, string[]> = {
-              ro: ['Aveți și alte întrebări despre acest subiect?', 'La cine pot apela la școală?'],
-              uk: ['Чи є у вас додаткові запитання щодо цього?', 'До кого у школі я можу звернутися?'],
-              ru: ['Есть ли у вас дополнительные вопросы по этой теме?', 'К кому в школе я могу обратиться?'],
-              ar: ['هل لديك أي أسئلة أخرى حول هذا الموضوع؟', 'بمن يمكنني الاتصال في المدرسة؟'],
-              en: ['Are there any further questions about this?', 'Who can I contact at the school?'],
-              de: ['Gibt es weitere Fragen dazu?', 'An wen kann ich mich an der Schule wenden?']
-            };
-            suggestions.push(...(fallbackMap[language] || fallbackMap['de']));
-          }
-
-          return {
-            text: cleanedText,
-            modelUsed: model,
-            suggestions: suggestions.slice(0, 3),
-            actionCard
-          };
+          return formatAssistantResponse(candidateText, model);
         }
       }
 
@@ -292,10 +328,7 @@ export const analyzeLetterWithGemini = async (
     targetLanguage: string;
   }
 ): Promise<LetterAnalysisResult> => {
-  const activeKey = getActiveApiKey();
-  if (!activeKey) {
-    throw new Error('Kein gültiger Google Gemini API-Schlüssel gefunden.');
-  }
+  const customKey = getActiveApiKey();
 
   const langNames: Record<string, string> = {
     ro: 'Rumänisch (Română)',
@@ -344,6 +377,59 @@ Antworte AUSSCHLIESSLICH im folgenden JSON-Format ohne Markdown-Codeblöcke (kei
     });
   }
 
+  const parseLetterResult = (rawJson: string, model: string): LetterAnalysisResult => {
+    const cleaned = rawJson.replace(/```(?:json)?/g, '').replace(/```/g, '').trim();
+    const parsed = JSON.parse(cleaned);
+    cachedWorkingModel = model;
+    return {
+      title: parsed.title || 'Schulmitteilung',
+      originalSummary: parsed.originalSummary || '',
+      translation: parsed.translation || '',
+      actionItems: Array.isArray(parsed.actionItems) ? parsed.actionItems : [],
+      deadline: parsed.deadline || undefined,
+      cost: parsed.cost || undefined,
+      signatureRequired: !!parsed.signatureRequired,
+      contactPerson: parsed.contactPerson || undefined
+    };
+  };
+
+  // 1. Primärer Pfad: Sicherer Serverless-Proxy (/api/gemini)
+  try {
+    const proxyRes = await fetch('/api/gemini', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        apiKey: customKey || 'serverless-proxy',
+        parts,
+        model: cachedWorkingModel || 'auto',
+        temperature: 0.2,
+        maxOutputTokens: 2048,
+        responseMimeType: 'application/json'
+      })
+    });
+
+    if (proxyRes.ok) {
+      const data = await proxyRes.json();
+      if (data?.text) {
+        return parseLetterResult(data.text, data.model || cachedWorkingModel);
+      }
+    }
+
+    if (proxyRes.status !== 404) {
+      const errData = await proxyRes.json().catch(() => ({}));
+      throw new Error(errData?.error || `HTTP ${proxyRes.status} vom Gemini-Proxy`);
+    }
+  } catch (proxyErr: any) {
+    if (proxyErr?.message && !proxyErr.message.includes('404')) {
+      throw proxyErr;
+    }
+  }
+
+  // 2. Fallback bei 404 nur mit persönlichem BYOK-Schlüssel
+  if (!customKey) {
+    throw new Error('Der Gemini-Server-Proxy (/api/gemini) ist nicht erreichbar.');
+  }
+
   const candidateModels = [
     cachedWorkingModel,
     ...CANDIDATE_FLASH_MODELS.filter((m) => m !== cachedWorkingModel)
@@ -352,7 +438,7 @@ Antworte AUSSCHLIESSLICH im folgenden JSON-Format ohne Markdown-Codeblöcke (kei
   let lastError: Error | null = null;
 
   for (const model of candidateModels) {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(customKey)}`;
 
     try {
       const response = await fetch(endpoint, {
@@ -373,19 +459,7 @@ Antworte AUSSCHLIESSLICH im folgenden JSON-Format ohne Markdown-Codeblöcke (kei
         const rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (rawJson) {
           try {
-            const cleaned = rawJson.replace(/```(?:json)?/g, '').replace(/```/g, '').trim();
-            const parsed = JSON.parse(cleaned);
-            cachedWorkingModel = model;
-            return {
-              title: parsed.title || 'Schulmitteilung',
-              originalSummary: parsed.originalSummary || '',
-              translation: parsed.translation || '',
-              actionItems: Array.isArray(parsed.actionItems) ? parsed.actionItems : [],
-              deadline: parsed.deadline || undefined,
-              cost: parsed.cost || undefined,
-              signatureRequired: !!parsed.signatureRequired,
-              contactPerson: parsed.contactPerson || undefined
-            };
+            return parseLetterResult(rawJson, model);
           } catch (pe) {
             console.warn('JSON parse error from Gemini:', pe);
           }
