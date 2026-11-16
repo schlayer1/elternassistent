@@ -14,8 +14,11 @@ export interface UIStrings {
   header: {
     title: string;
     subtitle: string;
+    searching: string;
     thinking: string;
+    listening: string;
     speaking: string;
+    retrying: string;
     ready: string;
     settingsTitle: string;
   };
@@ -103,8 +106,11 @@ export const TRANSLATIONS: Record<SupportedLanguage, UIStrings> = {
     header: {
       title: 'Staatliche Regelschule „Johann Wilhelm Heimbürge“ Kahla',
       subtitle: 'Digitaler Elternassistent & Wegweiser ohne Login',
+      searching: 'Sucht Wissen...',
       thinking: 'Denkt nach...',
+      listening: 'Hört zu...',
       speaking: 'Spricht...',
+      retrying: 'Wechselt Modell...',
       ready: 'Bereit',
       settingsTitle: 'Schulverwaltung (Passwortgeschützt)'
     },
@@ -206,8 +212,11 @@ Wobei darf ich Ihnen heute helfen?`,
     header: {
       title: 'Școala Gimnazială de Stat „Johann Wilhelm Heimbürge” Kahla',
       subtitle: 'Ghid digital pentru părinți & asistent fără autentificare',
+      searching: 'Caută...',
       thinking: 'Gândește...',
+      listening: 'Ascultă...',
       speaking: 'Vorbește...',
+      retrying: 'Reîncearcă...',
       ready: 'Gata',
       settingsTitle: 'Administrație școlară (protejat prin parolă)'
     },
@@ -309,8 +318,11 @@ Cu ce vă pot fi de folos astăzi?`,
     header: {
       title: 'Державна школа «Йоганн Вільгельм Гаймбюрге» Кала',
       subtitle: 'Цифровий асистент для батьків без необхідності входу',
+      searching: 'Шукає...',
       thinking: 'Аналізує...',
+      listening: 'Слухає...',
       speaking: 'Говорить...',
+      retrying: 'Повтор...',
       ready: 'Готовий',
       settingsTitle: 'Керівництво школи (захищено паролем)'
     },
@@ -412,8 +424,11 @@ Cu ce vă pot fi de folos astăzi?`,
     header: {
       title: 'Государственная школа «Иоганн Вильгельм Хаймбюрге» Кала',
       subtitle: 'Цифровой помощник для родителей без входа в систему',
+      searching: 'Ищет...',
       thinking: 'Думает...',
+      listening: 'Слушает...',
       speaking: 'Говорит...',
+      retrying: 'Повтор...',
       ready: 'Готов',
       settingsTitle: 'Руководство школы (защищено паролем)'
     },
@@ -515,8 +530,11 @@ Cu ce vă pot fi de folos astăzi?`,
     header: {
       title: 'State Secondary School “Johann Wilhelm Heimbürge” Kahla',
       subtitle: 'Digital Parent Assistant & School Guide without Login',
+      searching: 'Searching...',
       thinking: 'Thinking...',
+      listening: 'Listening...',
       speaking: 'Speaking...',
+      retrying: 'Retrying...',
       ready: 'Ready',
       settingsTitle: 'School Administration (Password protected)'
     },
@@ -618,8 +636,11 @@ How may I assist you today?`,
     header: {
       title: 'مدرسة يوهان فيلهلم هايمبورغه الحكومية في كاهلا',
       subtitle: 'الدليل الرقمي ومساعد أولياء الأمور دون تسجيل دخول',
+      searching: 'يبحث...',
       thinking: 'يفكر...',
+      listening: 'يستمع...',
       speaking: 'يتحدث...',
+      retrying: 'إعادة المحاولة...',
       ready: 'جاهز',
       settingsTitle: 'إدارة المدرسة (محمي بكلمة مرور)'
     },

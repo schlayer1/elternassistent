@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SupportedLanguage } from '../../types/assistant';
+import { SupportedLanguage, JarvisStatus } from '../../types/assistant';
 import { TRANSLATIONS } from '../../data/translations';
 import { JarvisReactor } from '../jarvis/JarvisReactor';
 import { liveSyncService, LiveDocData } from '../../services/liveSyncService';
@@ -28,7 +28,7 @@ import {
 interface HeaderProps {
   currentLanguage: SupportedLanguage;
   onLanguageChange: (lang: SupportedLanguage) => void;
-  jarvisStatus: 'idle' | 'thinking' | 'speaking';
+  jarvisStatus: JarvisStatus;
   onNavigateToChat: () => void;
   onSyncUpdated?: () => void;
 }
@@ -232,28 +232,31 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Right Area: JARVIS Core Indicator, Language Chooser & Settings */}
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Live JARVIS Hologram Reactor Widget */}
-            <div
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#F1E9DA] rounded-xl shadow-soft cursor-pointer hover:border-school-blue/40 transition-colors h-10 select-none"
-              title={
-                jarvisStatus === 'thinking'
-                  ? t.thinking
-                  : jarvisStatus === 'speaking'
-                  ? t.speaking
-                  : t.ready
-              }
-              onClick={onNavigateToChat}
-            >
-              <div className="w-6 h-6 flex items-center justify-center">
-                <JarvisReactor status={jarvisStatus} size="sm" />
-              </div>
-              <span className="text-xs font-semibold text-slate-700 hidden sm:inline">
-                {jarvisStatus === 'thinking'
-                  ? t.thinking
-                  : jarvisStatus === 'speaking'
-                  ? t.speaking
-                  : t.ready}
-              </span>
-            </div>
+            {(() => {
+              const statusLabelMap: Record<JarvisStatus, string> = {
+                idle: t.ready,
+                searching: t.searching || t.thinking,
+                thinking: t.thinking,
+                listening: t.listening || t.ready,
+                speaking: t.speaking,
+                retrying: t.retrying || t.thinking,
+              };
+              const statusText = statusLabelMap[jarvisStatus];
+              return (
+                <div
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#F1E9DA] rounded-xl shadow-soft cursor-pointer hover:border-school-blue/40 transition-colors h-10 select-none"
+                  title={statusText}
+                  onClick={onNavigateToChat}
+                >
+                  <div className="w-7 h-7 flex items-center justify-center">
+                    <JarvisReactor status={jarvisStatus} size="sm" />
+                  </div>
+                  <span className="text-xs font-semibold text-slate-700 hidden sm:inline">
+                    {statusText}
+                  </span>
+                </div>
+              );
+            })()}
 
             {/* Language Selector */}
             <div className="relative group">

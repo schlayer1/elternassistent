@@ -16,11 +16,13 @@ export interface GeminiResponse {
 export const executeGeminiCascade = async (
   prompt: string,
   language: string = 'de',
-  chatHistory: { role: 'user' | 'model'; text: string }[] = []
+  chatHistory: { role: 'user' | 'model'; text: string }[] = [],
+  onStatusChange?: (phase: 'searching' | 'thinking' | 'retrying') => void
 ): Promise<GeminiResponse> => {
   const customKey = getActiveApiKey();
 
   // Live-Wissensdaten aus Google Docs abrufen (falls konfiguriert)
+  onStatusChange?.('searching');
   let liveKnowledgeSection = '';
   try {
     const liveDoc = await liveSyncService.fetchLiveKnowledge();
@@ -241,6 +243,7 @@ Wichtige Verhaltens- und Usability-Regeln:
   };
 
   // 1. Primärer Pfad: Sicherer Serverless-Proxy (/api/gemini)
+  onStatusChange?.('thinking');
   try {
     const proxyRes = await fetch('/api/gemini', {
       method: 'POST',
@@ -279,7 +282,11 @@ Wichtige Verhaltens- und Usability-Regeln:
     throw new Error('Der Gemini-Server-Proxy (/api/gemini) ist nicht erreichbar.');
   }
 
-  for (const model of candidateModels) {
+  for (let idx = 0; idx < candidateModels.length; idx++) {
+    const model = candidateModels[idx];
+    if (idx > 0) {
+      onStatusChange?.('retrying');
+    }
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(customKey)}`;
 
     try {

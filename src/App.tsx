@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TabType, SupportedLanguage } from './types/assistant';
+import { TabType, SupportedLanguage, JarvisStatus } from './types/assistant';
 import { Header } from './components/layout/Header';
 import { Navigation } from './components/layout/Navigation';
 import { DiscoverView } from './components/discover/DiscoverView';
@@ -12,7 +12,7 @@ import { AlertTriangle, X } from 'lucide-react';
 export default function App() {
   const [currentTab, setCurrentTab] = useState<TabType>('discover');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('de');
-  const [jarvisStatus, setJarvisStatus] = useState<'idle' | 'thinking' | 'speaking'>('idle');
+  const [jarvisStatus, setJarvisStatus] = useState<JarvisStatus>('idle');
   const [pendingQuestion, setPendingQuestion] = useState<string | null>(null);
   const [urgentNotice, setUrgentNotice] = useState<string | null>(null);
   const [showNoticeBanner, setShowNoticeBanner] = useState<boolean>(true);

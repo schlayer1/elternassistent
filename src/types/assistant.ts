@@ -1,5 +1,7 @@
 export type TabType = 'discover' | 'chat' | 'tools' | 'info';
 
+export type JarvisStatus = 'idle' | 'searching' | 'thinking' | 'listening' | 'speaking' | 'retrying';
+
 export interface ChatMessage {
   id: string;
   sender: 'user' | 'assistant' | 'system';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChatMessage, SupportedLanguage, ActionCardData } from '../../types/assistant';
+import { ChatMessage, SupportedLanguage, ActionCardData, JarvisStatus } from '../../types/assistant';
 import { executeGeminiCascade } from '../../services/geminiService';
 import { SpeechService } from '../../services/speechService';
 import { storageService } from '../../services/storageService';
@@ -31,8 +31,8 @@ import {
 
 interface ChatViewProps {
   currentLanguage: SupportedLanguage;
-  jarvisStatus: 'idle' | 'thinking' | 'speaking';
-  setJarvisStatus: (status: 'idle' | 'thinking' | 'speaking') => void;
+  jarvisStatus: JarvisStatus;
+  setJarvisStatus: (status: JarvisStatus) => void;
   initialQuestion?: string | null;
   onClearInitialQuestion?: () => void;
   onNavigateToTools?: () => void;
@@ -138,11 +138,15 @@ export const ChatView: React.FC<ChatViewProps> = ({
     }
   };
 
+  const isProcessing =
+    jarvisStatus === 'searching' || jarvisStatus === 'thinking' || jarvisStatus === 'retrying';
+
   // Handle voice speech-to-text
   const handleToggleVoiceInput = () => {
     if (isListening) {
       SpeechService.stopListening();
       setIsListening(false);
+      if (!isProcessing) setJarvisStatus('idle');
       return;
     }
 
@@ -152,17 +156,20 @@ export const ChatView: React.FC<ChatViewProps> = ({
       (transcript) => {
         setInputText(transcript);
       },
-      (error) => {
+      () => {
         setSpeechError('Mikrofonzugriff nicht möglich oder keine Sprache erkannt.');
         setIsListening(false);
+        if (!isProcessing) setJarvisStatus('idle');
       },
       () => {
         setIsListening(false);
+        if (!isProcessing) setJarvisStatus('idle');
       }
     );
 
     if (started) {
       setIsListening(true);
+      if (!isProcessing) setJarvisStatus('listening');
     } else {
       setSpeechError('Spracheingabe wird in diesem Browser leider nicht unterstützt.');
     }
@@ -171,11 +178,15 @@ export const ChatView: React.FC<ChatViewProps> = ({
   // Send message
   const handleSendMessage = async (textToSend?: string) => {
     const query = (textToSend || inputText).trim();
-    if (!query || jarvisStatus === 'thinking') return;
+    if (!query || isProcessing) return;
 
-    // Stop ongoing speech
+    // Stop ongoing speech / voice input
     SpeechService.stopSpeaking();
     setSpeakingMessageId(null);
+    if (isListening) {
+      SpeechService.stopListening();
+      setIsListening(false);
+    }
 
     const userMsg: ChatMessage = {
       id: `user_${Date.now()}`,
@@ -186,7 +197,7 @@ export const ChatView: React.FC<ChatViewProps> = ({
 
     setMessages((prev) => [...prev, userMsg]);
     setInputText('');
-    setJarvisStatus('thinking');
+    setJarvisStatus('searching');
 
     try {
       // Build conversation history for context
@@ -197,7 +208,9 @@ export const ChatView: React.FC<ChatViewProps> = ({
           text: m.text
         }));
 
-      const res = await executeGeminiCascade(query, currentLanguage, history);
+      const res = await executeGeminiCascade(query, currentLanguage, history, (phase) => {
+        setJarvisStatus(phase);
+      });
 
       // Automatischer Fallback-Detektor: Wissenslücken lautlos im Hintergrund protokollieren
       if (res.isKnowledgeGap || feedbackService.detectKnowledgeGap(res.text)) {
@@ -284,8 +297,14 @@ export const ChatView: React.FC<ChatViewProps> = ({
                 status={jarvisStatus}
                 size="md"
                 label={
-                  jarvisStatus === 'thinking'
-                    ? 'Analysiere Wissensbasis...'
+                  jarvisStatus === 'searching'
+                    ? 'Durchsuche Wissensbasis...'
+                    : jarvisStatus === 'thinking'
+                    ? 'Analysiere & formuliere...'
+                    : jarvisStatus === 'retrying'
+                    ? 'Wechsle KI-Modell...'
+                    : jarvisStatus === 'listening'
+                    ? 'Spracheingabe aktiv...'
                     : jarvisStatus === 'speaking'
                     ? 'Sprachausgabe aktiv'
                     : 'System bereit'
@@ -525,7 +544,7 @@ export const ChatView: React.FC<ChatViewProps> = ({
         })}
 
         {/* Spectacular JARVIS Thinking Arc-Reactor Animation */}
-        {jarvisStatus === 'thinking' && (
+        {isProcessing && (
           <div className="flex items-start gap-2.5 max-w-[85%] animate-in fade-in duration-300">
             <div className="w-8 h-8 rounded-xl bg-school-blue flex items-center justify-center text-white shrink-0 mt-1 shadow-soft">
               <Sparkles className="w-4 h-4 text-white" />
@@ -533,12 +552,22 @@ export const ChatView: React.FC<ChatViewProps> = ({
 
             <div className="p-5 bg-white border border-[#0B7BA7]/30 rounded-2xl shadow-jarvis flex flex-col items-center justify-center w-full max-w-sm">
               <JarvisReactor
-                status="thinking"
+                status={jarvisStatus}
                 size="md"
-                label="HBS Kognitionskern aktiv"
+                label={
+                  jarvisStatus === 'searching'
+                    ? 'Durchsuche Live-Wissen...'
+                    : jarvisStatus === 'retrying'
+                    ? 'Modell-Kaskade aktiv...'
+                    : 'HBS Kognitionskern aktiv'
+                }
               />
               <p className="text-xs text-slate-500 font-medium text-center mt-3 animate-pulse">
-                Heimbürgeschule Wissensbasis wird durchsucht...
+                {jarvisStatus === 'searching'
+                  ? 'Heimbürgeschule Wissensbasis & Live-Notizen werden geprüft...'
+                  : jarvisStatus === 'retrying'
+                  ? 'Schalte automatisch auf nächstes Gemini-Modell um...'
+                  : 'Antwort wird fachlich geprüft und formuliert...'}
               </p>
             </div>
           </div>
@@ -614,10 +643,10 @@ export const ChatView: React.FC<ChatViewProps> = ({
               {/* Send Button */}
               <button
                 type="button"
-                disabled={!inputText.trim() || jarvisStatus === 'thinking'}
+                disabled={!inputText.trim() || isProcessing}
                 onClick={() => handleSendMessage()}
                 className={`p-2.5 rounded-xl font-bold transition-all flex items-center justify-center shadow-soft ${
-                  inputText.trim() && jarvisStatus !== 'thinking'
+                  inputText.trim() && !isProcessing
                     ? 'bg-gradient-to-r from-school-blue to-school-blueDark text-white hover:scale-105 active:scale-95'
                     : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                 }`}
