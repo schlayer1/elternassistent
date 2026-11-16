@@ -2,6 +2,7 @@ import { defineConfig, loadEnv, Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { EdgeTTS } from 'node-edge-tts';
 import geminiHandler from './api/gemini';
+import feedbackHandler from './api/feedback';
 
 function edgeTtsDevPlugin(): Plugin {
   return {
@@ -59,47 +60,52 @@ function edgeTtsDevPlugin(): Plugin {
   };
 }
 
-function geminiLocalProxyPlugin(): Plugin {
-  const attach = (server: any) => {
-    server.middlewares.use('/api/gemini', async (req: any, res: any) => {
-      try {
-        let rawBody = '';
-        for await (const chunk of req) {
-          rawBody += typeof chunk === 'string' ? chunk : Buffer.from(chunk).toString('utf8');
-        }
-        let body: any = {};
-        if (rawBody) {
-          try {
-            body = JSON.parse(rawBody);
-          } catch {
-            body = rawBody;
-          }
-        }
-        const mockReq = { method: req.method, headers: req.headers, body };
-        const mockRes = {
-          setHeader: (k: string, v: string) => res.setHeader(k, v),
-          status: (code: number) => {
-            res.statusCode = code;
-            return {
-              json: (data: any) => {
-                res.setHeader('Content-Type', 'application/json');
-                res.end(JSON.stringify(data));
-              },
-              end: () => res.end(),
-            };
-          },
-        };
-        await geminiHandler(mockReq, mockRes);
-      } catch (err: any) {
-        res.statusCode = 500;
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify({ error: err?.message || 'Server error' }));
+function mountVercelHandler(server: any, route: string, handler: (req: any, res: any) => Promise<any>) {
+  server.middlewares.use(route, async (req: any, res: any) => {
+    try {
+      let rawBody = '';
+      for await (const chunk of req) {
+        rawBody += typeof chunk === 'string' ? chunk : Buffer.from(chunk).toString('utf8');
       }
-    });
+      let body: any = {};
+      if (rawBody) {
+        try {
+          body = JSON.parse(rawBody);
+        } catch {
+          body = rawBody;
+        }
+      }
+      const mockReq = { method: req.method, headers: req.headers, body };
+      const mockRes = {
+        setHeader: (k: string, v: string) => res.setHeader(k, v),
+        status: (code: number) => {
+          res.statusCode = code;
+          return {
+            json: (data: any) => {
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify(data));
+            },
+            end: () => res.end(),
+          };
+        },
+      };
+      await handler(mockReq, mockRes);
+    } catch (err: any) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: err?.message || 'Server error' }));
+    }
+  });
+}
+
+function vercelLocalProxyPlugin(): Plugin {
+  const attach = (server: any) => {
+    mountVercelHandler(server, '/api/gemini', geminiHandler);
+    mountVercelHandler(server, '/api/feedback', feedbackHandler);
   };
 
   return {
-    name: 'gemini-local-proxy',
+    name: 'vercel-local-proxy',
     configureServer: attach,
     configurePreviewServer: attach,
   };
@@ -114,7 +120,7 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
-    plugins: [react(), edgeTtsDevPlugin(), geminiLocalProxyPlugin()],
+    plugins: [react(), edgeTtsDevPlugin(), vercelLocalProxyPlugin()],
     server: {
       port: 3000,
       open: true,

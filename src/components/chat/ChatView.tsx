@@ -200,7 +200,7 @@ export const ChatView: React.FC<ChatViewProps> = ({
       const res = await executeGeminiCascade(query, currentLanguage, history);
 
       // Automatischer Fallback-Detektor: Wissenslücken lautlos im Hintergrund protokollieren
-      if (feedbackService.detectKnowledgeGap(res.text)) {
+      if (res.isKnowledgeGap || feedbackService.detectKnowledgeGap(res.text)) {
         feedbackService.logUnansweredQuestion({
           question: query,
           answer: res.text,

@@ -10,6 +10,7 @@ export interface GeminiResponse {
   modelUsed: string;
   suggestions: string[];
   actionCard?: ActionCardData;
+  isKnowledgeGap?: boolean;
 }
 
 export const executeGeminiCascade = async (
@@ -89,6 +90,8 @@ STRIKTE FAKTEN-TREUE & NULL-TOLERANZ GEGEN HALLUZINATIONEN (Anti-Phantasie-Schut
    Nenne NIEMALS andere oder erfundene Lehrkräfte!
 4. Wenn ein Detail (z. B. eine spezifische Person, ein genauer Prüfungstag, ein Einzelfallantrag) nicht in der Wissensbasis steht, behaupte NIEMALS etwas Falsches, sondern antworte ehrlich und verlässlich:
    „Dazu liegen mir aktuell keine genauen Daten vor. Bitte wenden Sie sich direkt an unser Sekretariat bei Frau Wittmann (Tel: 036424 / 22 400 | E-Mail: rs.kahla@sv.lrashk.de).“
+   WICHTIGE PROTOKOLLIERUNG: Immer wenn du eine Frage oder ein gefragtes Detail nicht vollständig aus der Wissensbasis bzw. den Live-Notizen beantworten kannst (und deshalb auf fehlende Daten hinweist oder an Frau Wittmann / das Sekretariat verweist), füge am allerletzten Ende deiner Antwort eine eigene Zeile genau im Format hinzu:
+   >>> WISSENSLÜCKE
 5. RECHTS- UND ABSCHLUSS-DIREKTIVE (THÜRINGER SCHULORDNUNG & SCHULGESETZ):
    - STRIKTES BLF-VERBOT: An der Thüringer Regelschule gibt es NIEMALS eine „Besondere Leistungsfeststellung (BLF)“! Die BLF existiert im Thüringer Schulrecht AUSSCHLIESSLICH am Gymnasium in Klassenstufe 10 (§§ 103 ff. ThürSchulO). Bezeichne Prüfungen an der Regelschule unter keinen Umständen als BLF!
    - ABSCHLÜSSE AN DER REGELSCHULE:
@@ -128,6 +131,7 @@ Wichtige Verhaltens- und Usability-Regeln:
 5. Sekretariats-Fallback bei individuellen Sonderfragen:
    Falls eine Frage ein persönliches Schülerschicksal, Einzelfallprüfungen, offizielle Beurlaubungsanträge vor Ferien oder ungespeicherte Daten betrifft, verweise sofort verlässlich auf unsere Sekretärin:
    Frau Wittmann – Telefon: 036424 / 22 400 | E-Mail: rs.kahla@sv.lrashk.de (Zimmer 102, Mo–Fr 07:15–14:30 Uhr).
+   Vergiss bei fehlenden oder ungespeicherten Informationen nicht das Tag „>>> WISSENSLÜCKE“ in einer eigenen Zeile am Ende.
 
 6. Aktionskarten:
    Falls die Anfrage eine konkrete Handlung betrifft (z. B. Krankmeldung, Essensanmeldung bei Diakonie Apolda, Schließfachbuchung bei AstraDirect, TiP-Kontakt oder Anruf im Sekretariat), kannst du zusätzlich eine Aktionskarte am Ende einfügen im Format:
@@ -170,11 +174,15 @@ Wichtige Verhaltens- und Usability-Regeln:
     }
   ];
 
-  // Helper zum Parsen von Vorschlägen und Aktionskarten
+  // Helper zum Parsen von Vorschlägen, Aktionskarten und Wissenslücken-Tag
   const formatAssistantResponse = (candidateText: string, model: string): GeminiResponse => {
     const suggestions: string[] = [];
     let actionCard: ActionCardData | undefined = undefined;
     let cleanedText = candidateText;
+
+    const knowledgeGapRegex = /^>>>\s*(?:WISSENSL[ÜU]CKE|KNOWLEDGE_GAP).*$/gim;
+    const isKnowledgeGap = knowledgeGapRegex.test(cleanedText);
+    cleanedText = cleanedText.replace(knowledgeGapRegex, '').trim();
 
     const suggestionRegex = />>>\s*VORSCHLAG:\s*(.+)$/gim;
     let match: RegExpExecArray | null;
@@ -227,7 +235,8 @@ Wichtige Verhaltens- und Usability-Regeln:
       text: cleanedText,
       modelUsed: model,
       suggestions: suggestions.slice(0, 3),
-      actionCard
+      actionCard,
+      isKnowledgeGap
     };
   };
 

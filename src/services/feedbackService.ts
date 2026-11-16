@@ -7,6 +7,62 @@ export const DEFAULT_FEEDBACK_WEBHOOK_URL =
 
 const MAX_STORED_ITEMS = 200;
 
+interface WebhookResult {
+  ok: boolean;
+  viaProxy: boolean;
+  httpStatus?: number;
+  error?: string;
+}
+
+async function sendToWebhook(
+  webhookUrl: string,
+  payload: Record<string, string>,
+  isTest: boolean = false
+): Promise<WebhookResult> {
+  try {
+    const proxyRes = await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      keepalive: !isTest,
+      body: JSON.stringify({ webhookUrl, payload }),
+    });
+
+    if (proxyRes.status !== 404) {
+      const data = await proxyRes.json().catch(() => ({}));
+      if (proxyRes.ok && data?.ok) {
+        return { ok: true, viaProxy: true, httpStatus: data.httpStatus || proxyRes.status };
+      }
+      return {
+        ok: false,
+        viaProxy: true,
+        httpStatus: data?.httpStatus || proxyRes.status,
+        error: data?.error || `HTTP ${proxyRes.status} vom Webhook-Proxy`,
+      };
+    }
+  } catch (err) {
+    // Proxy nicht erreichbar (z. B. reines statisches Hosting) -> Fallback auf Direkt-POST
+  }
+
+  try {
+    await fetch(webhookUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      keepalive: !isTest,
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify(payload),
+    });
+    return { ok: true, viaProxy: false };
+  } catch (err: any) {
+    return {
+      ok: false,
+      viaProxy: false,
+      error: `Verbindungsfehler: ${err?.message || 'Netzwerkfehler'}`,
+    };
+  }
+}
+
 export const feedbackService = {
   // Webhook-URL abrufen (1. localStorage, 2. Vercel Env, 3. Default)
   getWebhookUrl: (): string => {
@@ -66,11 +122,16 @@ export const feedbackService = {
   // Erkennt automatisch, ob die KI-Antwort auf eine Wissenslücke hinweist
   detectKnowledgeGap: (answerText: string): boolean => {
     if (!answerText) return false;
-    const lower = answerText.toLowerCase();
+
+    // Markdown-Formatierungen (**Fett**, *Kursiv*, `Code`) entfernen, damit Phrasen nicht zerrissen werden
+    const normalized = answerText
+      .replace(/[*_`~#>]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
 
     const gapPhrases = [
       'dazu liegen mir aktuell keine genauen daten vor',
-      'dazu liegen mir aktuell keine daten vor',
       'dazu liegen mir keine genauen daten vor',
       'dazu liegen mir keine daten vor',
       'keine genauen daten vor',
@@ -78,23 +139,63 @@ export const feedbackService = {
       'dazu habe ich keine informationen',
       'kann ich leider nicht beantworten',
       'liegen mir hierzu keine daten vor',
-      // Fallback-Sekretariatshinweis kombiniert mit Nicht-Wissen
-      'wenden sie sich direkt an unser sekretariat bei frau wittmann',
+      'liegen mir dazu keine informationen vor',
+      'habe ich leider keine angaben',
+      'habe ich leider keine auskunft',
+      'in meiner wissensbasis nicht',
+      'in meinen unterlagen nicht',
+      'wenden sie sich direkt an unser sekretariat',
+      'wenden sie sich direkt an frau wittmann',
+      'wenden sie sich bitte direkt an das sekretariat',
+      'wenden sie sich bitte direkt an frau wittmann',
       // Englisch
       'do not have exact data',
+      "don't have exact data",
       "don't have information",
+      'do not have information',
+      'no exact data available',
       'no data available',
+      'cannot answer this',
       // Rumänisch
       'nu am aceste informații',
+      'nu am informații exacte',
       'nu dețin date exacte',
+      'nu am date exacte',
       // Ukrainisch / Russisch
       'у мене наразі немає',
+      'у мене немає точних даних',
       'у меня сейчас нет',
+      'у меня нет точных данных',
       // Arabisch
-      'لا تتوfer لدي معلومات'
+      'لا تتوفر لدي معلومات',
+      'لا توجد لدي معلومات',
+      'ليس لدي معلومات دقيقة'
     ];
 
-    return gapPhrases.some((phrase) => lower.includes(phrase));
+    if (gapPhrases.some((phrase) => normalized.includes(phrase))) {
+      return true;
+    }
+
+    const gapPatterns = [
+      /\b(?:keine|nicht)\s+(?:genauen|konkreten|näheren|aktuellen|weiteren|verifizierten)?\s*(?:daten|informationen|infos|angaben|auskunft|unterlagen|hinweise)\b/i,
+      /\b(?:liegen|stehen)\s+(?:mir\s+)?(?:dazu|hierzu|aktuell|derzeit|leider|momentan)?\s*(?:leider\s+)?keine\b/i,
+      /\b(?:kann|vermag)\s+(?:ich\s+)?(?:ihnen\s+)?(?:dazu\s+|hierzu\s+)?(?:leider\s+)?nicht\s+(?:sicher\s+|abschließend\s+|genau\s+)?beantworten\b/i,
+      /\b(?:nicht\s+in\s+(?:meiner|der)\s+wissensbasis|nicht\s+hinterlegt|nicht\s+gespeichert|nicht\s+vorhanden)\b/i,
+    ];
+
+    if (gapPatterns.some((re) => re.test(normalized))) {
+      return true;
+    }
+
+    // Sekretariats-Verweis (Frau Wittmann / Sekretariat) nur bei expliziter Weiterverweisung / fehlender Auskunft
+    const mentionsOffice =
+      normalized.includes('frau wittmann') || normalized.includes('sekretariat');
+    const indicatesMissingOrReferral =
+      /(?:wenden sie sich\s+(?:bitte\s+)?direkt an|einzelfall|individuelle[rn]?\s+(?:anfrage|prüfung|fall|klärung)|kann\s+ich\s+(?:dazu|hierzu|ihnen)?\s*(?:leider\s+)?nicht\s+(?:abschließend\s+)?(?:sagen|beantworten|klären)|liegen\s+(?:mir\s+)?(?:dazu|hierzu)?\s*keine)/i.test(
+        normalized
+      );
+
+    return mentionsOffice && indicatesMissingOrReferral;
   },
 
   // Hauptfunktion: Unbeantwortete Frage protokollieren (Lokal + Google Sheet)
@@ -133,32 +234,22 @@ export const feedbackService = {
       console.warn('Lokaler Log-Fehler:', e);
     }
 
-    // 2. An Google Apps Script Webhook senden (asynchron im Hintergrund)
+    // 2. An Google Apps Script Webhook senden (primär über /api/feedback Proxy, Fallback direct no-cors)
     const webhookUrl = feedbackService.getWebhookUrl();
     if (webhookUrl && webhookUrl.startsWith('http')) {
-      try {
-        const bodyData = {
-          timestamp: `${new Date().toLocaleDateString('de-DE')} ${new Date().toLocaleTimeString('de-DE')}`,
-          language: newEntry.language,
-          question: newEntry.question,
-          answer: newEntry.answerSnippet,
-          reason: reasonLabel
-        };
+      const bodyData = {
+        timestamp: `${new Date().toLocaleDateString('de-DE')} ${new Date().toLocaleTimeString('de-DE')}`,
+        language: newEntry.language,
+        question: newEntry.question,
+        answer: newEntry.answerSnippet,
+        reason: reasonLabel
+      };
 
-        // 'text/plain' verhindert CORS-Preflight-Blockaden im Browser; 'no-cors' sendet auch über Cross-Origins
-        fetch(webhookUrl, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
-          body: JSON.stringify(bodyData)
-        }).catch((err) => {
-          console.warn('Webhook-Übertragung fehlgeschlagen (im Hintergrund):', err);
-        });
-      } catch (err) {
-        console.warn('Webhook-Fehler:', err);
-      }
+      void sendToWebhook(webhookUrl, bodyData).then((res) => {
+        if (!res.ok) {
+          console.warn('Webhook-Übertragung fehlgeschlagen:', res.error);
+        }
+      });
     }
 
     return newEntry;
@@ -181,27 +272,22 @@ export const feedbackService = {
       reason: 'Manueller Test'
     };
 
-    try {
-      // 1. Zuerst mit no-cors senden (so wie es der Browser produktiv tut)
-      await fetch(url, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        },
-        body: JSON.stringify(testPayload)
-      });
-
+    const result = await sendToWebhook(url, testPayload, true);
+    if (result.ok) {
       return {
         success: true,
-        message: '✓ Testzeile wurde an das Google Sheet übertragen! Bitte Tabelle prüfen.'
-      };
-    } catch (e: any) {
-      return {
-        success: false,
-        message: `Verbindungsfehler: ${e.message || 'Netzwerkfehler'}`
+        httpStatus: result.httpStatus,
+        message: result.viaProxy
+          ? '✓ Webhook hat mit HTTP 200 geantwortet! Testzeile & E-Mail wurden ausgelöst – bitte Tabelle und Posteingang (auch Spam) prüfen.'
+          : '✓ Testzeile wurde im Direktmodus gesendet. Bitte Google-Tabelle und E-Mail-Postfach prüfen.'
       };
     }
+
+    return {
+      success: false,
+      httpStatus: result.httpStatus,
+      message: result.error || 'Webhook-Verbindung fehlgeschlagen.'
+    };
   },
 
   // Als CSV exportieren (z. B. für Excel oder manuellen Import in Google Sheets)
