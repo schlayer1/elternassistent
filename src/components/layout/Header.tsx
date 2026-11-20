@@ -73,9 +73,13 @@ export const Header: React.FC<HeaderProps> = ({
   const [copiedQuestionId, setCopiedQuestionId] = useState<string | null>(null);
 
   // Gemini Key State
-  const [customKey, setCustomKey] = useState(
-    () => localStorage.getItem('hbs_custom_gemini_api_key') || ''
-  );
+  const [customKey, setCustomKey] = useState(() => {
+    try {
+      return localStorage.getItem('hbs_custom_gemini_api_key') || '';
+    } catch {
+      return '';
+    }
+  });
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   const t = TRANSLATIONS[currentLanguage]?.header || TRANSLATIONS.de.header;
@@ -174,10 +178,14 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const handleSaveKey = () => {
-    if (customKey.trim()) {
-      localStorage.setItem('hbs_custom_gemini_api_key', customKey.trim());
-    } else {
-      localStorage.removeItem('hbs_custom_gemini_api_key');
+    try {
+      if (customKey.trim()) {
+        localStorage.setItem('hbs_custom_gemini_api_key', customKey.trim());
+      } else {
+        localStorage.removeItem('hbs_custom_gemini_api_key');
+      }
+    } catch {
+      // ignore storage errors in restricted contexts
     }
     setSavedSuccess(true);
     setTimeout(() => {

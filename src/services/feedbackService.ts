@@ -66,9 +66,13 @@ async function sendToWebhook(
 export const feedbackService = {
   // Webhook-URL abrufen (1. localStorage, 2. Vercel Env, 3. Default)
   getWebhookUrl: (): string => {
-    const local = localStorage.getItem(WEBHOOK_URL_KEY);
-    if (local && local.trim().length > 0) {
-      return local.trim();
+    try {
+      const local = localStorage.getItem(WEBHOOK_URL_KEY);
+      if (local && local.trim().length > 0) {
+        return local.trim();
+      }
+    } catch {
+      // ignore storage errors
     }
     const envUrl = (import.meta as any).env?.VITE_FEEDBACK_WEBHOOK_URL;
     if (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 0) {
@@ -79,10 +83,14 @@ export const feedbackService = {
 
   // Webhook-URL speichern
   setWebhookUrl: (url: string): void => {
-    if (url.trim()) {
-      localStorage.setItem(WEBHOOK_URL_KEY, url.trim());
-    } else {
-      localStorage.removeItem(WEBHOOK_URL_KEY);
+    try {
+      if (url.trim()) {
+        localStorage.setItem(WEBHOOK_URL_KEY, url.trim());
+      } else {
+        localStorage.removeItem(WEBHOOK_URL_KEY);
+      }
+    } catch {
+      // ignore storage errors
     }
   },
 
@@ -91,7 +99,8 @@ export const feedbackService = {
     try {
       const data = localStorage.getItem(STORAGE_KEY);
       if (!data) return [];
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
       console.warn('Fehler beim Laden des Feedback-Speichers:', e);
       return [];
@@ -102,20 +111,32 @@ export const feedbackService = {
   deleteQuestion: (id: string): UnansweredQuestion[] => {
     const current = feedbackService.getAllQuestions();
     const updated = current.filter((q) => q.id !== id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    } catch {
+      // ignore storage errors
+    }
     return updated;
   },
 
   // Alle Fragen leeren
   clearAllQuestions: (): void => {
-    localStorage.removeItem(STORAGE_KEY);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // ignore storage errors
+    }
   },
 
   // Status als erledigt/offen umschalten
   toggleResolved: (id: string): UnansweredQuestion[] => {
     const current = feedbackService.getAllQuestions();
     const updated = current.map((q) => (q.id === id ? { ...q, resolved: !q.resolved } : q));
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    } catch {
+      // ignore storage errors
+    }
     return updated;
   },
 

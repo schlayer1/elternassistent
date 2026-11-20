@@ -22,9 +22,13 @@ export const liveSyncService = {
   // 2. Zentral bei Vercel hinterlegte Umgebungsvariable VITE_GOOGLE_DOC_URL
   // 3. Offizieller Standard-Google-Doc-Link der Heimbürgeschule
   getDocUrl: (): string => {
-    const local = localStorage.getItem(GOOGLE_DOC_STORAGE_KEY);
-    if (local && local.trim().length > 0) {
-      return local.trim();
+    try {
+      const local = localStorage.getItem(GOOGLE_DOC_STORAGE_KEY);
+      if (local && local.trim().length > 0) {
+        return local.trim();
+      }
+    } catch {
+      // ignore storage errors
     }
     const envUrl = (import.meta as any).env?.VITE_GOOGLE_DOC_URL;
     if (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 0) {
@@ -35,8 +39,12 @@ export const liveSyncService = {
 
   // Neue Google Doc URL/ID lokal speichern
   setDocUrl: (url: string): void => {
-    localStorage.setItem(GOOGLE_DOC_STORAGE_KEY, url.trim());
-    localStorage.removeItem(LIVE_DATA_CACHE_TIMESTAMP); // Cache invalidieren
+    try {
+      localStorage.setItem(GOOGLE_DOC_STORAGE_KEY, url.trim());
+      localStorage.removeItem(LIVE_DATA_CACHE_TIMESTAMP); // Cache invalidieren
+    } catch {
+      // ignore storage errors
+    }
   },
 
   // Extrahiert die Dokument-ID aus einer beliebigen Google Doc URL
@@ -70,14 +78,22 @@ export const liveSyncService = {
     }
 
     // Cache-Prüfung
-    const cachedTime = localStorage.getItem(LIVE_DATA_CACHE_TIMESTAMP);
-    const cachedData = localStorage.getItem(LIVE_DATA_CACHE_KEY);
+    let cachedTime: string | null = null;
+    let cachedData: string | null = null;
+    try {
+      cachedTime = localStorage.getItem(LIVE_DATA_CACHE_TIMESTAMP);
+      cachedData = localStorage.getItem(LIVE_DATA_CACHE_KEY);
+    } catch {
+      // ignore storage errors
+    }
     const now = Date.now();
 
     if (!forceRefresh && cachedTime && cachedData && now - Number(cachedTime) < CACHE_TTL_MS) {
       try {
         const parsed = JSON.parse(cachedData);
-        return parsed;
+        if (parsed && typeof parsed === 'object') {
+          return parsed;
+        }
       } catch (e) {}
     }
 
@@ -125,8 +141,12 @@ export const liveSyncService = {
         };
 
         // Im Cache speichern
-        localStorage.setItem(LIVE_DATA_CACHE_KEY, JSON.stringify(result));
-        localStorage.setItem(LIVE_DATA_CACHE_TIMESTAMP, String(now));
+        try {
+          localStorage.setItem(LIVE_DATA_CACHE_KEY, JSON.stringify(result));
+          localStorage.setItem(LIVE_DATA_CACHE_TIMESTAMP, String(now));
+        } catch {
+          // ignore storage errors
+        }
 
         return result;
       }

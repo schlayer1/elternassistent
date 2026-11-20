@@ -10,13 +10,29 @@
       "memory": 512
     }
   },
-  "rewrites": [
+  "headers": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/((?!api/|assets/|.*\\.(?:ico|js|mjs|css|png|jpg|jpeg|svg|webp|woff|woff2|ttf|eot|json|map|txt|xml)).*)",
       "destination": "/index.html"
     }
   ]

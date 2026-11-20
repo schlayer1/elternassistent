@@ -10,7 +10,8 @@ export const storageService = {
     try {
       const stored = localStorage.getItem(CHECKLIST_STORAGE_KEY);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch (e) {
       console.warn('Fehler beim Laden der Checklisten:', e);
@@ -62,7 +63,8 @@ export const storageService = {
     try {
       const stored = localStorage.getItem(CHAT_STORAGE_KEY);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch (e) {}
     return [];

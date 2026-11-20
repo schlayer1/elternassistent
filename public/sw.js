@@ -1,9 +1,7 @@
 // HBS Elternassistent – Progressive Web App (PWA) Service Worker
-const CACHE_NAME = 'hbs-elternassistent-v1';
+const CACHE_NAME = 'hbs-elternassistent-v2';
 
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
   '/manifest.json',
   '/favicon.svg',
   '/favicon.ico',
@@ -15,7 +13,7 @@ const STATIC_ASSETS = [
   '/siegel_bunt.png'
 ];
 
-// 1. Installation: Statische App-Shell vorladen
+// 1. Installation: Nur statische Icons/Manifest vorladen (kein stale HTML!)
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -27,7 +25,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// 2. Aktivierung: Veraltete Caches bereinigen
+// 2. Aktivierung: Alle alten Caches (inkl. v1 mit evtl. veralteter index.html) sofort löschen
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -38,39 +36,83 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// 3. Abruf-Strategie: Stale-While-Revalidate für App-Assets, Bypass für Live-APIs
-self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
+function isHtmlResponse(res) {
+  const ct = (res.headers.get('content-type') || '').toLowerCase();
+  return ct.includes('text/html');
+}
 
-  // Nur GET-Anfragen behandeln
+// 3. Abruf-Strategie:
+// - HTML / Navigation: Network-First (verhindert Whitescreen durch veraltete Asset-Hashes nach Deploy)
+// - /assets/* (Vite content-hashed): Cache-First, aber NIEMALS HTML-Fallback-Antworten cachen
+// - Statische Icons/Manifest: Stale-While-Revalidate
+// - Externe APIs, /api/*, /sw.js: komplett umgehen
+self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
-  // Externe Live-APIs NIEMALS cachen (immer tagesaktuell & unbeeinflusst)
-  const isExternalApi =
-    url.hostname.includes('generativelanguage.googleapis.com') ||
-    url.hostname.includes('docs.google.com') ||
-    url.hostname.includes('script.google.com') ||
-    url.hostname.includes('api.allorigins.win') ||
-    url.pathname.includes('/api/');
+  const url = new URL(event.request.url);
 
-  if (isExternalApi) {
-    return; // Direkt über das Netzwerk ausführen
+  // Nur eigene Origin behandeln; externe Dienste & APIs immer direkt ans Netzwerk
+  if (url.origin !== self.location.origin) return;
+  if (url.pathname.startsWith('/api/') || url.pathname === '/sw.js') return;
+
+  const isNavigation =
+    event.request.mode === 'navigate' ||
+    url.pathname === '/' ||
+    url.pathname === '/index.html';
+
+  if (isNavigation) {
+    event.respondWith(
+      fetch(event.request, { cache: 'no-cache' })
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.ok && isHtmlResponse(networkResponse)) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put('/index.html', copy);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() =>
+          caches.match(event.request).then((cached) => cached || caches.match('/index.html'))
+        )
+    );
+    return;
   }
 
-  // Stale-While-Revalidate für App-Assets
+  // Vite-gehaste JS/CSS-Bundles unter /assets/: Cache-First mit MIME-Schutz
+  if (url.pathname.startsWith('/assets/')) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse && !isHtmlResponse(cachedResponse)) {
+          return cachedResponse;
+        }
+        return fetch(event.request).then((networkResponse) => {
+          if (networkResponse && networkResponse.ok && !isHtmlResponse(networkResponse)) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, copy);
+            });
+          }
+          return networkResponse;
+        });
+      })
+    );
+    return;
+  }
+
+  // Sonstige statische App-Ressourcen (Icons, Manifest): Stale-While-Revalidate
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       const fetchPromise = fetch(event.request)
         .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseToCache = networkResponse.clone();
+          if (networkResponse && networkResponse.ok && !isHtmlResponse(networkResponse)) {
+            const copy = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
+              cache.put(event.request, copy);
             });
           }
           return networkResponse;
